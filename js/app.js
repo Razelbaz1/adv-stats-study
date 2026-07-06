@@ -52,7 +52,16 @@
             const a = byId[en.target.id];
             if (a) {
               a.classList.add('active');
-              a.scrollIntoView({ block: 'nearest' });
+              /* גלילת הסרגל הצדדי בלבד — בלי scrollIntoView!
+                 בספארי (אייפד) scrollIntoView גולל גם את העמוד כולו
+                 ונלחם בגלילה של המשתמש. */
+              const nav = document.querySelector('nav.toc');
+              if (nav && window.matchMedia('(min-width: 901px)').matches) {
+                const top = a.offsetTop;
+                if (top < nav.scrollTop + 8 || top > nav.scrollTop + nav.clientHeight - 48) {
+                  nav.scrollTop = Math.max(0, top - nav.clientHeight / 2);
+                }
+              }
             }
           }
         });
