@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 2 · תורת האמידה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+</head>
+<body data-topic="topic02">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 2</span>
+  <h1>תורת האמידה</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">2.0</span> מאיפה באנו ולאן אנחנו הולכים</h2>
+  <p>ביחידה 1 בנינו ארגז כלים: משתנה מקרי, תוחלת (איפה המרכז), שונות (כמה מתפזרים), והתפלגויות. עכשיו נשלוף אותו לשימוש הראשון והחשוב ביותר שלו.</p>
+  <p>זוכר את "המשחק של הסטטיסטיקה" מהפתיחה של יחידה 1? יש <strong>אמת באוכלוסייה</strong> שאיננו רואים, ויש <strong>מדגם</strong> שכן. היחידה הזאת עונה על השאלה הראשונה במשחק: <strong>איך מנחשים את האמת מהמדגם — ואיך יודעים אם הניחוש שלנו טוב?</strong></p>
+  <div class="box intuition">
+    <div class="box-title">💡 הרעיון המרכזי של כל היחידה — במשפט אחד</div>
+    הניחוש שלנו (ה"אומד") מחושב ממדגם אקראי, ולכן <strong>הוא עצמו משתנה מקרי</strong> — יש לו תוחלת ושונות בדיוק כמו למשתנים של יחידה 1. ברגע שמבינים את זה, כל היחידה היא בסך הכל לשאול: איפה התוחלת שלו יושבת (הטיה) וכמה הוא מתפזר (שונות).
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="what"><span class="sec-num">2.1</span> מה זה אומד ולמה צריך אותו</h2>
+  <p>רוצים לדעת את הגובה הממוצע של נשים בישראל? אי אפשר למדוד את כולן. רוצים לחזות בחירות? אי אפשר לשאול את כל המצביעים. תמיד יש לנו רק <strong>מדגם</strong> — חלק קטן מהאוכלוסייה — וממנו צריך להסיק על השלם.</p>
+  <div class="box formula">
+    <div class="box-title">📐 אומד — ההגדרה</div>
+    $$\hat{\theta}=g(X_1,X_2,\dots,X_n)$$
+    <strong>פענוח הסימנים:</strong> \(\theta\) (תטא) הוא <strong>הפרמטר</strong> — האמת הלא-ידועה באוכלוסייה (למשל: התוחלת האמיתית). ה"כובע" מעליו — \(\hat{\theta}\) — מסמן "האומדן שלנו ל-": מספר שמחושב מהמדגם. ו-\(g\) היא פשוט פונקציה כלשהי — מתכון שלוקח את \(n\) התצפיות \(X_1,\dots,X_n\) ומחזיר מספר אחד.
+  </div>
+  <p>הדוגמה הכי חשובה: <strong>ממוצע המדגם כאומד לתוחלת</strong>:</p>
+  <div class="box formula">
+    <div class="box-title">📐 האומד לתוחלת</div>
+    $$\hat{\mu}=\bar{X}=\frac{\sum_{i=1}^{n}X_i}{n}$$
+    <strong>פענוח:</strong> \(\mu\) — התוחלת האמיתית (לא ידועה); \(\bar{X}\) ("X בר") — ממוצע המדגם; המתכון: לחבר את כל התצפיות ולחלק במספרן.
+  </div>
+  <div class="box example">
+    <div class="box-title">✏️ דוגמה מהשיעור — מפעל עמודי פלדה</div>
+    עמודים אמורים לצאת באורך מטר אחד בדיוק. דגמו 10 עמודים:<br>
+    <code>[0.99, 1.02, 1.2, 0.81, 0.97, 1.01, 1.02, 1.1, 0.95, 0.999]</code><br>
+    הממוצע: \(\bar{X}=1.0069\) — זה האומד שלנו לאורך הממוצע האמיתי של כל העמודים במפעל. קרוב למטר, אבל לא בדיוק — וזה בסדר גמור, כפי שנראה מיד.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ ההבחנה הכי חשובה ביחידה: פרמטר מול אומד</div>
+    \(\theta\) (בלי כובע) הוא <strong>מספר קבוע</strong> — האמת. הוא לא זז, פשוט לא מכירים אותו.<br>
+    \(\hat{\theta}\) (עם כובע) הוא <strong>משתנה מקרי</strong> — תדגום 10 עמודים אחרים, תקבל ממוצע אחר. כל ההמשך של היחידה נשען על ההבחנה הזאת.
+  </div>
+  <details class="fold">
+    <summary>🔎 בונוס: חוק המספרים הגדולים — למה ניחושים מהמדגם בכלל עובדים?</summary>
+    <p>בשיעור הריצו סימולציה: הטלת קובייה הוגנת <strong>100 מיליון פעמים</strong> (<code>np.random.randint(1,7)</code>) וחישוב הממוצע. התוצאה: 3.49997 — כמעט בדיוק התוחלת התיאורטית 3.5 (זוכר איך מחשבים? \(E[X]=\sum x P(x)\) מסעיף 1.3). זה "חוק המספרים הגדולים": ככל שהמדגם גדל, הממוצע מתכנס לתוחלת האמיתית. זו הערובה הבסיסית לכך שאמידה ממדגם היא רעיון שפוי בכלל.</p>
+  </details>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">מי מהבאים הוא <strong>אומד</strong>?</div>
+    <button class="opt">התוחלת \(\mu\) של האוכלוסייה</button>
+    <button class="opt" data-correct>ממוצע המדגם \(\bar{X}\) שחישבנו מ-50 תצפיות</button>
+    <button class="opt">השונות \(\sigma^2\) של האוכלוסייה</button>
+    <button class="opt">ההתפלגות של האוכלוסייה</button>
+    <div class="q-explain">💬 אומד הוא מספר <strong>שמחושב מהמדגם</strong> כדי להעריך פרמטר. \(\mu\) ו-\(\sigma^2\) הם פרמטרים — האמיתות הקבועות והלא-ידועות שאותן מנסים לאמוד. סימן זיהוי מהיר: אם יש כובע (\(\hat{\;}\)) או שזה חישוב ממדגם — זה אומד.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="bias"><span class="sec-num">2.2</span> הטיה (Bias) — האם האומד מכוון למרכז?</h2>
+  <p>אמרנו שהאומד הוא משתנה מקרי — כל מדגם נותן ערך אחר. אז איך שופטים אם הוא "טוב"? השאלה הראשונה: <strong>לאן הוא מכוון בממוצע?</strong></p>
+  <div class="box formula">
+    <div class="box-title">📐 הטיה</div>
+    $$Bias(\hat{\theta})=E[\hat{\theta}]-\theta$$
+    <strong>פענוח:</strong> \(E[\hat{\theta}]\) — התוחלת של האומד: הממוצע של אינסוף חזרות על הניסוי, כל פעם עם מדגם חדש. \(\theta\) — האמת. ההפרש ביניהם = בכמה האומד מפספס <strong>באופן שיטתי</strong>. אם ההפרש הוא 0, האומד נקרא <strong>חסר הטיה</strong>.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטואיציה — הקלע</div>
+    תחשוב על קלע שיורה למטרה. הטיה = הכוונת שלו עקומה: גם אחרי אלף יריות, מרכז הפגיעות שלו יושב שמאלה מהמרכז. זו טעות <strong>שיטתית</strong> — היא לא מתמצעת החוצה כשיורים עוד. אומד חסר הטיה = כוונת ישרה: יריות בודדות מפספסות, אבל מרכז הפגיעות בדיוק על המטרה.
+  </div>
+
+  <h3 id="bias-proof">הוכחה שהממוצע הוא אומד חסר הטיה</h3>
+  <p>נחשב את \(E[\bar{X}]\) — לאן הממוצע מכוון בממוצע? הכלי היחיד שנצטרך הוא <strong>ליניאריות התוחלת</strong>:</p>
+  <div class="box formula">
+    <div class="box-title">📐 ליניאריות התוחלת — כלי העבודה להוכחות</div>
+    $$E[aX]=aE[X] \qquad E[X_1+X_2]=E[X_1]+E[X_2]$$
+    <strong>במילים:</strong> תוחלת של סכום = סכום התוחלות, וקבוע (\(a\)) מותר להוציא החוצה. תמיד, בלי תנאים.
+  </div>
+  <p>ועכשיו ההוכחה — שלוש שורות:</p>
+  <div class="box formula">
+    <div class="box-title">📐 ההוכחה</div>
+    $$E[\bar{X}]=E\left[\frac{X_1+\cdots+X_n}{n}\right]=\frac{1}{n}\left(E[X_1]+\cdots+E[X_n]\right)=\frac{1}{n}\cdot n\mu=\mu$$
+    <strong>פענוח הצעדים:</strong> הוצאנו את הקבוע \(\frac{1}{n}\) החוצה, פירקנו את תוחלת הסכום לסכום תוחלות, וכל תצפית \(X_i\) הגיעה מהאוכלוסייה ולכן \(E[X_i]=\mu\). קיבלנו \(E[\bar{X}]=\mu\) ⇐ הטיה 0 ⇐ הממוצע חסר הטיה. 🎉
+  </div>
+  <div class="box example">
+    <div class="box-title">✏️ רואים את זה בסימולציה (מהשיעור)</div>
+    חזרו 500,000 פעמים על "דגום 10 ערכים מהתפלגות אחידה עם תוחלת 1, חשב ממוצע". ממוצע כל הממוצעים: <strong>1.000043</strong> — כמעט בדיוק האמת. חוסר ההטיה עובד בשטח.
+  </div>
+  <figure>
+    <img src="../assets/lect1/estimators_lesson_1__cell009_out0.png" alt="פיזור ממוצעי מדגם סביב הערך האמיתי">
+    <figcaption>מהשיעור: 50 ממוצעים של מדגמים (n=10 כל אחד) מסומנים כנקודות, והקו השחור = הערך האמיתי 1. שים לב: אף ממוצע בודד לא פוגע בול, אבל הפיזור מאוזן משני צידי הקו — אין נטייה שיטתית לצד. זו בדיוק המשמעות הוויזואלית של "חסר הטיה".</figcaption>
+  </figure>
+  <div class="box warning">
+    <div class="box-title">⚠️ "חסר הטיה" ≠ "תמיד צודק"</div>
+    אומד חסר הטיה עדיין מפספס בכל מדגם בודד (ראינו: 1.0069 ולא 1). ההבטחה היא רק שהפספוסים <strong>מאוזנים</strong> — אין נטייה קבועה למעלה או למטה. אל תתבלבל בין "הטיה 0" ל"שגיאה 0".
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">לאומד מסוים מצאנו ש-\(E[\hat{\theta}]=\theta+0.1\). מה ההטיה שלו?</div>
+    <button class="opt">0 — הוא חסר הטיה</button>
+    <button class="opt" data-correct>0.1 — הוא מפספס למעלה באופן שיטתי</button>
+    <button class="opt">\(-0.1\)</button>
+    <button class="opt">אי אפשר לדעת בלי השונות</button>
+    <div class="q-explain">💬 לפי ההגדרה: \(Bias=E[\hat{\theta}]-\theta=(\theta+0.1)-\theta=0.1\). האומד "יורה גבוה" ב-0.1 בממוצע. והשונות? היא מדד נפרד לגמרי — נפגוש אותה בסעיף הבא, ואת השילוב של שניהם ב-MSE.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="variance"><span class="sec-num">2.3</span> שונות של אומד — כמה הניחוש "קופץ"?</h2>
+  <p>הכוונת ישרה — מעולה. אבל קלע עם יד רועדת עדיין מפזר יריות לכל עבר. המדד השני לטיב אומד: <strong>כמה הוא משתנה ממדגם למדגם?</strong> עבור ממוצע המדגם יש תשובה מדויקת ויפהפייה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 שונות של ממוצע המדגם</div>
+    $$Var(\bar{X})=\frac{1}{n^2}\cdot n\sigma^2=\frac{\sigma^2}{n}$$
+    <strong>פענוח:</strong> \(\sigma^2\) — השונות של האוכלוסייה (כמה תצפית בודדת רועשת); \(n\) — גודל המדגם. הרעיון בגזירה: שונות של סכום \(n\) תצפיות בלתי תלויות היא \(n\sigma^2\), וכשמחלקים משתנה בקבוע \(n\) השונות מתחלקת ב-\(n^2\) (הקבוע יוצא בריבוע!) — ביחד: \(\sigma^2/n\).
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 מה הנוסחה הזאת אומרת בפועל</div>
+    המכנה \(n\) הוא כל הסיפור: <strong>ככל שהמדגם גדול יותר — האומד יציב יותר</strong>. רעשים מקריים של תצפיות בודדות מתקזזים זה עם זה בממוצע. פי 4 תצפיות ⇐ רבע מהשונות ⇐ חצי מסטיית התקן. זה המנוע מאחורי "מדגם גדול = אמין יותר", וזאת גם הסיבה שחוק המספרים הגדולים עובד: כש-\(n\to\infty\) השונות שואפת ל-0 והאומד "ננעל" על האמת.
+  </div>
+  <figure>
+    <img src="../assets/lect1/estimators_lesson_1__cell012_out0.png" alt="פיזור ממוצעים בגדלי מדגם שונים">
+    <figcaption>מהשיעור: כל נקודה היא ממוצע של מדגם אחד. שורה תחתונה (ירוק): מדגמים של n=10 — מפוזרים רחוק מ-1. אמצע (כתום): n=100 — צפוף יותר. למעלה (כחול): n=1000 — צמודים ל-1. למה זה נראה ככה? כי הפיזור הוא \(\sigma/\sqrt{n}\): פי 100 תצפיות = פי 10 פחות פיזור.</figcaption>
+  </figure>
+
+  <div class="box exam">
+    <div class="box-title">🎯 שאלה 5 מהמבחן לדוגמא — בדיוק הגרף הזה!</div>
+    במבחן מוצג גרף כמעט זהה: דגימות של שני אומדים, שניהם ממוצעים, אחד בכחול (מרוכז צפוף סביב 1.0) ואחד בכתום (מפוזר רחב). נסה לענות למטה.
+  </div>
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 5 מהמבחן לדוגמא</span>
+    <div class="q-text">להלן דגימות של שני אומדים. בשני המקרים האומד הוא הממוצע, רק עם מספר שונה של דגימות. הכחול מרוכז צפוף סביב 1.0, הכתום מפוזר רחב. איזה אומד משתמש ביותר תצפיות?</div>
+    <button class="opt" data-correct>הכחול</button>
+    <button class="opt">הכתום</button>
+    <button class="opt">אותו גודל</button>
+    <button class="opt">לא ניתן לדעת</button>
+    <div class="q-explain">💬 \(Var(\bar{X})=\sigma^2/n\) — יותר תצפיות ⇐ שונות קטנה יותר ⇐ הנקודות צפופות. הכחול הצפוף = ה-n הגדול. בגרף מהשיעור למעלה זה בדיוק ההבדל בין השורה של n=1000 לשורה של n=10.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">הגדלנו את המדגם פי 4 (מ-25 ל-100 תצפיות). מה קורה לסטיית התקן של \(\bar{X}\)?</div>
+    <button class="opt">קטנה פי 4</button>
+    <button class="opt" data-correct>קטנה פי 2</button>
+    <button class="opt">לא משתנה</button>
+    <button class="opt">קטנה פי 16</button>
+    <div class="q-explain">💬 השונות קטנה פי 4 (כי \(Var=\sigma^2/n\)), אבל סטיית התקן היא <strong>השורש</strong> — אז היא קטנה רק פי \(\sqrt{4}=2\). מסקנה מעשית חשובה: כדי להכפיל דיוק צריך פי 4 דאטה. דיוק עולה ביוקר.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="mse"><span class="sec-num">2.4</span> MSE — המדד שמאחד הכל</h2>
+  <p>אז יש לנו שני מדדים: הטיה (כוונת עקומה?) ושונות (יד רועדת?). אבל מה עושים כשצריך <strong>להשוות</strong> שני אומדים — אחד עם קצת הטיה ומעט שונות, ואחד חסר הטיה אבל רועש? צריך מספר אחד שמשקלל את שניהם:</p>
+  <div class="box formula">
+    <div class="box-title">📐 שגיאה ריבועית ממוצעת (MSE)</div>
+    $$MSE(\hat{\theta})=E\big[(\hat{\theta}-\theta)^2\big]=Var(\hat{\theta})+Bias(\hat{\theta})^2$$
+    <strong>פענוח:</strong> צד שמאל — ההגדרה: "כמה רחוק האומד מהאמת, בריבוע, בממוצע" (ריבוע — שוב הטריק מיחידה 1: מוחק את הכיוון של הפספוס). צד ימין — הפירוק הקסום: השגיאה הכוללת מתפרקת בדיוק לשונות ועוד <strong>ריבוע</strong> ההטיה. שני החטאים של הקלע, במספר אחד.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ ההטיה נכנסת בריבוע!</div>
+    בחישוב MSE לא מחברים את ההטיה כמו שהיא — מעלים אותה בריבוע קודם. הטיה של \(-0.9\) תורמת \(0.81\), הטיה של \(0.5\) תורמת רק \(0.25\). גם הסימן נעלם (הטיה שלילית לא "מקזזת" שונות). זו המלכודת המרכזית בשאלות מהסוג הזה.
+  </div>
+
+  <div class="box exam">
+    <div class="box-title">🎯 שאלה 4 מהמבחן לדוגמא — נפתור אותה יחד</div>
+    נתונה טבלה של אומדים לפרמטר \(\theta\), ומבקשים לדרג אותם מהטוב לרע:
+    <table class="tbl">
+      <tr><th>אומד</th><th>Bias</th><th>שונות</th><th>MSE = שונות + Bias²</th></tr>
+      <tr><td>אומד 1</td><td>0</td><td>2</td><td>\(2+0^2=2.00\)</td></tr>
+      <tr><td>אומד 2</td><td>\(-0.9\)</td><td>1</td><td>\(1+0.81=1.81\)</td></tr>
+      <tr><td>אומד 3</td><td>0.5</td><td>1.5</td><td>\(1.5+0.25=1.75\)</td></tr>
+    </table>
+    הדירוג מהטוב לרע: <strong>אומד 3 (1.75) ← אומד 2 (1.81) ← אומד 1 (2.00)</strong>.<br>
+    שים לב לפואנטה: האומד <strong>חסר ההטיה דורג אחרון</strong>, כי השונות הענקית שלו הרסה לו את ה-MSE!
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 וריאציה על שאלה 4 — בדוק שהבנת</span>
+    <div class="q-text">אומד A: הטיה 0, שונות 3. אומד B: הטיה \(-1\), שונות 1.5. מי עדיף לפי MSE?</div>
+    <button class="opt">A — כי הוא חסר הטיה, וזה תמיד גובר</button>
+    <button class="opt" data-correct>B — כי \(MSE_B=1.5+1=2.5\) לעומת \(MSE_A=3\)</button>
+    <button class="opt">שקולים</button>
+    <button class="opt">אי אפשר להשוות אומד מוטה לחסר הטיה</button>
+    <div class="q-explain">💬 \(MSE_A=3+0^2=3\); \(MSE_B=1.5+(-1)^2=2.5\). ה-B המוטה מנצח. והמלכודת שנמנעת ממנה: ההטיה \(-1\) נכנסה כ-\((-1)^2=+1\) — בריבוע ובלי סימן.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="variance-estimators"><span class="sec-num">2.5</span> ההפתעה: שלושה אומדים לשונות — ומי באמת הכי טוב</h2>
+  <p>עכשיו נאמוד את \(\sigma^2\) (שונות האוכלוסייה) מהמדגם. נסמן את סכום ריבועי הסטיות — תזכור את הקיצור SS (Sum of Squares), הוא יככב ב-ANOVA:</p>
+  <div class="box formula">
+    <div class="box-title">📐 שלושה מועמדים לאמידת השונות</div>
+    $$SS=\sum_{i=1}^{n}(X_i-\bar{X})^2 \qquad\Rightarrow\qquad \hat{\sigma}^2=\frac{SS}{n-1},\quad S^2=\frac{SS}{n},\quad \tilde{\sigma}^2=\frac{SS}{n+1}$$
+    <strong>פענוח:</strong> אותו מונה בדיוק — ההבדל היחיד הוא המכנה: \(n-1\), \(n\) או \(n+1\). מי צודק?
+  </div>
+  <p>זוכר מיחידה 1 (הקופסה של "למה סכום הסטיות חייב לצאת 0")? הסטיות נמדדות סביב \(\bar{X}\) ולכן כבולות באילוץ אחד — יש רק \(n-1\) חתיכות מידע חופשיות. התוצאה: המכנה \(n-1\) הוא בדיוק זה שנותן אומד <strong>חסר הטיה</strong>: \(E[\hat{\sigma}^2]=\sigma^2\). המכנה \(n\) מחלק ביותר מדי חלקים ולכן <strong>מקטין</strong> שיטתית — הטיה שלילית. אז \(n-1\) מנצח? בשיעור בדקו את זה במונטה-קרלו (200,000 מדגמים <strong>מהתפלגות נורמלית</strong>, n=10, שונות אמיתית \(\sigma^2=1\)):</p>
+  <table class="tbl">
+    <tr><th>מכנה</th><th>הטיה</th><th>MSE (תיאוריה)</th><th>MSE (סימולציה)</th></tr>
+    <tr><td>\(n-1=9\)</td><td>חסר הטיה ✓</td><td>0.2222</td><td>0.2211</td></tr>
+    <tr><td>\(n=10\)</td><td>מוטה מטה</td><td>0.1900</td><td>0.1892</td></tr>
+    <tr><td>\(n+1=11\)</td><td>מוטה עוד יותר</td><td><strong>0.1818</strong> 🏆</td><td><strong>0.1813</strong> 🏆</td></tr>
+  </table>
+  <div class="box intuition">
+    <div class="box-title">💡 הלקח הגדול של היחידה</div>
+    האומד <strong>הכי מוטה</strong> מבין השלושה ניצח ב-MSE! איך? מכנה גדול יותר מכווץ את כל האומדנים — זה מוסיף קצת הטיה, אבל <strong>מרגיע את השונות</strong> יותר ממה שההטיה עולה. זה בדיוק ה-trade-off מהשאלה של המבחן: לפעמים שווה לקבל כוונת מעט עקומה תמורת יד יציבה בהרבה. אז למה כולם בכל זאת עובדים עם \(n-1\)? מסורת + חוסר הטיה נוח תיאורטית + בפועל ההבדל זניח כשהמדגם גדול. אבל עכשיו אתה יודע ש"חסר הטיה" זה לא סוף הסיפור.
+  </div>
+  <details class="fold">
+    <summary>🔎 בונוס: מאיפה מגיעים המספרים בעמודת התיאוריה?</summary>
+    <p>למדגם <strong>מהתפלגות נורמלית</strong> (כמו בסימולציה מהשיעור — ההנחה חשובה, כי היא זו שמכניסה את χ² לתמונה), לאומד מהצורה \(SS/c\) (עם \(c\) כלשהו במכנה) יש נוסחה סגורה. נסמן \(k=n-1\) (דרגות החופש של SS — כמו ביחידה 1!). אז:</p>
+    $$MSE\left(\frac{SS}{c}\right)=\left(\frac{2k}{c^2}+\left(\frac{k}{c}-1\right)^2\right)\sigma^4$$
+    <p><strong>פענוח:</strong> האיבר הראשון הוא השונות (שם מופיע ה-\(2k\) — זו השונות של \(\chi^2_k\) מיחידה 1 בפעולה!), והשני הוא ריבוע ההטיה. הצבה עם \(k=9\), \(\sigma=1\): עבור \(c=9\): \(18/81+0=0.2222\); עבור \(c=10\): \(18/100+0.01=0.19\); עבור \(c=11\): \(18/121+(9/11-1)^2=0.1818\). תחת הנחת הנורמליות, המינימום המדויק יוצא תמיד ב-\(c=n+1\). שים לב איך יחידה 1 (χ², דרגות חופש) פתאום עובדת בשבילנו.</p>
+  </details>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">איזה מכנה נותן אומד <strong>חסר הטיה</strong> לשונות, ואיזה נותן <strong>MSE מינימלי</strong>?</div>
+    <button class="opt">חסר הטיה: \(n\); מינימום MSE: \(n-1\)</button>
+    <button class="opt" data-correct>חסר הטיה: \(n-1\); מינימום MSE: \(n+1\)</button>
+    <button class="opt">חסר הטיה: \(n-1\); מינימום MSE: \(n-1\) — זה אותו דבר</button>
+    <button class="opt">חסר הטיה: \(n+1\); מינימום MSE: \(n\)</button>
+    <div class="q-explain">💬 \(n-1\) מתקן את "דרגת החופש שנאבדה" ונותן חוסר הטיה; \(n+1\) מכווץ חזק יותר, סופג קצת הטיה אבל חוסך הרבה שונות — ומשיג את ה-MSE הקטן ביותר. שני עקרונות שונים, שתי תשובות שונות.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="common"><span class="sec-num">2.6</span> ארגז האומדים — מה אומדים במה</h2>
+  <table class="tbl">
+    <tr><th>פרמטר (האמת הלא-ידועה)</th><th>האומד המקובל</th><th>הערות</th></tr>
+    <tr><td>תוחלת \(\mu\)</td><td>\(\hat{\mu}=\bar{X}=\frac{1}{n}\sum X_i\)</td><td>חסר הטיה, שונות \(\sigma^2/n\)</td></tr>
+    <tr><td>שונות \(\sigma^2\)</td><td>\(\hat{\sigma}^2=\frac{1}{n-1}\sum(X_i-\bar{X})^2\)</td><td>המכנה \(n-1\) ⇐ חסר הטיה</td></tr>
+    <tr><td>פרופורציה \(p\) (ברנולי)</td><td>\(\hat{p}=\frac{1}{n}\sum X_i\)</td><td>אחוז ההצלחות במדגם; למשל אחוז תומכים בסקר בחירות</td></tr>
+  </table>
+  <p><strong>פענוח שורת הפרופורציה:</strong> בברנולי כל תצפית היא 0 או 1 (תומך/לא תומך), אז "ממוצע התצפיות" הוא בדיוק אחוז האחדים — האומד הטבעי להסתברות \(p\). זה בדיוק מה שסוקרי בחירות עושים.</p>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">2.7</span> סיכום היחידה + מה חשוב לבחינה</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>אומד \(\hat{\theta}\)</td><td>פונקציה של המדגם שמנחשת פרמטר; בעצמו משתנה מקרי</td></tr>
+    <tr><td>הטיה</td><td>\(E[\hat{\theta}]-\theta\) — פספוס שיטתי (כוונת עקומה)</td></tr>
+    <tr><td>שונות האומד</td><td>כמה הוא קופץ בין מדגמים; לממוצע: \(\sigma^2/n\) — קטנה עם n</td></tr>
+    <tr><td>MSE</td><td>\(Var+Bias^2\) — המדד המאחד; ההטיה בריבוע!</td></tr>
+    <tr><td>ה-trade-off</td><td>אומד מוטה יכול לנצח אם השונות שלו קטנה מספיק (מכנה n+1)</td></tr>
+  </table>
+  <div class="box exam">
+    <div class="box-title">🎯 מוקדי בחינה ביחידה הזאת</div>
+    <strong>שאלה 4:</strong> דירוג אומדים ⇐ לחשב MSE לכל אחד (שונות + הטיה בריבוע) ולדרג מהקטן לגדול. <strong>שאלה 5:</strong> לזהות בגרף שהאומד המרוכז = יותר תצפיות (כי \(Var=\sigma^2/n\)). <strong>שים לב:</strong> הנוסחאות האלה לא נמצאות בדף העזר של הבחינה — לזכור בעל-פה: \(MSE=Var+Bias^2\) ו-\(Var(\bar{X})=\sigma^2/n\).
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">חוקרת מציעה אומד חדש ומראה שההטיה שלו 0. עמיתה טוענת שהאומד הישן, שהטייתו 0.2, עדיף. ייתכן שהעמיתה צודקת?</div>
+    <button class="opt">לא — חסר הטיה תמיד עדיף</button>
+    <button class="opt" data-correct>כן — אם לישן שונות קטנה מספיק כך שה-MSE שלו נמוך יותר</button>
+    <button class="opt">רק אם המדגמים שונים בגודלם</button>
+    <button class="opt">לא — אסור להשתמש באומדים מוטים</button>
+    <div class="q-explain">💬 בדיוק הסיפור של מכנה \(n+1\): אם \(Var_{ישן}+0.04 < Var_{חדש}\), הישן מנצח ב-MSE למרות ההטיה. "חסר הטיה" הוא תכונה נחמדה — לא תעודת ניצחון.</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="topic01.html"><div class="dir">→ הקודם</div><div class="dest">יחידה 1: יסודות הסתברות והתפלגויות</div></a>
+    <a href="#" style="opacity:.5; pointer-events:none"><div class="dir">הבא ←</div><div class="dest">יחידה 3: בדיקת השערות ורווחי סמך (ייבנה בהמשך)</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>
