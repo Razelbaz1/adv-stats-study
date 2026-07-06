@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 1 · יסודות הסתברות והתפלגויות</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+</head>
+<body data-topic="topic01">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 1</span>
+  <h1>יסודות הסתברות והתפלגויות</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">1.0</span> למה מתחילים דווקא כאן?</h2>
+  <p>כל הקורס הזה — רגרסיה, ANOVA, מבחני t — בנוי על ארבע התפלגויות: <strong>נורמלית</strong>, <strong>חי-בריבוע (χ²)</strong>, <strong>t</strong> ו-<strong>F</strong>. הן לא ארבע התפלגויות אקראיות: הן <strong>משפחה אחת</strong>, וכולן נולדות מהנורמלית.</p>
+  <p>ביחידה הזאת נבנה את הבסיס: מה זה בכלל משתנה מקרי, איך מתארים אותו (פונקציות הסתברות), איך מסכמים אותו (תוחלת ושונות), ואז נכיר את בני המשפחה. בסוף היחידה תבין <strong>למה מבחן F של ANOVA נקרא ככה</strong> ומאיפה מגיעה טבלת ה-t.</p>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטואיציה לכל הקורס</div>
+    סטטיסטיקה זה בעצם משחק אחד שחוזר על עצמו: יש <strong>אמת באוכלוסייה</strong> שאנחנו לא רואים, יש <strong>מדגם</strong> שכן רואים, ואנחנו שואלים "מה המדגם מרשה לנו להגיד על האמת?". ההתפלגויות הן הכלי שמכמת כמה בטוחים אנחנו יכולים להיות.
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="rv"><span class="sec-num">1.1</span> משתנה מקרי — בדיד מול רציף</h2>
+  <p><strong>משתנה מקרי</strong> הוא פשוט דרך לתת מספר לתוצאה של ניסוי אקראי. מטילים מטבע 10 פעמים? מספר הפעמים שיצא "עץ" הוא משתנה מקרי. מחכים לאוטובוס? זמן ההמתנה הוא משתנה מקרי.</p>
+  <p>יש שני סוגים, וההבדל ביניהם קובע איך עובדים איתם:</p>
+  <table class="tbl">
+    <tr><th></th><th>בדיד (Discrete)</th><th>רציף (Continuous)</th></tr>
+    <tr><td><strong>מה זה</strong></td><td>ערכים ספירים: 0, 1, 2, 3…</td><td>כל ערך בקטע: 2.7183… גם אפשרי</td></tr>
+    <tr><td><strong>דוגמה</strong></td><td>מספר הצלחות בהטלות מטבע</td><td>זמן המתנה, גובה, משקל</td></tr>
+    <tr><td><strong>איך מחשבים הסתברות</strong></td><td>סוכמים (Σ)</td><td>עושים אינטגרל (∫)</td></tr>
+  </table>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטואיציה</div>
+    בדיד = מדרגות, רציף = רמפה. זה <strong>אותו רעיון בדיוק</strong> בשני המקרים — רק שברציף יש אינסוף ערכים אפשריים, אז במקום לסכום מדרגות אנחנו "סוכמים" שטח מתחת לעקומה, וזה בדיוק מה שאינטגרל עושה.
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="pmf-pdf"><span class="sec-num">1.2</span> פונקציות הסתברות: PMF, PDF ו-CDF</h2>
+
+  <h3 id="pmf">PMF — למשתנה בדיד</h3>
+  <p>פונקציית הסתברות (Probability Mass Function) אומרת מה ההסתברות של <strong>כל ערך בנפרד</strong>: \(P(X=x)\). כדי שהיא תהיה חוקית צריכים להתקיים שני תנאים:</p>
+  <div class="box formula">
+    <div class="box-title">📐 תנאי PMF</div>
+    $$P(X=x)\ge 0 \qquad \text{וגם} \qquad \sum_x P(X=x)=1$$
+    כלומר: אין הסתברויות שליליות, וסך כל ההסתברויות חייב להיות בדיוק 1.
+  </div>
+
+  <h3 id="pdf">PDF — למשתנה רציף</h3>
+  <p>במשתנה רציף אי אפשר לדבר על הסתברות של ערך בודד — היא תמיד אפס! (מה הסיכוי שזמן ההמתנה יהיה <em>בדיוק</em> 7.000000… דקות?). במקום זה יש <strong>פונקציית צפיפות</strong> \(f(x)\), והסתברות מקבלים משטח מתחתיה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 תנאי PDF וחישוב הסתברות</div>
+    $$f(x)\ge 0 \qquad \text{וגם} \qquad \int_{-\infty}^{\infty} f(x)\,dx = 1$$
+    $$P(a\le X\le b)=\int_a^b f(x)\,dx$$
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ טעות נפוצה</div>
+    צפיפות \(f(x)\) היא <strong>לא</strong> הסתברות! היא יכולה להיות גדולה מ-1 (למשל אחיד על קטע קצר). רק <strong>השטח</strong> מתחתיה הוא הסתברות.
+  </div>
+
+  <h3 id="cdf">CDF — הפונקציה המצטברת</h3>
+  <p>פונקציית ההתפלגות המצטברת עונה על השאלה "מה ההסתברות להיות <strong>עד</strong> x?":</p>
+  <div class="box formula">
+    <div class="box-title">📐 CDF</div>
+    $$F(x)=P(X\le x)=\int_{-\infty}^{x} f(t)\,dt$$
+    היא תמיד מטפסת מ-0 ל-1, ומתקיים: \(P(a\le X\le b) = F(b)-F(a)\).
+  </div>
+
+  <div class="box example">
+    <div class="box-title">✏️ דוגמה מהשיעור — בדיד</div>
+    נתון: \(P(X=1)=0.2,\; P(X=2)=0.5,\; P(X=3)=0.3\) (בדקו: סכום = 1 ✓).<br>
+    אז \(P(X>1) = 0.5 + 0.3 = 0.8\).
+  </div>
+  <div class="box example">
+    <div class="box-title">✏️ דוגמה מהשיעור — רציף (אחיד)</div>
+    \(f(x)=\tfrac{1}{2}\) על הקטע \([0,2]\) (בדקו: שטח המלבן = 2 × ½ = 1 ✓).<br>
+    אז \(P(0\le X\le 1)=\int_0^1 \tfrac{1}{2}\,dx=\tfrac{1}{2}\).
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">עבור משתנה מקרי רציף X, מהי ההסתברות \(P(X = 3.5)\) בדיוק?</div>
+    <button class="opt">תלוי בצפיפות \(f(3.5)\)</button>
+    <button class="opt" data-correct>תמיד 0 — לערך בודד ברציף אין "רוחב", ולכן אין שטח</button>
+    <button class="opt">תמיד חיובית אך קטנה מ-1</button>
+    <button class="opt">אי אפשר לדעת בלי ה-CDF</button>
+    <div class="q-explain">💬 ברציף הסתברות = שטח מתחת לצפיפות. לנקודה בודדת רוחב 0, ולכן שטח 0. זו בדיוק הסיבה שברציף עובדים תמיד עם קטעים: \(P(a\le X\le b)\).</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="ev"><span class="sec-num">1.3</span> תוחלת ושונות — שני המספרים שמסכמים הכל</h2>
+  <p><strong>תוחלת</strong> \(E[X]\) היא "מרכז הכובד" של ההתפלגות — הממוצע לטווח ארוך. אם נחזור על הניסוי מיליון פעמים, לשם הממוצע יתכנס:</p>
+  <div class="box formula">
+    <div class="box-title">📐 תוחלת</div>
+    $$E[X]=\sum_x x\,P(X=x) \quad \text{(בדיד)} \qquad\qquad E[X]=\int_{-\infty}^{\infty} x f(x)\,dx \quad \text{(רציף)}$$
+  </div>
+  <p><strong>שונות</strong> \(Var(X)\) מודדת כמה התוצאות מתפזרות סביב התוחלת. שונות קטנה = תוצאות צפופות וצפויות; שונות גדולה = הפתעות.</p>
+  <div class="box formula">
+    <div class="box-title">📐 שונות — הנוסחה שעובדים איתה</div>
+    $$Var(X)=E[(X-E[X])^2]=E[X^2]-(E[X])^2$$
+    וסטיית התקן היא פשוט השורש: \(\sigma=\sqrt{Var(X)}\) — אותו מדד פיזור, אבל ביחידות המקוריות.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטואיציה</div>
+    תוחלת = "איפה ההתפלגות גרה". שונות = "כמה היא מתפרעת". שני המספרים האלה הם הזוג שילווה אותנו כל הקורס: כל אומד, כל מבחן וכל רווח סמך בנויים סביב "מה המרכז ומה הפיזור".
+  </div>
+  <div class="box example">
+    <div class="box-title">✏️ דוגמאות מהשיעור</div>
+    <strong>בדיד:</strong> עם ההתפלגות מהסעיף הקודם: \(E[X]=1(0.2)+2(0.5)+3(0.3)=2.1\).<br>
+    <strong>רציף:</strong> אחיד על \([0,2]\): \(E[X]=\int_0^2 x\cdot\tfrac{1}{2}\,dx = 1\) — בדיוק אמצע הקטע, כמו שהאינטואיציה אומרת.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">נתון \(P(X=0)=0.5,\; P(X=10)=0.5\). מהי התוחלת?</div>
+    <button class="opt">0 או 10 — תלוי במזל</button>
+    <button class="opt" data-correct>5 — למרות ש-X אף פעם לא שווה 5</button>
+    <button class="opt">10, כי זה הערך הגבוה</button>
+    <button class="opt">אי אפשר לחשב בלי השונות</button>
+    <div class="q-explain">💬 \(E[X]=0(0.5)+10(0.5)=5\). שימו לב לנקודה העדינה: התוחלת היא ממוצע משוקלל, והיא <strong>לא חייבת להיות ערך אפשרי</strong> של המשתנה — בדיוק כמו ש"2.4 ילדים בממוצע למשפחה" לא אומר שיש משפחה עם 2.4 ילדים.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="normal"><span class="sec-num">1.4</span> ההתפלגות הנורמלית ותקנון</h2>
+  <p>הכוכבת של הסטטיסטיקה. נורמלית מוגדרת על ידי שני פרמטרים בלבד — תוחלת \(\mu\) (איפה המרכז) ושונות \(\sigma^2\) (כמה רחבה):</p>
+  <div class="box formula">
+    <div class="box-title">📐 סימון</div>
+    $$X\sim N(\mu,\sigma^2)$$
+    המקרה הפרטי החשוב ביותר: <strong>הנורמלית הסטנדרטית</strong> \(Z\sim N(0,1)\) — מרכז ב-0, סטיית תקן 1.
+  </div>
+
+  <figure>
+    <img src="../assets/lect1/probability_intro_p9_img1.png" alt="הנורמלית הסטנדרטית">
+    <figcaption>הנורמלית הסטנדרטית (מתוך השיעור): פעמון סימטרי סביב 0, שיא בגובה ≈0.4. כמעט כל השטח בין −3 ל-3.</figcaption>
+  </figure>
+
+  <h3 id="standardization">תקנון — הטריק שהופך כל נורמלית לאותה נורמלית</h3>
+  <div class="box formula">
+    <div class="box-title">📐 טרנספורמציית התקנון</div>
+    $$Z=\frac{X-\mu}{\sigma}\;\sim\;N(0,1)$$
+    מחסירים את המרכז ומחלקים בסטיית התקן — והתוצאה תמיד נורמלית סטנדרטית.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטואיציה</div>
+    תקנון זה כמו להמיר מטבעות שונים לשקל: לא משנה אם X נמדד בס"מ, בק"ג או בשקלים — אחרי תקנון הכל באותו "מטבע" (סטיות תקן מהמרכז). ולכן <strong>מספיקה טבלה אחת</strong> כדי לחשב כל הסתברות נורמלית שקיימת. Z=1.5 אומר: "אני יושב 1.5 סטיות תקן מעל הממוצע", לא משנה מה נמדד.
+  </div>
+  <div class="box example">
+    <div class="box-title">✏️ דוגמה מהשיעור</div>
+    \(X\sim N(10,4)\), כלומר \(\sigma=2\). מה ההסתברות \(P(X\le 12)\)?<br>
+    מתקננים: \(Z=\frac{12-10}{2}=1\), ולכן \(P(X\le 12)=P(Z\le 1)\approx 0.84\) מהטבלה.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ שימו לב לסימון</div>
+    ב-\(N(10,4)\) המספר השני הוא <strong>השונות</strong> \(\sigma^2=4\), לא סטיית התקן! לכן \(\sigma=2\). זו מלכודת קלאסית בשאלות.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">ציוני מבחן מתפלגים \(N(70, 25)\). סטודנט קיבל 80. כמה סטיות תקן הוא מעל הממוצע?</div>
+    <button class="opt">0.4 סטיות תקן</button>
+    <button class="opt" data-correct>2 סטיות תקן</button>
+    <button class="opt">10 סטיות תקן</button>
+    <button class="opt">0.2 סטיות תקן</button>
+    <div class="q-explain">💬 השונות היא 25, ולכן \(\sigma=5\) (המלכודת מהאזהרה למעלה!). \(Z=\frac{80-70}{5}=2\). מי שחילק ב-25 קיבל 0.4 — ונפל בדיוק במלכודת.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="chisq"><span class="sec-num">1.5</span> חי-בריבוע (χ²) — סכום של ריבועים</h2>
+  <p>קחו \(k\) משתנים נורמליים סטנדרטיים <strong>בלתי תלויים</strong>, העלו כל אחד בריבוע וחברו — קיבלתם התפלגות חי-בריבוע עם \(k\) <strong>דרגות חופש</strong>:</p>
+  <div class="box formula">
+    <div class="box-title">📐 הגדרה + תכונות</div>
+    $$X = Z_1^2+Z_2^2+\cdots+Z_k^2 \;\sim\; \chi^2_k$$
+    $$E[X]=k \qquad Var(X)=2k$$
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטואיציה</div>
+    חי-בריבוע נולדת כשלוקחים "רעשים" נורמליים, מעלים בריבוע ומחברים. ריבוע הוא תמיד חיובי — לכן ההתפלגות חיה רק בצד החיובי ומוטה ימינה. וזו בדיוק הסיבה שהיא ההתפלגות הטבעית של <strong>שונויות</strong>: שונות היא בעצמה סכום של סטיות בריבוע!
+  </div>
+
+  <figure>
+    <img src="../assets/lect1/probability_intro_p8_img0.png" alt="התפלגויות חי-בריבוע">
+    <figcaption>מתוך השיעור: χ² עם df=2 (יורדת מונוטונית), df=5 (שיא סביב 3), df=10 (שיא סביב 8). ככל שמחברים יותר ריבועים, ההתפלגות זזה ימינה ומתעגלת — מתקרבת לפעמון.</figcaption>
+  </figure>
+
+  <div class="box exam">
+    <div class="box-title">🎯 שאלה 20 מהמבחן לדוגמא — בדיוק על זה!</div>
+    "יהי \(Z_i \sim N(0,1)\). כיצד מתפלג \(\sum_{i=1}^{3} Z_i^2\)?" — נסו לענות בשאלון למטה לפני שמציצים.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 20 מהמבחן לדוגמא</span>
+    <div class="q-text">יהי \(Z_i \sim N(0,1^2)\). כיצד מפולג \(\sum_{i=1}^{3} Z_i^2\)?</div>
+    <button class="opt">\(\chi^2_2\)</button>
+    <button class="opt" data-correct>\(\chi^2_3\)</button>
+    <button class="opt">\(F_{2,2}\)</button>
+    <button class="opt">\(F_{3,3}\)</button>
+    <div class="q-explain">💬 זו ההגדרה במדויק: סכום של 3 נורמליות סטנדרטיות בריבוע ⇐ חי-בריבוע עם 3 דרגות חופש. מספר דרגות החופש = מספר האיברים שסוכמים. F לא רלוונטית כאן — היא מנה של שני חי-בריבוע, לא סכום.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">מהי התוחלת ומהי השונות של \(\chi^2_{10}\)?</div>
+    <button class="opt">תוחלת 10, שונות 10</button>
+    <button class="opt" data-correct>תוחלת 10, שונות 20</button>
+    <button class="opt">תוחלת 0, שונות 10</button>
+    <button class="opt">תוחלת 5, שונות 10</button>
+    <div class="q-explain">💬 הכללים: \(E[\chi^2_k]=k\) ו-\(Var=2k\). עם k=10: תוחלת 10 ושונות 20. דרך לזכור: כל \(Z_i^2\) תורם בממוצע 1 (כי \(E[Z^2]=Var(Z)=1\)), אז k איברים תורמים k.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="fdist"><span class="sec-num">1.6</span> התפלגות F — מנה של שתי חי-בריבוע</h2>
+  <p>לוקחים שתי חי-בריבוע בלתי תלויות, מנרמלים כל אחת בדרגות החופש שלה, ומחלקים:</p>
+  <div class="box formula">
+    <div class="box-title">📐 הגדרה</div>
+    $$X=\frac{U/d_1}{V/d_2}\;\sim\; F(d_1,d_2) \qquad U\sim\chi^2_{d_1},\;\; V\sim\chi^2_{d_2}$$
+    תמיד חיובית, לא סימטרית, ותלויה בשתי דרגות חופש (של המונה ושל המכנה).
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטואיציה — למה F היא מלכת ההשוואות</div>
+    זוכרים שחי-בריבוע היא "התפלגות של שונות"? אז F היא <strong>יחס בין שתי שונויות</strong>. אם היחס קרוב ל-1 — שתי השונויות דומות. אם הוא ענק — המונה "מתפרע" הרבה יותר מהמכנה. זה בדיוק הרעיון של ANOVA (יחידה 8): משווים את הפיזור <em>בין</em> קבוצות לפיזור <em>בתוך</em> קבוצות. F גדול = הקבוצות באמת שונות זו מזו.
+  </div>
+
+  <figure>
+    <img src="../assets/lect1/probability_intro_p9_img0.png" alt="התפלגויות F">
+    <figcaption>מתוך השיעור: F(2,10), F(5,10), F(10,10). כולן חיות בצד החיובי ומוטות ימינה; כשדרגות החופש גדלות, השיא מתקרב ל-1 (יחס של שונויות דומות).</figcaption>
+  </figure>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">איזו טענה על התפלגות F היא <strong>נכונה</strong>?</div>
+    <button class="opt">היא סימטרית סביב 1</button>
+    <button class="opt">היא יכולה לקבל ערכים שליליים</button>
+    <button class="opt" data-correct>היא מנה של שתי חי-בריבוע מנורמלות, ולכן תמיד חיובית</button>
+    <button class="opt">היא תלויה בדרגת חופש אחת בלבד</button>
+    <div class="q-explain">💬 חי-בריבוע תמיד חיובית (סכום ריבועים), ולכן גם מנה של שתיים כאלה תמיד חיובית. היא לא סימטרית (מוטה ימינה) ותלויה בשתי דרגות חופש — של המונה ושל המכנה: \(F(d_1, d_2)\).</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="family"><span class="sec-num">1.7</span> המשפחה כולה — התמונה הגדולה</h2>
+  <p>עכשיו אפשר לראות את כל השרשרת. הכל מתחיל בנורמלית:</p>
+  <table class="tbl">
+    <tr><th>התפלגות</th><th>איך נבנית</th><th>למה משמשת בקורס</th></tr>
+    <tr><td><strong>נורמלית N</strong></td><td>נקודת המוצא</td><td>מודל לנתונים ולשגיאות; משפט הגבול המרכזי</td></tr>
+    <tr><td><strong>χ² (חי-בריבוע)</strong></td><td>סכום ריבועים של Z-ים</td><td>התפלגות של שונויות וסכומי ריבועים (SS)</td></tr>
+    <tr><td><strong>t</strong></td><td>Z חלקי שורש של χ² מנורמלת</td><td>מבחנים על תוחלת כשהשונות לא ידועה (יחידה 3), מובהקות מקדמי רגרסיה (יחידה 4)</td></tr>
+    <tr><td><strong>F</strong></td><td>מנה של שתי χ² מנורמלות</td><td>השוואת שונויות, ANOVA (יחידה 8), בדיקת מודלים ברגרסיה</td></tr>
+  </table>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטואיציה לזכירה</div>
+    משפחה אחת, אמא אחת: <strong>נורמלית → מריבועים שלה נולדת χ² → מיחס של שתי χ² נולדת F</strong>, ו-t היא "נורמלית עם רגליים של χ²". כשתפגשו בהמשך טבלת ANOVA עם עמודת F, או פלט רגרסיה עם עמודת t — תדעו בדיוק מאיפה הן הגיעו.
+  </div>
+  <details class="fold">
+    <summary>🔎 הצצה קדימה: איפה נפגוש כל אחת מהן?</summary>
+    <p><strong>t</strong> — כבר ביחידה 3 (מבחני t) ואז בכל פלט רגרסיה (עמודת t ו-P&gt;|t| של כל מקדם).<br>
+    <strong>χ²</strong> — מאחורי הקלעים של כל SS (סכום ריבועים) ב-ANOVA: שאלות 15–16 במבחן על דרגות חופש הן בדיוק על זה.<br>
+    <strong>F</strong> — הסטטיסטי המרכזי של ANOVA: \(F = MS_B/MS_W\) הוא ממש מנה של שתי חי-בריבוע מנורמלות בדרגות החופש שלהן.</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">1.8</span> סיכום היחידה + מה חשוב לבחינה</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>PMF / PDF</td><td>בדיד: הסתברות לכל ערך (סכום 1). רציף: צפיפות — הסתברות היא שטח (אינטגרל 1)</td></tr>
+    <tr><td>CDF</td><td>\(F(x)=P(X\le x)\) — מטפסת מ-0 ל-1</td></tr>
+    <tr><td>תוחלת</td><td>מרכז הכובד: \(\sum xP(x)\) או \(\int xf(x)dx\)</td></tr>
+    <tr><td>שונות</td><td>פיזור סביב המרכז: \(E[X^2]-(E[X])^2\)</td></tr>
+    <tr><td>תקנון</td><td>\(Z=(X-\mu)/\sigma\) — כל נורמלית הופכת ל-N(0,1)</td></tr>
+    <tr><td>χ²</td><td>סכום k ריבועי Z-ים; תוחלת k, שונות 2k</td></tr>
+    <tr><td>F</td><td>מנה של שתי χ² מנורמלות; תמיד חיובית; שתי דרגות חופש</td></tr>
+  </table>
+  <div class="box exam">
+    <div class="box-title">🎯 מוקדי בחינה ביחידה הזאת</div>
+    <strong>שאלה 20</strong> נבחנת ישירות על הגדרת χ² (סכום ריבועי נורמליות = χ² עם דרגות חופש כמספר האיברים). בנוסף, ההבנה של χ², דרגות חופש ו-F היא התשתית לשאלות 14–16 (ANOVA). <strong>שימו לב:</strong> ההגדרות האלה לא מופיעות בדף העזר שמקבלים בבחינה — צריך לזכור אותן.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">ב-ANOVA (שנלמד בהמשך) משווים פיזור בין קבוצות לפיזור בתוך קבוצות. איזו התפלגות טבעית לסטטיסטי כזה?</div>
+    <button class="opt">נורמלית — כי הנתונים נורמליים</button>
+    <button class="opt">t — כי השונות לא ידועה</button>
+    <button class="opt" data-correct>F — כי זו מנה של שני סכומי ריבועים (שתי χ²)</button>
+    <button class="opt">χ² — כי מדובר בשונויות</button>
+    <div class="q-explain">💬 כל "פיזור" הוא סכום ריבועים ⇐ χ². יחס בין שני פיזורים ⇐ מנה של שתי χ² ⇐ זו בדיוק ההגדרה של F. עכשיו שם המבחן "מבחן F של ANOVA" כבר לא מסתורי.</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="../index.html"><div class="dir">→ חזרה</div><div class="dest">מפת הקורס</div></a>
+    <a href="#" style="opacity:.5; pointer-events:none"><div class="dir">הבא ←</div><div class="dest">יחידה 2: תורת האמידה (ייבנה בהמשך)</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

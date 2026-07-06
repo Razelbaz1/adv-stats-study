@@ -1,0 +1,513 @@
+[
+ {
+  "lect": "lect1",
+  "notebook": "lect1\\estimators_lesson_1.ipynb",
+  "cell": 9,
+  "file": "assets/lect1/estimators_lesson_1__cell009_out0.png",
+  "hint": "import matplotlib.pyplot as plt"
+ },
+ {
+  "lect": "lect1",
+  "notebook": "lect1\\estimators_lesson_1.ipynb",
+  "cell": 12,
+  "file": "assets/lect1/estimators_lesson_1__cell012_out0.png",
+  "hint": "samples_10 = []"
+ },
+ {
+  "lect": "lect1",
+  "notebook": "lect1\\hypothesis_testing_lesson_1.ipynb",
+  "cell": 4,
+  "file": "assets/lect1/hypothesis_testing_lesson_1__cell004_out0.png",
+  "hint": "import numpy as np"
+ },
+ {
+  "lect": "lect1",
+  "notebook": "lect1\\hypothesis_testing_lesson_1.ipynb",
+  "cell": 6,
+  "file": "assets/lect1/hypothesis_testing_lesson_1__cell006_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect1",
+  "notebook": "lect1\\hypothesis_testing_lesson_1.ipynb",
+  "cell": 16,
+  "file": "assets/lect1/hypothesis_testing_lesson_1__cell016_out1.png",
+  "hint": "import numpy as np"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson2b_Linear_regression.ipynb",
+  "cell": 3,
+  "file": "assets/lect2/Lesson2b_Linear_regression__cell003_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson2b_Linear_regression.ipynb",
+  "cell": 7,
+  "file": "assets/lect2/Lesson2b_Linear_regression__cell007_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson2b_Linear_regression.ipynb",
+  "cell": 12,
+  "file": "assets/lect2/Lesson2b_Linear_regression__cell012_out0.png",
+  "hint": "log_Y_trans_1 = np.log(y_vals_trans_1)"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson2b_Linear_regression.ipynb",
+  "cell": 16,
+  "file": "assets/lect2/Lesson2b_Linear_regression__cell016_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson2b_Linear_regression.ipynb",
+  "cell": 18,
+  "file": "assets/lect2/Lesson2b_Linear_regression__cell018_out0.png",
+  "hint": "sqrt_Y_trans_1 = y_vals_trans_1**0.5"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson2b_Linear_regression.ipynb",
+  "cell": 21,
+  "file": "assets/lect2/Lesson2b_Linear_regression__cell021_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson2b_Linear_regression.ipynb",
+  "cell": 30,
+  "file": "assets/lect2/Lesson2b_Linear_regression__cell030_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson2b_Linear_regression.ipynb",
+  "cell": 32,
+  "file": "assets/lect2/Lesson2b_Linear_regression__cell032_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 9,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell009_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 17,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell017_out0.png",
+  "hint": "plt.figure(figsize=(6,3))"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 64,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell064_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 72,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell072_out0.png",
+  "hint": "fontsize = 16"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 80,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell080_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 82,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell082_out0.png",
+  "hint": "fontsize = 16"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 87,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell087_out0.png",
+  "hint": "fontsize = 16"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 88,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell088_out0.png",
+  "hint": "fontsize = 16"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 95,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell095_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 98,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell098_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 102,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell102_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 103,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell103_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 111,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell111_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect2",
+  "notebook": "lect2\\notebooks\\Lesson_2_linear_regression_.ipynb",
+  "cell": 116,
+  "file": "assets/lect2/Lesson_2_linear_regression___cell116_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson2b_Linear_regression.ipynb",
+  "cell": 3,
+  "file": "assets/lect3/Lesson2b_Linear_regression__cell003_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson2b_Linear_regression.ipynb",
+  "cell": 8,
+  "file": "assets/lect3/Lesson2b_Linear_regression__cell008_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson2b_Linear_regression.ipynb",
+  "cell": 13,
+  "file": "assets/lect3/Lesson2b_Linear_regression__cell013_out0.png",
+  "hint": "log_Y_trans_1 = np.log(y_vals_trans_1)"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson2b_Linear_regression.ipynb",
+  "cell": 17,
+  "file": "assets/lect3/Lesson2b_Linear_regression__cell017_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson2b_Linear_regression.ipynb",
+  "cell": 19,
+  "file": "assets/lect3/Lesson2b_Linear_regression__cell019_out0.png",
+  "hint": "sqrt_Y_trans_1 = y_vals_trans_1**0.5"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson2b_Linear_regression.ipynb",
+  "cell": 22,
+  "file": "assets/lect3/Lesson2b_Linear_regression__cell022_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson2b_Linear_regression.ipynb",
+  "cell": 31,
+  "file": "assets/lect3/Lesson2b_Linear_regression__cell031_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson2b_Linear_regression.ipynb",
+  "cell": 33,
+  "file": "assets/lect3/Lesson2b_Linear_regression__cell033_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson3_Linear_regression.ipynb",
+  "cell": 6,
+  "file": "assets/lect3/Lesson3_Linear_regression__cell006_out0.png",
+  "hint": "import matplotlib.pyplot as plt"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson3_Linear_regression.ipynb",
+  "cell": 25,
+  "file": "assets/lect3/Lesson3_Linear_regression__cell025_out0.png",
+  "hint": "#"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson3_Linear_regression.ipynb",
+  "cell": 29,
+  "file": "assets/lect3/Lesson3_Linear_regression__cell029_out0.png",
+  "hint": "colors = ['red', 'blue', 'green', 'orange', 'black']"
+ },
+ {
+  "lect": "lect3",
+  "notebook": "lect3\\Lesson3_Linear_regression.ipynb",
+  "cell": 44,
+  "file": "assets/lect3/Lesson3_Linear_regression__cell044_out0.png",
+  "hint": "colors = ['red', 'blue', 'green', 'orange', 'black']"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Class_Exercise_Polynomial_Regression_tirgul2 (2).ipynb",
+  "cell": 4,
+  "file": "assets/lect4/Class_Exercise_Polynomial_Regression_tirgul2_2__cell004_out0.png",
+  "hint": "# חיתוך לפי גיל קבועים: מציירים y ~ hours עבור age שונים"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Class_Exercise_Polynomial_Regression_tirgul2 (2).ipynb",
+  "cell": 6,
+  "file": "assets/lect4/Class_Exercise_Polynomial_Regression_tirgul2_2__cell006_out0.png",
+  "hint": ""
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 4,
+  "file": "assets/lect4/polynomial_data_introl__cell004_out0.png",
+  "hint": "np.random.seed(0)"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 14,
+  "file": "assets/lect4/polynomial_data_introl__cell014_out0.png",
+  "hint": "plt.scatter(X_train, y_train, label = 'train')"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out0.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out1.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out2.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out3.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out4.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out5.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out6.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out7.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out8.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 16,
+  "file": "assets/lect4/polynomial_data_introl__cell016_out9.png",
+  "hint": "for deg in range(1,11):"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 20,
+  "file": "assets/lect4/polynomial_data_introl__cell020_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 21,
+  "file": "assets/lect4/polynomial_data_introl__cell021_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 35,
+  "file": "assets/lect4/polynomial_data_introl__cell035_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\polynomial_data_introl.ipynb",
+  "cell": 36,
+  "file": "assets/lect4/polynomial_data_introl__cell036_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction (4).ipynb",
+  "cell": 2,
+  "file": "assets/lect4/Polynomial_interaction_4__cell002_out0.png",
+  "hint": "import numpy as np"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction (4).ipynb",
+  "cell": 5,
+  "file": "assets/lect4/Polynomial_interaction_4__cell005_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction (4).ipynb",
+  "cell": 40,
+  "file": "assets/lect4/Polynomial_interaction_4__cell040_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction (4).ipynb",
+  "cell": 48,
+  "file": "assets/lect4/Polynomial_interaction_4__cell048_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction (4).ipynb",
+  "cell": 54,
+  "file": "assets/lect4/Polynomial_interaction_4__cell054_out0.png",
+  "hint": "# Section 5: Visualize Predictions of Best Model"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction (4).ipynb",
+  "cell": 56,
+  "file": "assets/lect4/Polynomial_interaction_4__cell056_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction (4).ipynb",
+  "cell": 57,
+  "file": "assets/lect4/Polynomial_interaction_4__cell057_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction_stepwise_interaction_tirgul (1).ipynb",
+  "cell": 3,
+  "file": "assets/lect4/Polynomial_interaction_stepwise_interaction_tirgul_1__cell003_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction_stepwise_interaction_tirgul (1).ipynb",
+  "cell": 11,
+  "file": "assets/lect4/Polynomial_interaction_stepwise_interaction_tirgul_1__cell011_out0.png",
+  "hint": "# Section 5: Visualize Predictions of Best Model"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction_stepwise_interaction_tirgul (1).ipynb",
+  "cell": 13,
+  "file": "assets/lect4/Polynomial_interaction_stepwise_interaction_tirgul_1__cell013_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect4",
+  "notebook": "lect4\\Polynomial_interaction_stepwise_interaction_tirgul (1).ipynb",
+  "cell": 14,
+  "file": "assets/lect4/Polynomial_interaction_stepwise_interaction_tirgul_1__cell014_out0.png",
+  "hint": "plt.figure()"
+ },
+ {
+  "lect": "lect5",
+  "notebook": "lect5\\one_way_anova_hebrew_rtl_latex_fixed.ipynb",
+  "cell": 24,
+  "file": "assets/lect5/one_way_anova_hebrew_rtl_latex_fixed__cell024_out0.png",
+  "hint": "import matplotlib.pyplot as plt"
+ },
+ {
+  "lect": "lect5",
+  "notebook": "lect5\\two_way_anova_statsmodels_rtl_v2-Copy1.ipynb",
+  "cell": 12,
+  "file": "assets/lect5/two_way_anova_statsmodels_rtl_v2-Copy1__cell012_out0.png",
+  "hint": "import matplotlib.pyplot as plt"
+ },
+ {
+  "lect": "lect5",
+  "notebook": "lect5\\two_way_anova_statsmodels_rtl_v2-Copy1.ipynb",
+  "cell": 12,
+  "file": "assets/lect5/two_way_anova_statsmodels_rtl_v2-Copy1__cell012_out1.png",
+  "hint": "import matplotlib.pyplot as plt"
+ },
+ {
+  "lect": "lect5",
+  "notebook": "lect5\\two_way_anova_statsmodels_rtl_v2-Copy1.ipynb",
+  "cell": 27,
+  "file": "assets/lect5/two_way_anova_statsmodels_rtl_v2-Copy1__cell027_out1.png",
+  "hint": "import pandas as pd"
+ },
+ {
+  "lect": "lect5",
+  "notebook": "lect5\\two_way_anova_statsmodels_rtl_v2-Copy1.ipynb",
+  "cell": 35,
+  "file": "assets/lect5/two_way_anova_statsmodels_rtl_v2-Copy1__cell035_out0.png",
+  "hint": ""
+ }
+]
