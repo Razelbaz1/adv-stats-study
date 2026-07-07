@@ -140,6 +140,14 @@ pre code { background: none; color: inherit; padding: 0; }
 .box.exam { background: #fff0f4; border-color: #e0447c; }
 .box.exam .box-title { color: #e0447c; }
 
+/* תגית מקור — תוכן שנוסף מהסיכום של החבר */
+.src-badge {
+  display: inline-block; font-size: .7rem; font-weight: 700;
+  background: #eef0f5; color: var(--muted);
+  border: 1px dashed #c9cfdd; border-radius: 10px;
+  padding: 0 9px; vertical-align: middle; white-space: nowrap;
+}
+
 details.fold {
   background: #f2f4fa; border: 1px solid var(--border); border-radius: 10px;
   padding: 10px 16px; margin: 14px 0;
