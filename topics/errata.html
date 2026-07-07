@@ -156,7 +156,52 @@
 </section>
 
 <section class="card">
-  <h2 id="next">שיעורים 4–11</h2>
+  <h2 id="l4">שיעור 4 (עמ' 21–30)</h2>
+
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 23</span><br>
+    <span class="quote">❌ ערבוב Log ו-Ln באותו פתרון: "Log(10) = 0.0092 + 3.5103·X1" ואז "10 = e^(...)"</span><br>
+    <span class="fix">✓ הפתרון (0.653) נכון רק ללוג <strong>טבעי</strong> (Ln, בסיס e). מי שיקרא Log כבסיס 10 יקבל 0.282 — שגוי. בקורס וב-np.log: לוג = לוג טבעי, תמיד.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 26</span><br>
+    <span class="quote">❌ "H1: m ≥ m0" (השערה אלטרנטיבית עם שוויון)</span><br>
+    <span class="fix">✓ השוויון שייך תמיד ל-H0. שלוש האפשרויות ל-H1: ‏m≠m0 (דו-צדדי), m&gt;m0, m&lt;m0 — תמיד אי-שוויון חד.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 26</span><br>
+    <span class="quote">❌ "על כל יח' השקעה/הדרכה מס' התאונות יורד בממוצע ב-1.87/9.5" (בלי תנאי)</span><br>
+    <span class="fix">✓ ברגרסיה מרובה חסר החלק הקריטי: <strong>"בהינתן ששאר המשתנים קבועים"</strong>. המרצה ציין שפירוש מקדם הוא שאלת מבחן פוטנציאלית — והתנאי הזה הוא לב התשובה הנכונה.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 29</span><br>
+    <span class="quote">❌ תיאור one-hot עם כל 3 עמודות הערים בלי הסבר למה במודל רק 2</span><br>
+    <span class="fix">✓ עם חותך במודל מכניסים רק k−1 עמודות דמה; הקטגוריה שהושמטה (ירושלים) היא הבסיס. הכנסת כולן = מלכודת משתני הדמה (תלות לינארית מושלמת) והמודל קורס.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 29</span><br>
+    <span class="quote">❌ "המשתנים b0, b1, b2 לא השתנו ממקודם"</span><br>
+    <span class="fix">✓ התפקיד לא השתנה — אבל הערכים כן! בפלטים שבסיכום עצמו: חותך 348.08→360.54, הדרכה ‎−9.51→−10.02‎, השקעה ‎−1.88→−1.98‎. הוספת משתנים משנה את אומדי הקיימים.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 30</span><br>
+    <span class="quote">❌ "את ההבדל בין חיפה לאריאל נדע בצורה פחות ישירה"</span><br>
+    <span class="fix">✓ (1) מקדם דמה מודד <strong>הפרש</strong>, לא "יחס". (2) אומדן ההפרש דווקא ישיר: הפרש המקדמים ‎−21.69−(−11.61)=−10.08‎ (בחיפה ~10 תאונות פחות מאריאל). מה שדורש עבודה נוספת הוא רק מבחן המובהקות על ההפרש.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 21</span><br>
+    <span class="quote">❌ "OLS נותנת אומדים חסרי הטיה עם שונות מינימלית" (כמשפט גורף)</span><br>
+    <span class="fix">✓ בתנאי הנחות גאוס-מרקוב, ורק מבין האומדים ה<strong>לינאריים</strong> חסרי ההטיה (BLUE). וכשהקשר לא לינארי הבעיה היא מודל שגוי — לא "אומדים פחות טובים".</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 21</span><br>
+    <span class="quote">❌ "OLS מהירה יותר מ-max-likelihood"</span><br>
+    <span class="fix">✓ ברגרסיה לינארית נורמלית MLE ו-OLS הם <strong>אותם אומדים בדיוק</strong>, באותה נוסחה סגורה. היתרון החישובי קיים מול מודלים שדורשים אופטימיזציה איטרטיבית (לוגיסטית, GLM).</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 24</span><br>
+    <span class="quote">❌ "תמיד כמות הפרמטרים = מספר המשתנים + 1"</span><br>
+    <span class="fix">✓ נכון רק כשיש חותך במודל. (ובפלט: Df Model לא סופר את החותך — Df Model=2 עבור שני מסבירים.)</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 29</span><br>
+    <span class="quote">❌ "כמה יותר תאונות באריאל מאשר בירושלים"</span><br>
+    <span class="fix">✓ המקדם שלילי (‎−11.61‎) — באריאל <strong>פחות</strong> תאונות מבירושלים. (בעמ' 30 הסיכום כבר מנסח נכון.)</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="next">שיעורים 5–11</h2>
   <p>ייבדקו ויתווספו כאן ככל שנבנה את היחידות המתאימות (רגרסיה מרובה, פולינומית, ANOVA...).</p>
 </section>
 

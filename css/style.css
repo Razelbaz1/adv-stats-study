@@ -140,6 +140,33 @@ pre code { background: none; color: inherit; padding: 0; }
 .box.exam { background: #fff0f4; border-color: #e0447c; }
 .box.exam .box-title { color: #e0447c; }
 
+/* ===== ווידג'טים אינטראקטיביים ===== */
+.widget {
+  background: #fbfcff; border: 2px dashed var(--accent);
+  border-radius: var(--radius); padding: 18px 22px; margin: 22px 0;
+}
+.widget .w-title { font-weight: 800; color: var(--accent); margin-bottom: 6px; font-size: 1.05rem; }
+.widget .w-hint { color: var(--muted); font-size: .88rem; margin: 0 0 10px; }
+.widget-controls {
+  display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center;
+  margin: 10px 0; font-size: .92rem; font-weight: 600;
+}
+.widget-controls label { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.widget-controls input[type="range"] { width: 190px; accent-color: var(--accent); }
+.widget-controls .val { color: var(--accent); font-weight: 800; min-width: 3.2em; direction: ltr; display: inline-block; }
+.widget button.w-btn {
+  font: inherit; font-weight: 700; background: var(--accent); color: #fff;
+  border: none; border-radius: 10px; padding: 7px 18px; cursor: pointer;
+}
+.widget button.w-btn:hover { background: #3d5ae8; }
+.widget-readout {
+  background: #fff; border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 14px; margin-top: 10px; font-size: .95rem; line-height: 1.7;
+}
+.plot-box { direction: ltr; width: 100%; }
+.w-flex { display: flex; gap: 12px; flex-wrap: wrap; }
+.w-flex > .plot-box { flex: 1 1 300px; }
+
 /* תגית מקור — תוכן שנוסף מהסיכום של החבר */
 .src-badge {
   display: inline-block; font-size: .7rem; font-weight: 700;

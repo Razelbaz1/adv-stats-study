@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 4 · רגרסיה לינארית פשוטה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<script defer src="https://cdn.plot.ly/plotly-basic-2.35.2.min.js"></script>
+<script defer src="../js/regression-widgets.js"></script>
+<style>
+  .ols-table td.na { color: #b6bccb; background: #f6f7fb !important; }
+  .ols-table td { direction: ltr; text-align: center; font-family: Consolas, monospace; font-size: .88rem; }
+  .ols-table th { text-align: center; }
+</style>
+</head>
+<body data-topic="topic04">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 4</span>
+  <h1>רגרסיה לינארית פשוטה</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">4.0</span> מאיפה באנו ולאן אנחנו הולכים</h2>
+  <p>עד עכשיו למדנו לדבר על משתנה <strong>אחד</strong>: לאמוד את המרכז שלו, לבדוק עליו השערות. מהיחידה הזאת והלאה נשאל את השאלה המעניינת באמת: <strong>איך משתנה אחד משפיע על אחר?</strong> כמה שנות לימוד שוות בשכר? כמה חומר גלם מייצר כמה זיהום?</p>
+  <p>והחדשות הטובות: אנחנו לא מתחילים מאפס. כל מה שבנינו יעבוד עכשיו בשבילנו — המקדמים של הרגרסיה הם <strong>אומדים</strong> (יחידה 2) שמקבלים <strong>מבחני t ורווחי סמך</strong> (יחידה 3). זו לא תיאוריה חדשה, זו אותה תיאוריה על במה חדשה.</p>
+  <div class="box intuition">
+    <div class="box-title">💡 חדש ביחידה הזאת: ווידג'טים אינטראקטיביים 🎛️</div>
+    שלושה "מגרשי משחקים" מחכים לך בהמשך הדף: תזיז סליידרים ותמצא בעצמך את קו ה-OLS, תשחק עם רעש ותראה איך R² מגיב, ותפעיל טרנספורמציות בלחיצה. הדרך הכי טובה להבין — לשחק.
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="what"><span class="sec-num">4.1</span> מה זו רגרסיה, ואיזו רגרסיה מתי</h2>
+  <p>רגרסיה היא מודל שמנבא משתנה אחד (ה"מוסבר") מתוך אחרים (ה"מסבירים"). הקורס מציג שלוש משפחות, לפי <strong>סוג המשתנה שרוצים לנבא</strong>:</p>
+  <table class="tbl">
+    <tr><th>רוצים לנבא...</th><th>המשפחה</th><th>דוגמה מהקורס</th></tr>
+    <tr><td>מספר רציף</td><td><strong>רגרסיה לינארית</strong> (אנחנו כאן)</td><td>כמות גז רעיל בתהליך כימי</td></tr>
+    <tr><td>כן / לא (הסתברות)</td><td>רגרסיה לוגיסטית</td><td>סיכוי לשרוד תאונת דרכים</td></tr>
+    <tr><td>ספירת אירועים</td><td>רגרסיית פואסון</td><td>תאונות ל-100,000 ק"מ נסועה</td></tr>
+  </table>
+  <div class="box intuition">
+    <div class="box-title">💡 אינטרפולציה מול אקסטרפולציה <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    <strong>אינטרפולציה</strong> = חיזוי בתוך תחום הנתונים שראינו (למשל השלמת ערך חסר בין תצפיות) — בדרך כלל אמין, כי החיזוי "תחום" בין ערכים קיימים. <strong>אקסטרפולציה</strong> = חיזוי מחוץ לתחום (למשל חיזוי העתיד מנתוני העבר) — מסוכן, כי אין לנו מושג איך הנתונים מתנהגים איפה שלא ראינו אותם. תזכור את זה כשתעשה predict לערך X שרחוק מהנתונים.
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="model"><span class="sec-num">4.2</span> המודל — קו ישר עם שגיאה</h2>
+  <p>הדוגמה שתלווה אותנו: 10 עובדים, לכל אחד <strong>שנות לימוד</strong> (X, מ-1 עד 10) ו<strong>משכורת</strong> באלפי ש"ח (Y). מניחים שיש קשר של קו ישר — אבל לא מושלם:</p>
+  <div class="box formula">
+    <div class="box-title">📐 שתי המשוואות שחייבים להבחין ביניהן</div>
+    $$y_i = b_0 + b_1 x_i + \varepsilon_i \qquad \text{(המשוואה האמיתית)}$$
+    $$\hat{y}_i = \hat{b}_0 + \hat{b}_1 x_i \qquad \text{(משוואת החיזוי שלנו)}$$
+    <strong>פענוח הסימנים:</strong> \(b_0\) — החותך: איפה הקו פוגש את ציר Y (המשכורת הצפויה ב"אפס שנות לימוד"). \(b_1\) — השיפוע: בכמה עולה Y על כל יחידת X (כמה שווה כל שנת לימוד). \(\varepsilon_i\) (אפסילון) — השגיאה: המרחק בין המציאות לקו, כי הקשר אף פעם לא מושלם. והכובעים? בדיוק כמו ביחידה 2 — \(\hat{b}_0,\hat{b}_1\) הם <strong>אומדים</strong> שחישבנו מהמדגם לפרמטרים האמיתיים והלא-ידועים \(b_0,b_1\).
+  </div>
+  <figure>
+    <img src="../assets/lect2/Lesson_2_linear_regression___cell017_out0.png" alt="נתוני המשכורות עם קו">
+    <figcaption>מהשיעור: נקודות המשכורת (אדום) עם קו מותאם. בהרצאה המרצה חשף בהדרגה כמה קווים מתחרים ("Three prediction options" — למשל 5+x או 10+3x) ושאל: איזה קו הכי טוב? זו בדיוק השאלה של הסעיף הבא.</figcaption>
+  </figure>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">במודל המשכורות יצא \(\hat{b}_1=2.32\). מה הפירוש?</div>
+    <button class="opt">המשכורת הממוצעת היא 2.32 אלפי ש"ח</button>
+    <button class="opt" data-correct>כל שנת לימוד נוספת מעלה את המשכורת החזויה ב-2.32 אלפי ש"ח בממוצע</button>
+    <button class="opt">2.32% מהמשכורות מוסברות על ידי לימודים</button>
+    <button class="opt">הקו חוצה את ציר Y ב-2.32</button>
+    <div class="q-explain">💬 השיפוע = השינוי ב-Y על כל יחידת X. חציית ציר Y זה החותך (\(b_0\)), ואחוז ההסבר זה R² — שניהם מושגים אחרים לגמרי. שאלות פירוש-מקדם הן לחם וחמאה של המבחן.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="ols"><span class="sec-num">4.3</span> OLS — שיטת הריבועים הפחותים</h2>
+  <p>איך בוחרים את הקו "הכי טוב"? מגדירים מה זה טוב: הקו שממזער את <strong>סכום ריבועי השגיאות</strong> — המרחקים האנכיים מהנקודות אל הקו:</p>
+  <div class="box formula">
+    <div class="box-title">📐 בעיית המזעור</div>
+    $$\min_{b_0, b_1} \sum_{i=1}^{n} (b_0 + b_1 x_i - y_i)^2$$
+    <strong>פענוח:</strong> לכל נקודה מחשבים כמה הקו פספס אותה (\(b_0+b_1x_i-y_i\)), מרבעים, מחברים על כל הנקודות — ומחפשים את הזוג \(b_0,b_1\) שנותן את הסכום הקטן ביותר. מכאן השם: Ordinary Least Squares — הריבועים הפחותים.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 למה דווקא ריבוע? שתי סיבות <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    <strong>1)</strong> בלי ריבוע, שגיאות חיוביות ושליליות היו מתקזזות — קו גרוע היה יכול להיראות מושלם. הריבוע (כמו בשונות, כמו ב-MSE!) מוחק את הסימן וגם "קונס" שגיאות גדולות חזק במיוחד. <strong>2)</strong> למה לא ערך מוחלט, שגם הוא לא מתקזז? כי ריבוע הוא פונקציה <strong>גזירה</strong> — ואת המינימום מוצאים בדיוק כמו בחדו"א: גוזרים לפי \(b_0\) ולפי \(b_1\), משווים לאפס, ומקבלים נוסחה סגורה. ערך מוחלט לא גזיר באפס.
+  </div>
+  <div class="box formula">
+    <div class="box-title">📐 הפתרון — נוסחאות סגורות</div>
+    $$\hat{b}_1=\frac{\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2} \qquad\qquad \hat{b}_0=\bar{y}-\hat{b}_1\bar{x}$$
+    <strong>פענוח:</strong> השיפוע הוא "כמה X ו-Y זזים ביחד (המונה) חלקי כמה X זז בכלל (המכנה)". והחותך פשוט מכריח את הקו לעבור דרך נקודת הממוצעים \((\bar{x},\bar{y})\). בשיעור חישבו את זה ידנית ב-numpy וקיבלו <strong>בדיוק</strong> את מה ש-statsmodels נותן: \(\hat{b}_1=2.3178,\; \hat{b}_0=8.0825\).
+  </div>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מגרש משחקים: מצא את קו ה-OLS בעצמך</div>
+    <p class="w-hint">הזז את הסליידרים של החותך והשיפוע. הקווים הסגולים = השגיאות שלך. נסה להקטין את ה-SSE (סכום ריבועי השגיאות) כמה שאפשר — ואז בדוק את עצמך מול הפתרון האמיתי.</p>
+    <div class="widget-controls">
+      <label>חותך \(b_0\): <input type="range" id="w-ols-b0" min="0" max="20" step="any" value="14"> <span class="val" id="w-ols-b0-val">14</span></label>
+      <label>שיפוע \(b_1\): <input type="range" id="w-ols-b1" min="-1" max="5" step="any" value="0.8"> <span class="val" id="w-ols-b1-val">0.8</span></label>
+      <button class="w-btn" id="w-ols-solve">✨ קפוץ לפתרון ה-OLS</button>
+    </div>
+    <div class="plot-box" id="w-ols-plot" style="height:340px"></div>
+    <div class="widget-readout" id="w-ols-readout"></div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">למה ב-OLS מרבעים את השגיאות במקום פשוט לחבר אותן?</div>
+    <button class="opt">כדי שהתוצאה תצא גדולה ומרשימה יותר</button>
+    <button class="opt" data-correct>כי בלי ריבוע שגיאות חיוביות ושליליות מתקזזות, והריבוע גם גזיר וגם מעניש שגיאות גדולות</button>
+    <button class="opt">כי ככה SSE מתפלג נורמלית</button>
+    <button class="opt">זו בחירה שרירותית לגמרי</button>
+    <div class="q-explain">💬 שלושת היתרונות: אין קיזוז (קו שעובר "באמצע" עם שגיאות ענק לא ייראה מושלם), עונש כבד לפספוסים גדולים, וגזירוּת — שמאפשרת פתרון סגור בגזירה והשוואה לאפס. שים לב לחוט שעובר בקורס: אותו טריק ריבוע מהשונות, מ-χ² ומ-MSE.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="output"><span class="sec-num">4.4</span> קריאת פלט statsmodels — סעיף חובה למבחן</h2>
+  <div class="box exam">
+    <div class="box-title">🎯 אזהרת מרצה <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    בסיכום מודגש: <strong>"על טבלת הפלט הבאה יכולות להיות שאלות במבחן!"</strong> — וזה מתאשר: שאלה 2 במבחן לדוגמא היא בדיוק טבלת פלט עם ערכים חסרים. בוא נלמד לקרוא אותה כמו מקצוענים.
+  </div>
+  <p>ככה נראית טבלת המקדמים של מודל המשכורות (R²=0.989, n=10):</p>
+  <table class="tbl ols-table">
+    <tr><th></th><th>coef</th><th style="color:#b6bccb">std err</th><th>t</th><th>P&gt;|t|</th><th>[0.025</th><th>0.975]</th></tr>
+    <tr><td><strong>intercept</strong></td><td>8.0825</td><td class="na">0.525</td><td>15.4</td><td>0.000</td><td>6.872</td><td>9.293</td></tr>
+    <tr><td><strong>years</strong></td><td>2.3178</td><td class="na">0.085</td><td>27.4</td><td>0.000</td><td>2.123</td><td>2.513</td></tr>
+  </table>
+  <p><strong>פענוח עמודה-עמודה:</strong></p>
+  <p><strong>coef</strong> — האומדים: החותך 8.08 והשיפוע 2.32. זה הלב של הפלט.</p>
+  <p><strong>std err</strong> — טעות התקן של כל אומד. <span class="src-badge">📓 תוכן מקובץ סיכום</span> המרצה הודיע: <strong>העמודה הזאת לא נלמדת בקורס</strong> (מסומנת באפור). מספיק לדעת שהיא "כמה האומד רועד", בדיוק כמו שונות של אומד מיחידה 2.</p>
+  <p><strong>t ו-P&gt;|t|</strong> — כאן קורה הקסם של יחידה 3! לכל מקדם נערך אוטומטית מבחן השערות: \(H_0: b=0\) מול \(H_1: b\neq 0\). למה דווקא אפס? כי <strong>מקדם אפס פירושו שהמשתנה בכלל לא במודל</strong> — אם \(b_1=0\), שנות הלימוד לא משפיעות על המשכורת. עמודת t היא הסטטיסטי, ו-P&gt;|t| הוא ה-p-value: קטן מ-0.05 ⇐ המקדם מובהק, יש עדות שהמשתנה באמת משפיע.</p>
+  <p><strong>[0.025, 0.975]</strong> — רווח סמך 95% למקדם: ב-95% מהמדגמים האפשריים הרווח שנבנה כך יכיל את הערך האמיתי (הפירוש הנכון מיחידה 3.5!).</p>
+  <p><span class="src-badge">📓 תוכן מקובץ סיכום</span> עוד הודעת מרצה: <strong>הטבלה התחתונה</strong> בפלט (Omnibus, Durbin-Watson, Skew...) — <strong>לא בחומר</strong>.</p>
+
+  <div class="box intuition">
+    <div class="box-title">💡 הטריק ששווה נקודות: המקדם יושב בדיוק באמצע הרווח <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    התפלגות t סימטרית ⇐ רווח הסמך סימטרי סביב המקדם ⇐ <strong>coef הוא תמיד אמצע הרווח</strong>. בדוק בטבלה: \((2.123+2.513)/2 = 2.318\) ✓. המשמעות: אם נותנים לך את המקדם וקצה אחד — אתה יכול לשחזר את הקצה השני. זו שאלת מבחן שהוזכרה במפורש בכיתה.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה שהמרצה נתן בכיתה כדוגמת שאלת מבחן</span> <span class="src-badge">📓 תוכן מקובץ סיכום</span>
+    <div class="q-text">נתון מקדם \(\hat{b}_1=2.317\) והקצה התחתון של רווח הסמך שלו: 2.123. מהו הקצה העליון?</div>
+    <button class="opt">2.402</button>
+    <button class="opt" data-correct>2.511</button>
+    <button class="opt">4.440</button>
+    <button class="opt">אי אפשר לדעת בלי טעות התקן</button>
+    <div class="q-explain">💬 המקדם באמצע: המרחק לקצה התחתון הוא \(2.317-2.123=0.194\), ולכן הקצה העליון: \(2.317+0.194=2.511\). אפשר לדעת בלי שום מידע נוסף — הסימטריה עושה את העבודה.</div>
+  </div>
+
+  <div class="box exam">
+    <div class="box-title">🎯 שאלה 2 מהמבחן לדוגמא — טבלה עם חורים</div>
+    נתונה טבלת פלט רגרסיה עם ערכים חסרים:
+    <table class="tbl ols-table">
+      <tr><th></th><th>coef</th><th>Std err</th><th>t</th><th>P&gt;|t|</th><th>[0.025</th><th>0.975]</th></tr>
+      <tr><td><strong>intercept</strong></td><td>0</td><td>0.5</td><td>0</td><td>0.5</td><td>-3</td><td>3</td></tr>
+      <tr><td><strong>x1</strong></td><td>10</td><td>0.25</td><td>4.1</td><td>0.001</td><td>8</td><td>12</td></tr>
+      <tr><td><strong>x2</strong></td><td>-5</td><td>0.75</td><td><strong>?</strong></td><td>0.003</td><td>-3</td><td>-7</td></tr>
+      <tr><td><strong>x3</strong></td><td><strong>?</strong></td><td>0.2</td><td>3.2</td><td>0.01</td><td>4</td><td><strong>?</strong></td></tr>
+    </table>
+    השאלה: מה יכול להיות הערך בעמודה 0.975 בשורה של x3? ענה בשאלון למטה.
+  </div>
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 2 מהמבחן לדוגמא</span>
+    <div class="q-text">מה יכול להיות הערך בעמודה 0.975 (הקצה העליון של רווח הסמך) בשורה של x3?</div>
+    <button class="opt">א. 4</button>
+    <button class="opt">ב. 5</button>
+    <button class="opt">ג. 3</button>
+    <button class="opt">ד. 6</button>
+    <button class="opt">ה. אופציות א ו-ג נכונות</button>
+    <button class="opt" data-correct>ו. אופציות ב ו-ד נכונות</button>
+    <button class="opt">ז. אופציות א, ב ו-ד נכונות</button>
+    <div class="q-explain">💬 הקצה העליון של רווח סמך חייב להיות <strong>גדול מהקצה התחתון</strong> (כאן 4). לכן: 3 נפסל (קטן מ-4), 4 נפסל (רווח ברוחב אפס — בלתי אפשרי כשיש טעות תקן חיובית), ואילו 5 ו-6 שניהם אפשריים ⇐ תשובה ו. בדיקת עקביות נוספת: p=0.01 מובהק ⇐ הרווח לא מכיל 0 ✓. ובונוס לשורת x2: את ה-t החסר משחזרים מ-\(t=coef/SE=-5/0.75=-6.67\).<br><br>⚠️ <strong>ושתי הערות חדות למבחן האמיתי:</strong> (1) בשורת x2 במבחן המקורי הגבולות מודפסים הפוך (‎−3 לפני −7‎) — הרווח האמיתי הוא \([-7,-3]\), סימטרי סביב המקדם ‎−5‎ כמו שצריך. (2) בשורת x3 עמודת ה-t לא עקבית עם הרווח (‎3.2×0.2=0.64‎ ≠ אמצע רווח שמתחיל ב-4) — במבחן פותרים לפי לוגיקת הרווח בלבד. מבחנים אמיתיים מכילים לפעמים אי-דיוקים — מי שמכיר את כללי העקביות מזהה אותם ולא נבהל.</div>
+  </div>
+
+  <details class="fold">
+    <summary>🔎 בונוס: חד-צדדי או דו-צדדי? <span class="src-badge">📓 תוכן מקובץ סיכום</span></summary>
+    <p>בכיתה נשאל: מה צריך לדעת על \(H_1\) כדי להכריע מובהקות? תשובה: את <strong>סוג המבחן</strong>. דו-צדדי (\(H_1: b\neq 0\)) ⇐ שני אזורי דחייה של \(\alpha/2\) כל אחד; חד-צדדי (\(H_1: b>0\) או \(b<0\) — בלי שוויון ב-H1!) ⇐ אזור דחייה אחד. עמודת P&gt;|t| בפלט היא תמיד <strong>דו-צדדית</strong> (רואים את זה בסימון: גדול מ-|t|, בערך מוחלט). ותובנה מהשיעור: אותה תוצאה יכולה להידחות במבחן אחד ולא להידחות באחר — אי-דחייה במבחן אחד לא אומרת כלום על מבחנים אחרים.</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2 id="r2"><span class="sec-num">4.5</span> R² — כמה המודל באמת טוב?</h2>
+  <p>טבלת המקדמים ענתה "האם יש קשר" (מובהקות). היא <strong>לא</strong> עונה "כמה הקו טוב". SSE=20 — זה טוב או רע? אין קנה מידה! צריך מדד מנורמל, וזה R²:</p>
+  <div class="box formula">
+    <div class="box-title">📐 R² — ההגדרה דרך שני מודלים מתחרים</div>
+    $$SST=\sum_{i=1}^n (y_i-\bar{y})^2 \qquad SSR=\sum_{i=1}^n (y_i-\hat{y}_i)^2 \qquad R^2=\frac{SST-SSR}{SST}$$
+    <strong>פענוח:</strong> \(SST\) — סכום ריבועי הסטיות מ<strong>הממוצע</strong>: השגיאות של "המודל הטיפש" שתמיד חוזה את \(\bar{y}\) בלי להסתכל על X. \(SSR\) — סכום ריבועי השגיאות של <strong>קו הרגרסיה</strong> שלנו. ו-R² שואל: כמה מהפיזור שהיה למודל הטיפש הצלחנו "לחסוך"? לכן קוראים לו <strong>אחוז השונות המוסברת</strong>.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ מלכודת הסימון של SSR — חשוב במיוחד!</div>
+    בקורס שלנו \(SSR\) = סכום ריבועי ה<strong>שאריות</strong>. אבל ברוב הספרים והאינטרנט SSR פירושו דווקא Sum of Squares <strong>Regression</strong> (החלק המוסבר!), והשאריות נקראות SSE או RSS. אם תקרא מקור חיצוני בלי לשים לב — תקבל R² הפוך. בתוך הקורס והמבחן: SSR = שאריות.
+  </div>
+  <figure>
+    <img src="../assets/lect2/Lesson_2_linear_regression___cell072_out0.png" alt="SST מול SSR">
+    <figcaption>ההמחשה המרכזית מהשיעור: משמאל — הסטיות מקו הממוצע (SST): קווים סגולים ארוכים. מימין — השגיאות מקו הרגרסיה (SSR): קווים קצרצרים. הרגרסיה "חסכה" כמעט את כל הפיזור ⇐ R²=0.989. עכשיו שחק עם זה בעצמך:</figcaption>
+  </figure>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מגרש משחקים: מה באמת קובע את R²?</div>
+    <p class="w-hint">הגבר את הרעש וראה איך R² צונח: ככל שהנקודות מתרחקות מהקו, ההפרש בין "שגיאות הממוצע" ל"שגיאות הרגרסיה" מצטמצם — והמודל מסביר פחות.</p>
+    <div class="widget-controls">
+      <label>עוצמת הרעש: <input type="range" id="w-r2-noise" min="0.5" max="8" step="0.1" value="2"> <span class="val" id="w-r2-noise-val">2.0</span></label>
+      <label><input type="radio" name="w-r2-view" value="sst"> סטיות מהממוצע (SST)</label>
+      <label><input type="radio" name="w-r2-view" value="ssr"> שגיאות הרגרסיה (SSR)</label>
+      <label><input type="radio" name="w-r2-view" value="both" checked> שניהם</label>
+    </div>
+    <div class="plot-box" id="w-r2-plot" style="height:340px"></div>
+    <div class="widget-readout" id="w-r2-readout"></div>
+  </div>
+
+  <p><strong>למה R² תמיד בין 0 ל-1?</strong> שאלה שנדונה בכיתה <span class="src-badge">📓 תוכן מקובץ סיכום</span>: האם SSR יכול לצאת גדול מ-SST? לא! כי OLS בוחר את הקו עם השגיאות הקטנות ביותר — ובמקרה הגרוע ביותר הוא פשוט יבחר את קו הממוצע עצמו (שיפוע 0, חותך \(\bar{y}\)), ואז SSR=SST ו-R²=0. הקו שלנו אף פעם לא מפסיד למודל הטיפש.</p>
+  <div class="box intuition">
+    <div class="box-title">💡 דגש מרצה: פירוש R² הוא לא מדע מדויק <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    אין סף אוניברסלי ל-R² "טוב" — זה תלוי עולם תוכן: ברפואה ובמדעי החברה R² של 0.4 יכול להיחשב גבוה (בני אדם זה רועש), בעוד שבהנדסה ובמדעים מדויקים גם 0.7 עשוי להיחשב נמוך. אל תשנן סף — תבין את ההקשר.
+  </div>
+  <div class="box example">
+    <div class="box-title">✏️ הדוגמה הרעה מהשיעור — R² נמוך ≠ אין קשר</div>
+    בשיעור הותאם קו ישר לנתונים בצורת פרבולה: יצא R²=0.369 עם שיפוע שלילי חסר משמעות. אבל הקשר בנתונים היה <strong>חזק וברור</strong> — פשוט לא לינארי! R² נמוך אומר "אין קשר <em>לינארי</em>", לא "אין קשר".
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">התאמנו קו לנתונים וקיבלנו R²=0.15. מה המסקנה הנכונה?</div>
+    <button class="opt">אין שום קשר בין X ל-Y</button>
+    <button class="opt" data-correct>אין קשר לינארי חזק — אבל ייתכן קשר לא-לינארי חזק מאוד</button>
+    <button class="opt">יש טעות בחישוב, R² לא יכול להיות נמוך כל כך</button>
+    <button class="opt">המודל מסביר 85% מהשונות</button>
+    <div class="q-explain">💬 R² מודד רק התאמה לקו ישר. פרבולה מושלמת תיתן R² נמוך למרות קשר דטרמיניסטי מלא. לכן תמיד מציירים את הנתונים לפני שמסיקים מסקנות — והפתרון לקשר לא-לינארי מחכה בסעיף 4.7 (טרנספורמציות).</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="assumptions"><span class="sec-num">4.6</span> הנחות המודל — ומה קורה כשהן נשברות</h2>
+  <div class="box exam">
+    <div class="box-title">🎯 חדשות טובות: זה נמצא בדף העזר שלך!</div>
+    מודל הרגרסיה + שלוש ההנחות מופיעים <strong>בתוך דף העזר</strong> שתקבל בבחינה — לא צריך לשנן, רק להבין מה כל הנחה אומרת ואיך מזהים הפרה שלה.
+  </div>
+  <table class="tbl">
+    <tr><th>#</th><th>ההנחה</th><th>מה היא אומרת</th><th>איך מזהים הפרה</th></tr>
+    <tr><td>1</td><td><strong>לינאריות</strong></td><td>הקשר בין X ל-Y באמת של קו ישר</td><td>תבנית (קשת/פרבולה) בגרף השאריות</td></tr>
+    <tr><td>2</td><td><strong>שונות קבועה</strong></td><td>גודל השגיאות דומה לאורך כל טווח X</td><td>צורת משפך בגרף השאריות</td></tr>
+    <tr><td>3</td><td><strong>נורמליות השגיאות</strong></td><td>\(\varepsilon_i \sim N(0,\sigma^2)\)</td><td>היסטוגרמת השאריות לא דומה לפעמון</td></tr>
+  </table>
+  <p>כלי האבחון המרכזי: <strong>גרף שאריות</strong> — מציירים את השאריות \(e_i = y_i-\hat{y}_i\) (בפייתון: <code>results.resid</code>) מול X. אם המודל בריא, השאריות צריכות להיראות כמו רעש טהור: מפוזרות אקראית סביב אפס, בלי שום דפוס.</p>
+  <figure>
+    <img src="../assets/lect2/Lesson_2_linear_regression___cell088_out0.png" alt="אבחון לינאריות בשאריות">
+    <figcaption>מהשיעור — אבחון לינאריות: משמאל שאריות בריאות (קופצות באקראי סביב 0). מימין — פרבולה מושלמת בשאריות: הקו הישר פספס שיטתית, כי הקשר האמיתי מעוקל. למה זה נראה ככה? כשמתאימים קו ישר לעקומה, הוא "חותך" אותה — מפספס למעלה בקצוות ולמטה באמצע.</figcaption>
+  </figure>
+  <figure>
+    <img src="../assets/lect2/Lesson_2_linear_regression___cell098_out0.png" alt="שאריות בצורת משפך">
+    <figcaption>מהשיעור — הפרת שונות קבועה: השאריות מתרחבות כמו משפך ככל ש-X גדל. המודל מדייק בערכי X קטנים ורועש בגדולים — ההסקה (p-values ורווחי סמך) כבר לא אמינה.</figcaption>
+  </figure>
+  <figure>
+    <img src="../assets/lect2/Lesson_2_linear_regression___cell111_out0.png" alt="בדיקת נורמליות">
+    <figcaption>מהשיעור — בדיקת נורמליות: היסטוגרמת השאריות (bins=15, density=True) עם עקומת פעמון מעליה. אם הצורות דומות — ההנחה סבירה. זו ההנחה הכי פחות קריטית מהשלוש.</figcaption>
+  </figure>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">בגרף השאריות רואים שהשאריות צמודות לאפס בערכי X קטנים ומתפזרות רחב מאוד בערכי X גדולים (צורת משפך). איזו הנחה מופרת?</div>
+    <button class="opt">לינאריות</button>
+    <button class="opt" data-correct>שונות קבועה (הומוסקדסטיות)</button>
+    <button class="opt">נורמליות השגיאות</button>
+    <button class="opt">אף הנחה — זה תקין</button>
+    <div class="q-explain">💬 משפך = השונות של השגיאה גדלה עם X = הפרת שוויון השונויות. לינאריות מופרת נראית כתבנית מעוקלת (קשת), ונורמליות בודקים בהיסטוגרמה. שלושת הדפוסים האלה הם חומר קלאסי לשאלת זיהוי במבחן.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="transform"><span class="sec-num">4.7</span> טרנספורמציות — כשהקשר לא לינארי</h2>
+  <p>הדוגמה מהשיעור: מפעל זכוכית משתמש בנתרן פחמתי (Sodium carbonate), ורוצים לחזות את זיהום האוויר. הנתונים עולים <strong>אקספוננציאלית</strong> — ומי שמתעלם ומתאים קו ישר מקבל את זה:</p>
+  <figure>
+    <img src="../assets/lect2/Lesson2b_Linear_regression__cell007_out0.png" alt="התאמה נאיבית לנתונים אקספוננציאליים">
+    <figcaption>מהשיעור: קו ישר על נתונים אקספוננציאליים. R²=0.821 נשמע סביר — אבל תראה את הקו: מפספס למעלה בקצוות, למטה באמצע, וחוזה זיהום <strong>שלילי</strong> בתחילת הטווח (חותך −4.46). R² לבד לא מספיק — העיניים חובה.</figcaption>
+  </figure>
+  <p>הפתרון: במקום לוותר על רגרסיה לינארית — <strong>מעוותים את Y עד שהקשר נהיה לינארי</strong>. הטרנספורמציות שברשימה של השיעור: \(Ln(Y)\), \(e^Y\), \(\sqrt{Y}\), \(Y^2\). <span class="src-badge">📓 תוכן מקובץ סיכום</span> ואיך בוחרים? המרצה: בדרך כלל פשוט מנסים ומשווים; יש גם שיטה אוטומטית בשם <strong>Box-Cox</strong> שמוצאת את החזקה המתאימה ביותר.</p>
+  <div class="box formula">
+    <div class="box-title">📐 טרנספורמציית הלוג — הכוכבת</div>
+    $$Ln(Y) = b_0 + b_1 X \qquad\Longleftrightarrow\qquad Y = e^{b_0+b_1X}$$
+    <strong>פענוח:</strong> אם Y גדל אקספוננציאלית עם X, אז הלוגריתם שלו גדל <strong>לינארית</strong> עם X — ואפשר להריץ OLS רגיל על \(Ln(Y)\). בשיעור: R² קפץ מ-0.821 (מקור) ל-<strong>0.991</strong> (לוג); השורש נתן 0.941 — טוב יותר מהמקור, פחות מהלוג.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ Log = Ln בקורס הזה!</div>
+    בסיכומים ובפלטים תראה לפעמים "Log" ולפעמים "Ln" — בקורס (וב-<code>np.log</code> של פייתון) הכוונה תמיד ל<strong>לוגריתם הטבעי</strong> (בסיס e). מי שפותר עם לוג בבסיס 10 יקבל תשובה שגויה לגמרי (בתרגיל למטה: 0.28 במקום 0.65).
+  </div>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מגרש משחקים: הפעל טרנספורמציה וראה את הקסם</div>
+    <p class="w-hint">בחר טרנספורמציה. משמאל — הסקלה שעליה המודל "חי" ומתאימים את הקו; מימין — המודל מתורגם חזרה לעולם האמיתי. שים לב מה קורה ל-R² ולצורת הפיזור.</p>
+    <div class="widget-controls">
+      <label><input type="radio" name="w-tr-choice" value="none" checked> Y (ללא)</label>
+      <label><input type="radio" name="w-tr-choice" value="sqrt"> √Y (שורש)</label>
+      <label><input type="radio" name="w-tr-choice" value="log"> Ln(Y) (לוג)</label>
+    </div>
+    <div class="w-flex">
+      <div class="plot-box" id="w-tr-work" style="height:300px"></div>
+      <div class="plot-box" id="w-tr-orig" style="height:300px"></div>
+    </div>
+    <div class="widget-readout" id="w-tr-readout"></div>
+  </div>
+
+  <h3 id="inverse-pred">תחזית אחרי טרנספורמציה — לא לשכוח לחזור!</h3>
+  <p><span class="src-badge">📓 תוכן מקובץ סיכום</span> "צריך לזכור" (במקור): המודל חוזה את \(Ln(Y)\), לא את Y! אחרי predict חייבים להפעיל את <strong>הטרנספורמציה ההפוכה</strong> — exp ללוג, ריבוע לשורש:</p>
+  <div class="box example">
+    <div class="box-title">✏️ מהשיעור — תחזית זיהום לנתרן 0.4</div>
+    <strong>שלב 1:</strong> המודל: \(Ln(\hat{Y}) = 0.0092 + 3.5103\times 0.4 = 1.4133\) — זה לוג-זיהום, לא זיהום!<br>
+    <strong>שלב 2:</strong> חוזרים לעולם האמיתי: \(\hat{Y} = e^{1.4133} = 4.11\) — רמת הזיהום החזויה.
+  </div>
+  <figure>
+    <img src="../assets/lect2/Lesson2b_Linear_regression__cell030_out0.png" alt="המודל המותאם אחרי טרנספורמציה">
+    <figcaption>מהשיעור: התחזיות של מודל הלוג אחרי exp, מצוירות על הנתונים המקוריים — העקומה האדומה עוקבת מצוין אחרי הנקודות. השווה לקו הישר הנאיבי מתחילת הסעיף.</figcaption>
+  </figure>
+
+  <h3 id="inverse-q">השאלה ההפוכה — מ-Y ל-X</h3>
+  <p><span class="src-badge">📓 תוכן מקובץ סיכום</span> שאלה שנשאלה בכיתה (סגנון מבחן מובהק): תקנת בטיחות אוסרת זיהום מעל רמה 10 — מה כמות הנתרן המקסימלית המותרת? הפעם יודעים את Y ומחלצים את X:</p>
+  <div class="box formula">
+    <div class="box-title">📐 הפתרון בשלושה צעדים</div>
+    $$10 = e^{0.0092+3.5103X} \;\xrightarrow{\;Ln\;}\; Ln(10) = 0.0092+3.5103X \;\Rightarrow\; X=\frac{Ln(10)-0.0092}{3.5103}=0.653$$
+    <strong>פענוח:</strong> מציבים את המגבלה, לוקחים לוג משני האגפים כדי "לשחרר" את X מהאקספוננט, ומבודדים. גרפית: הנקודה שבה העקומה האדומה חוצה את הקו האופקי y=10.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">המודל: \(Ln(\hat{Y})=0.0092+3.5103X\). מהי תחזית הזיהום עבור נתרן X=0.4?</div>
+    <button class="opt">1.41 — מציבים במשוואה וזהו</button>
+    <button class="opt" data-correct>4.11 — מציבים ומקבלים 1.41, ואז exp כי המודל חוזה לוג</button>
+    <button class="opt">10 — רף הבטיחות</button>
+    <button class="opt">0.65 — לפי הנוסחה ההפוכה</button>
+    <div class="q-explain">💬 המלכודת הקלאסית: 1.41 הוא \(Ln(\hat{Y})\) — תחזית בעולם הלוג. חייבים לחזור: \(e^{1.4133}=4.11\). מי שענה 0.65 התבלבל עם השאלה ההפוכה (מציאת X מ-Y=10). תמיד תשאל את עצמך: באיזה עולם המספר שקיבלתי חי?</div>
+  </div>
+
+  <details class="fold">
+    <summary>🔎 בונוס: למה בכלל להתעקש על טרנספורמציה ולא לעבור למודל אחר? <span class="src-badge">📓 תוכן מקובץ סיכום</span></summary>
+    <p>שאלה שנשאלה בכיתה. התשובה: כי אנחנו רוצים <strong>להישאר בעולם של OLS</strong> — תחת הנחות המודל, אומדי OLS הם הטובים ביותר מבין האומדים הלינאריים חסרי ההטיה (משפט גאוס-מרקוב), ויש להם פתרון סגור ומהיר (גזירה והשוואה לאפס). מודלים לא-לינאריים דורשים בדרך כלל אמידה איטרטיבית איטית יותר. הטרנספורמציה היא דרך "לרמות": להחזיר את הנתונים לעולם שבו הכלים הפשוטים והחזקים שלנו עובדים.</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">4.8</span> סיכום היחידה + מה חשוב לבחינה</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>המודל</td><td>\(y=b_0+b_1x+\varepsilon\); חותך + שיפוע + שגיאה; כובע = אומדן</td></tr>
+    <tr><td>OLS</td><td>הקו שממזער סכום ריבועי שגיאות; פתרון סגור בגזירה</td></tr>
+    <tr><td>פלט statsmodels</td><td>coef = אומדים; P&gt;|t| = מבחן \(H_0:b=0\); [0.025,0.975] = רווח סמך שהמקדם באמצעו</td></tr>
+    <tr><td>R²</td><td>\((SST-SSR)/SST\) = אחוז השונות המוסברת; בין 0 ל-1; נמוך = אין קשר <em>לינארי</em></td></tr>
+    <tr><td>הנחות</td><td>לינאריות, שונות קבועה, נורמליות שגיאות — מאבחנים בגרף שאריות</td></tr>
+    <tr><td>טרנספורמציות</td><td>מעוותים את Y (לוג/שורש) עד שהקשר לינארי; אחרי predict — טרנספורמציה הפוכה!</td></tr>
+  </table>
+  <div class="box exam">
+    <div class="box-title">🎯 מוקדי בחינה ביחידה הזאת</div>
+    <strong>שאלה 2 במבחן:</strong> השלמת ערכים חסרים בטבלת פלט — הכלים: \(t=coef/SE\), המקדם באמצע הרווח, קצה עליון &gt; קצה תחתון, מובהק ⇐ הרווח לא מכיל 0. <strong>בדף העזר יש:</strong> משוואת המודל + 3 ההנחות. <strong>אין בדף העזר:</strong> נוסחאות OLS, R², והכללים לקריאת פלט — לזכור! <strong>ומהכיתה:</strong> שאלות פירוש מקדם ושחזור רווח סמך הוזכרו במפורש כחומר למבחן.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">בפלט רגרסיה, בשורת המשתנה x1 כתוב P&gt;|t| = 0.74. מה המסקנה?</div>
+    <button class="opt">המשתנה x1 משפיע חזק על Y</button>
+    <button class="opt" data-correct>אין עדות שהמקדם של x1 שונה מאפס — ייתכן שהמשתנה מיותר במודל</button>
+    <button class="opt">המודל כולו גרוע</button>
+    <button class="opt">R² של המודל הוא 0.74</button>
+    <div class="q-explain">💬 p=0.74 גדול בהרבה מ-0.05 ⇐ לא דוחים את \(H_0: b_1=0\) ⇐ אין ראיה שהמשתנה תורם. שים לב לניואנס מיחידה 3: זה לא מוכיח שהוא לא משפיע — רק שאין עדות. והמודל כולו יכול להיות מצוין גם כשמשתנה אחד לא מובהק.</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="topic03.html"><div class="dir">→ הקודם</div><div class="dest">יחידה 3: בדיקת השערות ורווחי סמך</div></a>
+    <a href="#" style="opacity:.5; pointer-events:none"><div class="dir">הבא ←</div><div class="dest">יחידה 5: רגרסיה מרובה (ייבנה בהמשך)</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>
