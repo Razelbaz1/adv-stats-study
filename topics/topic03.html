@@ -10,6 +10,8 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<script defer src="https://cdn.plot.ly/plotly-basic-2.35.2.min.js"></script>
+<script defer src="../js/power-widget.js"></script>
 </head>
 <body data-topic="topic03">
 <div id="progress-track"><div id="progress-bar"></div></div>
@@ -266,6 +268,24 @@
   <div class="box intuition">
     <div class="box-title">💡 למה אי אפשר לנצח בשתי החזיתות</div>
     רוצה פחות הרשעות שווא? דרוש ראיות חזקות יותר (הקטן את \(\alpha\)) — אבל אז תשחרר יותר אשמים (\(\beta\) גדל). זו נדנדה: בהינתן מדגם קבוע, שיפור באחת מרעה את השנייה. הדרך היחידה לשפר את <strong>שתיהן</strong> ביחד: עוד ראיות — כלומר מדגם גדול יותר. מה מגדיל עוצמה? מדגם גדול יותר, אפקט אמיתי גדול יותר (קל יותר לתפוס פיל מעכבר), פיזור קטן יותר, ו-\(\alpha\) גדול יותר (במחיר אזעקות שווא).
+  </div>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מגרש משחקים: לראות את α ו-β בעיניים</div>
+    <p class="w-hint">שני הפעמונים הם התפלגויות הדגימה של הממוצע \(\bar{X}\): אפור = אם H0 נכונה (μ=100), ירוק = אם H1 נכונה. הקו המקווקו = הערך הקריטי: מימין לו דוחים את H0. <span style="color:#e05252">אדום = α</span> (הזנב של H0 שנופל באזור הדחייה — אזעקת שווא), <span style="color:#d99114">כתום = β</span> (החלק של H1 שנשאר באזור הקבלה — פספוס). להמחשה המבחן חד-צדדי ימני; בדו-צדדי אותו היגיון עם α/2 בכל זנב.</p>
+    <div class="widget-controls">
+      <label>גודל מדגם n: <input type="range" id="w-pw-n" min="5" max="100" step="1" value="15"> <span class="val" id="w-pw-n-val">15</span></label>
+      <label>פיזור האוכלוסייה σ: <input type="range" id="w-pw-sigma" min="1" max="10" step="0.5" value="5"> <span class="val" id="w-pw-sigma-val">5.0</span></label>
+      <label>גודל האפקט האמיתי Δ: <input type="range" id="w-pw-delta" min="1" max="12" step="0.5" value="4"> <span class="val" id="w-pw-delta-val">4.0</span></label>
+      <label>רמת מובהקות α: <input type="range" id="w-pw-alpha" min="0.01" max="0.2" step="0.01" value="0.05"> <span class="val" id="w-pw-alpha-val">5%</span></label>
+    </div>
+    <div class="plot-box" id="w-pw-plot" style="height:360px"></div>
+    <div class="widget-readout" id="w-pw-readout"></div>
+    <p class="w-hint" style="margin-top:10px">🧪 <strong>ניסויים מומלצים:</strong>
+    ① הגדל את n — הפעמונים מתחדדים (טעות התקן \(\sigma/\sqrt{n}\) קטנה), החפיפה נעלמת, β צונח בעוד α נשאר קבוע — הדרך היחידה לשפר את שניהם.
+    ② הגדל את σ — הפעמונים מתרחבים ונבלעים זה בזה, β מזנק.
+    ③ הגדל את α — הקו הקריטי זז שמאלה: β קטן אבל שילמת ביותר אזעקות שווא. זו הנדנדה!
+    ④ הקטן את Δ — אפקט קטן (הפעמונים כמעט זהים) קשה מאוד לתפוס: לעכבר צריך רשת צפופה בהרבה מאשר לפיל.</p>
   </div>
 
   <div class="quiz">
