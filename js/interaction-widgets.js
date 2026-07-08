@@ -125,12 +125,15 @@
       /* עקומת R²adj כפונקציה של k (באותו R² ו-n) */
       var xs = [], ys = [], kk, kmax = Math.min(40, n - 2);
       for (kk = 1; kk <= kmax; kk++) { xs.push(kk); ys.push(Math.max(YMIN, adj(r2, n, kk))); }
+      /* ציר Y דינמי: מתכווץ לטווח העקומה בפועל (עם קלימה ב-YMIN לדרגות המשתוללות) */
+      var dataMin = ys.length ? Math.min.apply(null, ys) : 0;
+      var ylo = Math.max(YMIN - 0.5, Math.min(-0.4, dataMin - 0.6));
       var traces = [
         { x: [0, 41], y: [0, 0], mode: 'lines', line: { color: '#9aa3b8', width: 1.5, dash: 'dot' }, hoverinfo: 'skip', showlegend: false },
         { x: xs, y: ys, mode: 'lines', line: { color: '#7c3aed', width: 3 }, hoverinfo: 'skip', name: 'R²adj לפי k' }
       ];
       if (n - 1 <= 41) {
-        traces.push({ x: [n - 1, n - 1], y: [YMIN, 1.1], mode: 'lines', line: { color: '#e05252', width: 2, dash: 'dash' }, hoverinfo: 'skip', name: 'k = n−1: חלוקה באפס' });
+        traces.push({ x: [n - 1, n - 1], y: [ylo, 1.1], mode: 'lines', line: { color: '#e05252', width: 2, dash: 'dash' }, hoverinfo: 'skip', name: 'k = n−1: חלוקה באפס' });
       }
       if (df > 0 && k <= 40) {
         traces.push({ x: [k], y: [Math.max(YMIN, adj(r2, n, k))], mode: 'markers', marker: { size: 13, color: adj(r2, n, k) < 0 ? '#e05252' : '#1fa971', line: { width: 2, color: '#fff' } }, hoverinfo: 'skip', name: 'המודל שלך' });
@@ -138,7 +141,7 @@
       Plotly.react(el, traces, Object.assign({}, BASE_LAYOUT, {
         showlegend: true, legend: { orientation: 'h', y: 1.14 },
         xaxis: { title: 'מספר משתנים מסבירים k', range: [0, 41], fixedrange: true },
-        yaxis: { title: 'R²adj', range: [YMIN - 0.5, 1.15], fixedrange: true }
+        yaxis: { title: 'R²adj', range: [ylo, 1.18], fixedrange: true }
       }), CFG);
 
       var html;
@@ -146,12 +149,13 @@
         var a = adj(r2, n, k), pen = (n - 1) / df;
         var eq = '<span dir="ltr">1 − (1−' + r2 + ')·(' + (n - 1) + '/' + df + ') = ' + fmt(a, 3) + '</span>';
         var verdict;
-        if (a >= 0.7) verdict = '✅ מודל במצב טוב — הקנס קטן ביחס להסבר.';
+        if (r2 >= 1) verdict = '💎 <strong>R²=1 — התאמה מושלמת:</strong> אין בכלל שונות לא-מוסברת, אז אין מה לקנוס — האיבר (1−R²)=0 מאפס את הקנס כולו, ו-R²adj=1 לכל k (כל עוד n−k−1&gt;0, העקומה פשוט שטוחה על 1). אבל זהירות: בנתונים אמיתיים R²=1 זה כמעט תמיד סימן אזהרה — שינון מושלם (Overfitting, כמו דרגה 9 בווידג\'ט למעלה) או משתנה שמכיל בטעות את התשובה.';
+        else if (a >= 0.7) verdict = '✅ מודל במצב טוב — הקנס קטן ביחס להסבר.';
         else if (a >= 0) verdict = '🟡 הקנס מכרסם: המדד נמוך משמעותית מ-R²=' + r2 + '.';
         else verdict = '🔴 <strong>R²adj שלילי!</strong> המשמעות: ביחס לכמות הפרמטרים ששרפת, המודל שלך גרוע יותר מ"מודל הממוצע" הטיפש. פורמלית — מקדם הקנס <span dir="ltr">(n−1)/(n−k−1) = ' + fmt(pen, 1) + '</span> ניפח את (1−R²) מעבר ל-1.';
         html = 'R²adj = ' + eq + ' · דרגות חופש לשארית: n−k−1 = <strong>' + df + '</strong> · מקדם הקנס: <strong>' + fmt(pen, 2) + '</strong><br>' + verdict;
       } else if (df === 0) {
-        html = '💥 <strong>חלוקה באפס! n−k−1 = 0.</strong> מה קורה כאן בעצם: יש בדיוק פרמטר אחד לכל "חתיכת מידע" (k משתנים + חותך = n תצפיות) — המודל <strong>רווי</strong>: הוא עובר בול דרך כל הנקודות (זוכר? דרך n נקודות עובר פולינום מדרגה n−1). לא נשארה אף דרגת חופש לאמוד את השגיאה, ולכן למושג "אחוז שונות מוסברת מתוקנן" אין בכלל הגדרה — התוכנה תחזיר NaN/אינסוף. זה האח הגדול של סיפור ה-n−1 מיחידות 1–2: כל פרמטר "אוכל" דרגת חופש, וכאן נגמר האוכל.';
+        html = '💥 <strong>חלוקה באפס! n−k−1 = 0.</strong> מה קורה כאן בעצם: יש בדיוק פרמטר אחד לכל "חתיכת מידע" (k משתנים + חותך = n תצפיות) — המודל <strong>רווי</strong>: הוא עובר בול דרך כל הנקודות (זוכר? דרך n נקודות עובר פולינום מדרגה n−1). לא נשארה אף דרגת חופש לאמוד את השגיאה, ולכן למושג "אחוז שונות מוסברת מתוקנן" אין בכלל הגדרה — התוכנה תחזיר NaN/אינסוף. זה האח הגדול של סיפור ה-n−1 מיחידות 1–2: כל פרמטר "אוכל" דרגת חופש, וכאן נגמר האוכל. (ואם במקרה גם R²=1? מקבלים 0/0 — עדיין לא מוגדר, רק משני הכיוונים בבת אחת 😄)';
       } else {
         html = '🚫 <strong>n−k−1 שלילי: יותר פרמטרים מתצפיות!</strong> אי אפשר בכלל לאמוד מודל כזה באופן יחיד (אינסוף פתרונות שעוברים דרך כל הנקודות — כמו במולטיקוליניאריות מושלמת מיחידה 5). הנוסחה תחזיר מספר, אבל הוא חסר משמעות לחלוטין — הסימן של המכנה התהפך. בעולם האמיתי: עוד לפני שמגיעים לכאן, עצור והקטן את המודל.';
       }

@@ -12,7 +12,7 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
 <script defer src="https://cdn.plot.ly/plotly-basic-2.35.2.min.js"></script>
 <script defer src="../assets/poly_data.js?v=8"></script>
-<script defer src="../js/interaction-widgets.js?v=8"></script>
+<script defer src="../js/interaction-widgets.js?v=9"></script>
 <style>
   .ols-table td { direction: ltr; text-align: center; font-family: Consolas, monospace; font-size: .88rem; }
   .ols-table th { text-align: center; }
@@ -223,7 +223,7 @@
     <div class="w-title">🎛️ מגרש משחקים: מתי R²adj משתגע?</div>
     <p class="w-hint">שלוט בשלושת הרכיבים של הנוסחה — R², מספר תצפיות n ומספר משתנים k. העקומה מציירת את R²adj לכל ערך של k (בהנחת אותו R² — במציאות R² עולה קצת עם k, אבל כאן רואים את אפקט הקנס הטהור). שים לב לצניחה לאינסוף-מינוס ליד הקו האדום — ולמה שקורה בדיוק עליו.</p>
     <div class="widget-controls">
-      <label>R²: <input type="range" id="w-adj-r2" min="0" max="0.99" step="0.01" value="0.85"> <span class="val" id="w-adj-r2-val">0.85</span></label>
+      <label>R²: <input type="range" id="w-adj-r2" min="0" max="1" step="0.01" value="0.85"> <span class="val" id="w-adj-r2-val">0.85</span></label>
       <label>תצפיות n: <input type="range" id="w-adj-n" min="6" max="100" step="1" value="15"> <span class="val" id="w-adj-n-val">15</span></label>
       <label>משתנים k: <input type="range" id="w-adj-k" min="1" max="40" step="1" value="4"> <span class="val" id="w-adj-k-val">4</span></label>
       <button class="w-btn" id="w-adj-neg">🔴 קח אותי מתחת ל-−1</button>
