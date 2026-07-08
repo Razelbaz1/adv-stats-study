@@ -275,8 +275,45 @@
 </section>
 
 <section class="card">
-  <h2 id="next">שיעורים 7–11</h2>
-  <p>ייבדקו ויתווספו כאן ככל שנבנה את היחידות המתאימות (בחירת משתנים, ANOVA...).</p>
+  <h2 id="l7">שיעור 7 (עמ' 50–55)</h2>
+
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 54</span><br>
+    <span class="quote">❌ "אם המשתנה שהכנסנו כבר לא מובהק (p-value &lt; 0.1), נוציא אותו"</span><br>
+    <span class="fix">✓ אי-השוויון הפוך! מוציאים משתנה כשה-p שלו <strong>גדול</strong> מ-0.1 (איבד מובהקות). כפי שכתוב נכון בעמ' 53. קריטי לשאלה 13 במבחן: כניסה p&lt;0.05, הסרה p&gt;0.10.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 51</span><br>
+    <span class="quote">❌ "הפער יגדל ב-213.86 (B3) עם כל שנת ניסיון"</span><br>
+    <span class="fix">✓ שגיאת סימן: B3 = ‎<strong>−</strong>213.87‎ (שלילי!). הפער אכן גדל ב-|B3| לכל שנה, אבל B3 עצמו שלילי — הוא זה שמקטין את שיפוע השיווק ל-294.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 53</span><br>
+    <span class="quote">❌ תיאור Forward: "בודקים את המשתנה הראשון (סדר אקראי)... בודקים את הבא..."</span><br>
+    <span class="fix">✓ לא האלגוריתם הסטנדרטי: ב-Forward בכל צעד בוחנים את <strong>כל</strong> המועמדים ומכניסים את <strong>הטוב ביותר</strong> (p מינימלי שעובר את הסף) — התוצאה לא תלויה בסדר שרירותי. (בעמ' 54 התיאור של stepwise כן נכון.)</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 55</span><br>
+    <span class="quote">❌ "לא יכול להיות שה-MSE של המודל המלא יהיה גדול יותר" (בלי סייג)</span><br>
+    <span class="fix">✓ נכון רק ל-MSE על נתוני <strong>האימון</strong> (קינון). על נתוני test המודל המלא בהחלט יכול להפסיד — וזה בדיוק ה-Overfitting שבגללו מסננים. (וגם: "ה-MSE ממזער את המשתנים" — ה-OLS ממזער, ה-MSE הוא רק המדד.)</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 51</span><br>
+    <span class="quote">❌ "כמות המשתנים עולה אקספוננציאלית" (על עמודות הפולינום)</span><br>
+    <span class="fix">✓ עמודות הפולינום גדלות <strong>פולינומיאלית</strong> (C(d+3,3): ‏4→286). מה שגדל אקספוננציאלית זה מספר <strong>תתי-הקבוצות</strong> (2^p) — הטענה הנכונה מעמ' 52. שני סוגי התפוצצות שונים.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 50–51</span><br>
+    <span class="quote">❌ "B0 = 3935" וגם "(3935 − 3584)"</span><br>
+    <span class="fix">✓ טעות הקלדה: B0 = 3953.42. (התוצאות הסופיות 3584.42 ו-369 נכונות — החישוב בפועל נעשה עם הערך הנכון.)</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 54</span><br>
+    <span class="quote">❌ "עד שיהיו 2 איטרציות שכל המשתנים מובהקים..."</span><br>
+    <span class="fix">✓ אין דרישה ל"שתי איטרציות": עוצרים כשאיטרציה אחת שלמה עוברת בלי שום הכנסה ובלי שום הסרה (אף אחד לא עובר את סף הכניסה ואף אחד לא עובר את סף ההסרה).</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 53</span><br>
+    <span class="quote">❌ "בודקים את החותך, אם לא מובהק — המודל בלי חותך"</span><br>
+    <span class="fix">✓ פרקטיקה לא סטנדרטית: מקובל שהחותך <strong>תמיד</strong> נשאר במודל (Forward מתחיל ממודל חותך-בלבד), והבחירה נעשית רק על המשתנים המסבירים. הסרת חותך כופה מעבר דרך הראשית ומעוותת את R².</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="next">שיעורים 8–11</h2>
+  <p>ייבדקו ויתווספו כאן ככל שנבנה את יחידות ה-ANOVA.</p>
 </section>
 
 </main>

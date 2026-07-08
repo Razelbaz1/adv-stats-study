@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 7 · בחירת משתנים</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<script defer src="../js/stepwise-widget.js?v=8"></script>
+</head>
+<body data-topic="topic07">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 7</span>
+  <h1>בחירת משתנים</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">7.0</span> מאיפה באנו ולאן אנחנו הולכים</h2>
+  <p>יחידה 6 השאירה אותנו עם בעיה: פולינום מדרגה גבוהה עם 3 משתנים מייצר <strong>286 עמודות</strong>. ברור שרובן זבל — אבל אילו בדיוק? ביחידה הזאת נלמד את האלגוריתמים שעושים את הסינון בשבילנו: Forward, Backward ו-Stepwise. שתי שאלות מבחן (10 ו-13) חיות כאן, ו<strong>תרגיש בבית</strong> — כל הרעיונות מוכרים: p-value של מקדם (יחידה 4), מובהקות מותנית "בהינתן שאר המשתנים" (יחידה 5), וקנס על מורכבות (יחידה 6).</p>
+  <p>ובונוס היסטורי: בסיכום מהכיתה כתוב אחרי השיעור הזה — <strong>"סוף נושא רגרסיות"</strong> 🎓. היחידה הזאת סוגרת את החצי השני של הקורס; אחריה נשארו רק שלוש יחידות ANOVA.</p>
+</section>
+
+<section class="card">
+  <h2 id="problem"><span class="sec-num">7.1</span> הבעיה: אי אפשר לבדוק הכל</h2>
+  <p>הפתרון ה"מושלם" ברור: לבדוק כל תת-קבוצה אפשרית של משתנים ולבחור את הטובה ביותר לפי BIC. למה לא עושים את זה?</p>
+  <div class="box formula">
+    <div class="box-title">📐 ההתפוצצות הקומבינטורית</div>
+    $$p \text{ משתנים} \;\Longrightarrow\; 2^p \text{ תתי-קבוצות}$$
+    <strong>פענוח:</strong> כל משתנה — או בפנים או בחוץ (2 אפשרויות), ובאופן בלתי תלוי בשאר ⇐ מכפלה של 2 כפול עצמו p פעמים. <span class="src-badge">📓 תוכן מקובץ סיכום</span> המרצה המחיש: כבר עם 20 משתנים בלבד — \(2^{20} = 1{,}048{,}576\) — יותר ממיליון מודלים לבדוק. "מאוד יקר ומאוד איטי".
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 אז מה עושים? שיטה היוריסטית <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    ההגדרה שהמרצה נתן: שיטה ש<strong>לא מבטיחה</strong> את הפתרון האופטימלי, אבל לרוב מאוד יעילה ומוצאת פתרון <strong>קרוב</strong> לאופטימלי. במקום לסרוק מיליון מודלים — צועדים צעד-צעד בכיוון שנראה טוב. תחרוט את המילה "לא מבטיחה": היא התשובה לשאלה 10 במבחן.
+  </div>
+  <details class="fold">
+    <summary>🔎 דיוק שחשוב לא להתבלבל בו: שני סוגי "התפוצצות"</summary>
+    <p>ביחידה 6 ראינו שמספר <strong>העמודות</strong> של פולינום גדל עם הדרגה — אבל זה גידול <em>פולינומי</em> (הנוסחה: \(\binom{d+p}{p}\), למשל 286 בדרגה 10). לעומת זאת מספר <strong>תתי-הקבוצות</strong> של משתנים גדל <em>אקספוננציאלית</em> (\(2^p\)). שני דברים שונים: הראשון קובע כמה מועמדים יש, השני — כמה קומבינציות שלהם. ההתפוצצות השנייה היא שהופכת חיפוש ממצה לבלתי אפשרי.</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2 id="methods"><span class="sec-num">7.2</span> ארגז הכלים: All-in, Forward, Backward, Stepwise</h2>
+  <table class="tbl">
+    <tr><th>שיטה</th><th>נקודת התחלה</th><th>איך עובדת</th></tr>
+    <tr><td><strong>All-in</strong></td><td>—</td><td>פשוט מכניסים הכל. לגיטימי כשיש ידע תחומי או מעט משתנים <span class="src-badge">📓 תוכן מקובץ סיכום</span></td></tr>
+    <tr><td><strong>Forward Selection</strong></td><td>מודל ריק (חותך בלבד)</td><td>בכל צעד בוחנים את כל המועמדים שבחוץ ומכניסים את בעל ה-p-value <strong>הנמוך</strong> ביותר — אם הוא עובר את סף הכניסה. עוצרים כשאף מועמד לא עובר</td></tr>
+    <tr><td><strong>Backward Elimination</strong></td><td>מודל מלא (כולם בפנים)</td><td>בכל צעד מסירים את בעל ה-p-value <strong>הגבוה</strong> ביותר — אם הוא מעל סף ההסרה — ומריצים מחדש. עוצרים כשכל מי שבפנים מובהק</td></tr>
+    <tr><td><strong>Stepwise</strong></td><td>מודל ריק</td><td>השילוב: אחרי כל כניסה (Forward) בודקים אם מישהו בפנים איבד מובהקות ומעיפים אותו (Backward). עד שאין שינוי</td></tr>
+  </table>
+  <div class="box warning">
+    <div class="box-title">⚠️ העיקרון שמאחורי הכל: מובהקות היא תמיד "בהינתן" <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    (מודגש בסיכום:) בכל איטרציה המובהקות של <strong>כל</strong> המשתנים מחושבת מחדש, בהינתן מי שכבר במודל — ולכן היא משתנה בין איטרציות! משתנה שהיה כוכב כשנכנס יכול להפוך למיותר אחרי שנכנס מישהו שמתואם איתו (זוכר את המולטיקוליניאריות מיחידה 5? "הם מספרים את אותו סיפור"). זו בדיוק הסיבה ש-Stepwise בודק הסרה אחרי כל הוספה — ותכף תראה את זה קורה בשידור חי.
+  </div>
+  <p><span class="src-badge">📓 תוכן מקובץ סיכום</span> עוד וריאציה שהוזכרה: אפשר להריץ Forward לפי <strong>AIC/BIC</strong> במקום מובהקות — מוסיפים כל עוד המדד יורד, עוצרים כשהוא מתחיל לעלות. אותו רעיון, שופט אחר.</p>
+  <p>הספים שבדוגמה המודרכת ובסיכום השיעור: <strong>כניסה — p &lt; 0.05 · הסרה — p &gt; 0.10</strong>. (אגב, בקוד של המחברת הפונקציה הוגדרה דווקא עם 0.05 לשני הספים — אבל העיקרון של ספים <em>שונים</em> הוא מה שהוסבר בכיתה, ולמה הוא חשוב? שאלה מעולה שנשאלה שם:)</p>
+
+  <div class="quiz">
+    <span class="q-label">שאלה שנשאלה בכיתה</span> <span class="src-badge">📓 תוכן מקובץ סיכום</span>
+    <div class="q-text">למה סף הכניסה (0.05) שונה מסף ההסרה (0.10)? למה לא להשתמש באותו סף לשניהם?</div>
+    <button class="opt">כי הכנסה חשובה יותר מהסרה</button>
+    <button class="opt" data-correct>כדי למנוע לולאה אינסופית — משתנה עם p בדיוק על הסף היה נכנס ויוצא ונכנס ויוצא לנצח</button>
+    <button class="opt">זו טעות היסטורית שהשתרשה</button>
+    <button class="opt">כדי שהאלגוריתם ירוץ מהר יותר</button>
+    <div class="q-explain">💬 דמיין סף יחיד של 0.05 ומשתנה שה-p שלו מרצד סביב 0.049–0.051 בין איטרציות: נכנס (עבר את הסף) ⇐ יוצא (כבר לא עובר) ⇐ נכנס... לנצח. הפער בין 0.05 ל-0.10 יוצר <strong>אזור חיץ</strong>: כדי להיזרק צריך להתדרדר באמת (מעל 0.10), לא רק לרדת שערה מתחת לסף הכניסה.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="simulator"><span class="sec-num">7.3</span> Stepwise בשידור חי — הסימולטור 🎛️</h2>
+  <p>הדוגמה המודרכת מהמחברת של השיעור: 4 מועמדים (X1–X4), ספי 0.05/0.10. הרץ אותה צעד-צעד ושים לב במיוחד למה שקורה ל-X1 — הוא נכנס <strong>ראשון</strong>, בתור המועמד הכי מבטיח... ותראה איך זה נגמר:</p>
+
+  <div class="widget">
+    <div class="w-title">🎛️ סימולטור Stepwise — צעד אחר צעד</div>
+    <div class="widget-controls">
+      <button class="w-btn" id="w-sw-next">▶ הצעד הבא</button>
+      <button class="w-btn" id="w-sw-reset" style="background:#5b6478">↺ מהתחלה</button>
+    </div>
+    <div id="w-sw-stage" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:10px;min-height:120px"></div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:10px">יומן המסע:</div>
+    <div id="w-sw-log"></div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך — על מה שראית עכשיו</span>
+    <div class="q-text">X1 נכנס ראשון למודל (p=0.001!) ובכל זאת הוסר בהמשך. למה?</div>
+    <button class="opt">באג באלגוריתם — משתנה שנכנס ראשון לא אמור לצאת</button>
+    <button class="opt" data-correct>אחרי ש-X2 המתואם איתו נכנס, X1 הפסיק לתרום תרומה ייחודית — המובהקות שלו (בהינתן X2) צנחה מתחת לסף</button>
+    <button class="opt">כי X1 היה עם ה-p הכי גבוה מלכתחילה</button>
+    <button class="opt">הסף השתנה באמצע הריצה</button>
+    <div class="q-explain">💬 המובהקות תמיד מותנית במי שכבר בפנים. לבד, X1 הסביר את Y מצוין — אבל את אותו החלק ש-X2 מסביר טוב יותר. ברגע ש-X2 נכנס, ל-X1 לא נשאר מה להוסיף (p זינק ל-0.13). ושים לב: הוא חזר לרשימת המועמדים ונבחן שוב בסבב הבא — פשוט לא עבר. משתנה שהוסר לא "נפסל לתמיד".</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="stopping"><span class="sec-num">7.4</span> מתי עוצרים? — שאלה 13</h2>
+  <div class="box formula">
+    <div class="box-title">📐 קריטריון העצירה <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    האלגוריתם עוצר כששני התנאים מתקיימים <strong>בו-זמנית</strong>:<br>
+    <strong>1)</strong> אף מועמד בחוץ לא עובר את סף ה<strong>כניסה</strong> (אין את מי להכניס), <strong>וגם</strong><br>
+    <strong>2)</strong> אף חבר בפנים לא עובר את סף ה<strong>הסרה</strong> (אין את מי להוציא).<br>
+    כלומר: איטרציה שלמה בלי שום שינוי ⇐ המערכת התייצבה ⇐ עוצרים. בדיוק מה שראית בסבב 4 של הסימולטור.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 13 מהמבחן לדוגמא</span>
+    <div class="q-text">ב-stepwise selection, מתי נפסיק לנסות להכניס או להוציא משתנים?</div>
+    <button class="opt">א. כאשר כל המשתנים מובהקים</button>
+    <button class="opt">ב. כאשר מגיעים ל-R² &lt; 0.9</button>
+    <button class="opt" data-correct>ג. כאשר לא עוברים את הערך סף של ה-p_value של ההוצאה ושל ההכנסה</button>
+    <button class="opt">ד. כאשר לפחות מהמשתנים מובהקים</button>
+    <div class="q-explain">💬 שים לב למלכודת באופציה א: "כל המשתנים במודל מובהקים" זה רק <strong>חצי</strong> מהתנאי (אין את מי להוציא) — אבל אולי עדיין יש מועמד בחוץ שעובר את סף הכניסה! העצירה דורשת את <strong>שני</strong> הצדדים: גם ההכנסה וגם ההוצאה תקועות. R² בכלל לא משתתף בקריטריון.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="best"><span class="sec-num">7.5</span> אז איזו שיטה הכי טובה? — שאלה 10</h2>
+  <p>אינטואיטיבית מתחשק לומר "Stepwise, כי היא הכי מתוחכמת". אבל זכור מה כל השיטות האלה: <strong>היוריסטיקות</strong>. אף אחת לא סורקת את כל \(2^p\) האפשרויות, אף אחת לא מבטיחה את המודל האופטימלי, וכל אחת יכולה להגיע למודל אחר (Forward ו-Backward אפילו מתחילות מקצוות הפוכים!). <span class="src-badge">📓 תוכן מקובץ סיכום</span> ובלשון המרצה: "צריך לזכור — השיטות האלה לא נותנות את הפתרון האופטימלי"; הוספת משתנה יכולה לפגוע בדיוק או לייתר משתנים שכבר נכנסו.</p>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 10 מהמבחן לדוגמא</span>
+    <div class="q-text">האם מבין השיטות stepwise, forward, backward יש שיטה עדיפה?</div>
+    <button class="opt">א. Stepwise</button>
+    <button class="opt">ב. Forward</button>
+    <button class="opt">ג. Backward</button>
+    <button class="opt" data-correct>ד. אף אחת מהן</button>
+    <div class="q-explain">💬 כולן היוריסטיקות — אף אחת לא מבטיחה אופטימום, לכל אחת מסלול משלה, ואין משפט שמכתיר אחת כעדיפה תמיד. Stepwise אמנם מתקנת חולשה של Forward (היא יודעת להוציא מי שהתייתר) — אבל "מתוחכמת יותר" ≠ "מובטחת טובה יותר". תשובה: ד.</div>
+  </div>
+
+  <h3 id="why-filter">ולמה בכלל לסנן? הדו-קרב: מודל מלא מול מסונן</h3>
+  <p><span class="src-badge">📓 תוכן מקובץ סיכום</span> שאלת סיכום שנשאלה בכיתה: נתונים שני מודלים על אותו דאטה — Polynom_2 המלא, ו-Polynom_2 מסונן (אחרי stepwise, פחות 3 משתנים). <strong>למי MSE נמוך יותר על נתוני האימון?</strong></p>
+  <div class="box intuition">
+    <div class="box-title">💡 התשובה — והחיבור ליחידה 6</div>
+    למודל <strong>המלא</strong> — תמיד (או תיקו). זה טיעון הקינון שכבר פגשנו: המודל המלא יכול "לחקות" את המסונן (לתת מקדם ≈0 למשתנים המיותרים), אז הוא לא יכול להפסיד על האימון. <strong>אבל</strong> — תראה מי ניצח בשלושת מדדי הבחירה בשיעור: המסונן! AIC ‏2700.2 מול 2703.4, BIC ‏2723.7 מול 2736.9, R²adj ‏0.993577 מול 0.993568. ולמה בכלל מסננים? התשובה מהכיתה במילה אחת: <strong>Overfitting</strong>. ובתרגיל הבית של השיעור זה נראה דרמטית: על נתוני ה-test, המודל המלא מדרגה 4 קיבל RSS של 42.6 <em>מיליארד</em> מול 1.56 מיליון בלבד למסונן — פי 27,000!
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">מודל מלא (30 משתנים) מול מודל מסונן (6 משתנים) על אותם נתוני אימון. איזו טענה נכונה?</div>
+    <button class="opt">למסונן MSE אימון נמוך יותר — הוא "נקי" יותר</button>
+    <button class="opt" data-correct>למלא MSE אימון נמוך יותר (או שווה) — אבל דווקא המסונן צפוי לנצח על נתונים חדשים וב-AIC/BIC</button>
+    <button class="opt">חייבים אותו MSE — אותם נתונים</button>
+    <button class="opt">אי אפשר לדעת שום דבר</button>
+    <div class="q-explain">💬 על האימון המלא אף פעם לא מפסיד (קינון — הוא מכיל את המסונן כמקרה פרטי). אבל זה בדיוק החטא של Overfitting: ניצחון על האימון, קריסה על העולם האמיתי. לכן שופטים לפי AIC/BIC/R²adj או ביצועי test — ושם המסונן ניצח בכל הקווים. MSE-אימון הוא לא קריטריון לבחירת מודל.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">7.6</span> סיכום היחידה + מה חשוב לבחינה</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>הבעיה</td><td>\(2^p\) תתי-קבוצות — חיפוש ממצה בלתי אפשרי ⇐ היוריסטיקות</td></tr>
+    <tr><td>Forward</td><td>מריק ומעלה: מכניסים את המועמד הטוב ביותר כל עוד עובר את סף הכניסה</td></tr>
+    <tr><td>Backward</td><td>מהכל ומטה: מסירים את הגרוע ביותר כל עוד מעל סף ההסרה</td></tr>
+    <tr><td>Stepwise</td><td>שילוב: אחרי כל כניסה — בדיקת הסרה; מוסר יכול לחזור כמועמד</td></tr>
+    <tr><td>הספים</td><td>כניסה p&lt;0.05 · הסרה p&gt;0.10 (כמו בדוגמה המודרכת) — שונים כדי למנוע לולאה אינסופית</td></tr>
+    <tr><td>עצירה (Q13)</td><td>אף אחד לא עובר את סף הכניסה <strong>וגם</strong> אף אחד לא עובר את סף ההסרה</td></tr>
+    <tr><td>מי עדיפה? (Q10)</td><td>אף אחת — כולן היוריסטיקות בלי הבטחת אופטימום</td></tr>
+  </table>
+  <div class="box exam">
+    <div class="box-title">🎯 מוקדי בחינה ביחידה הזאת</div>
+    <strong>שאלה 10:</strong> אף שיטה לא עדיפה (היוריסטיקות!). <strong>שאלה 13:</strong> עוצרים כשלא עוברים את סף ה-p של ההוצאה <strong>ושל</strong> ההכנסה — היזהר מהמסיח "כל המשתנים מובהקים" (חצי תנאי). <strong>וזכור לזיהוי מהיר:</strong> כניסה = p נמוך מדי סף מחמיר; הסרה = p גבוה מעל סף מקל. אף אחד מאלה לא בדף העזר.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">ב-Stepwise, משתנה שהוסר מהמודל באיטרציה מסוימת —</div>
+    <button class="opt">נפסל לתמיד ולא ייבחן שוב</button>
+    <button class="opt" data-correct>חוזר לרשימת המועמדים ויכול להיכנס שוב באיטרציה עתידית</button>
+    <button class="opt">נכנס אוטומטית חזרה בסוף הריצה</button>
+    <button class="opt">גורר עצירה מיידית של האלגוריתם</button>
+    <div class="q-explain">💬 ההסרה היא לא גזר דין — היא רק "כרגע, בהינתן החברים הנוכחיים, אתה לא תורם". אם ההרכב במודל ישתנה שוב, המובהקות המותנית שלו תחושב מחדש והוא יכול לחזור. זו בדיוק הגמישות ש-Stepwise מוסיפה על Forward הפשוט.</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="topic06.html"><div class="dir">→ הקודם</div><div class="dest">יחידה 6: אינטראקציות ורגרסיה פולינומית</div></a>
+    <a href="#" style="opacity:.5; pointer-events:none"><div class="dir">הבא ←</div><div class="dest">יחידה 8: ANOVA חד-כיוונית (ייבנה בהמשך)</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>
