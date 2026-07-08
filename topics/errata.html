@@ -246,8 +246,37 @@
 </section>
 
 <section class="card">
-  <h2 id="next">שיעורים 6–11</h2>
-  <p>ייבדקו ויתווספו כאן ככל שנבנה את היחידות המתאימות (פולינומית, בחירת מודל, ANOVA...).</p>
+  <h2 id="l6">שיעור 6 (עמ' 41–49)</h2>
+
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 43</span><br>
+    <span class="quote">❌ "Multicollinearity מתייחס לתלות לינארית מושלמת (±1)... ולכן האינטראקציה לא תיצור multicollinearity"</span><br>
+    <span class="fix">✓ מולטיקוליניאריות אינה רק המקרה המושלם — גם קורלציה גבוהה נחשבת (ומנפחת שגיאות תקן). עמודת מכפלה כן יוצרת מולטיקוליניאריות מבנית עם X₁ ו-X₂ — רק לא מושלמת, ולכן המודל ניתן לאמידה. מרכוז המשתנים לפני המכפלה מקטין את הבעיה.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 48</span><br>
+    <span class="quote">❌ "β1+β3·1 = 507−213 = 297"</span><br>
+    <span class="fix">✓ שגיאת חשבון: 507−213 = <strong>294</strong> (ובמדויק: 507.81−213.87 = 293.94).</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 47</span><br>
+    <span class="quote">❌ "אם X2=1 נקבל −396"</span><br>
+    <span class="fix">✓ היפוך ספרות: המקדם הוא ‎−369.30‎ (כפי שנכתב נכון בעמ' 46).</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 45</span><br>
+    <span class="quote">❌ "על כל שנת ניסיון השכר יעלה 507.81" (בלי סייג)</span><br>
+    <span class="fix">✓ במודל עם אינטראקציה זה נכון רק לקבוצת הבסיס (הנדסה, X₂=0). לאיש שיווק: ‎≈294‎. מקדם ראשי תקף רק כשהמשתנה שבאינטראקציה איתו = 0 — הסיכום עצמו מדגיש זאת בעמ' 47.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 41</span><br>
+    <span class="quote">❌ "f(X) = β0+β1X1+β2X2+β3X1X2+β4X1²+β5X2²+β6" (β6 תלוש)</span><br>
+    <span class="fix">✓ ה-β6 הבודד בסוף מיותר (קבוע נוסף מתלכד עם β0); כנראה נחתך איבר השגיאה ε בהעתקה.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 41</span><br>
+    <span class="quote">❌ "טרנספורמציה על Y — החלפה של יחידות שממירים חזרה"</span><br>
+    <span class="fix">✓ פישוט יתר: טרנספורמציה לא-לינארית על Y משנה גם את הנחות השאריות (שונות, נורמליות), וההמרה חזרה (exp) מחזירה למעשה חציון ולא תוחלת — נטייה קלה כלפי מטה בלי תיקון. ההבחנה העקרונית מ-X (הוספת משתנים ⇐ overfitting) נכונה.</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="next">שיעורים 7–11</h2>
+  <p>ייבדקו ויתווספו כאן ככל שנבנה את היחידות המתאימות (בחירת משתנים, ANOVA...).</p>
 </section>
 
 </main>

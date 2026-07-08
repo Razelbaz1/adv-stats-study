@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 6 · אינטראקציות ורגרסיה פולינומית</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<script defer src="https://cdn.plot.ly/plotly-basic-2.35.2.min.js"></script>
+<script defer src="../assets/poly_data.js"></script>
+<script defer src="../js/interaction-widgets.js"></script>
+<style>
+  .ols-table td { direction: ltr; text-align: center; font-family: Consolas, monospace; font-size: .88rem; }
+  .ols-table th { text-align: center; }
+</style>
+</head>
+<body data-topic="topic06">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 6</span>
+  <h1>אינטראקציות ורגרסיה פולינומית</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">6.0</span> מאיפה באנו ולאן אנחנו הולכים</h2>
+  <p>זוכר את סוף יחידה 5? משתני הדמה נתנו לנו מישורים <strong>מקבילים</strong> — הפער בין הערים היה קבוע, לא משנה כמה הדרכה או השקעה. ואמרנו שזה חיסרון של המודל. היחידה הזאת מתקנת בדיוק את זה.</p>
+  <p>נלמד שני שדרוגים למודל הלינארי, ושניהם עובדים על אותו טריק: <strong>מוסיפים עמודה חדשה שמחושבת מהקיימות</strong> — מכפלה של שני משתנים (אינטראקציה) או חזקה של משתנה (פולינום). המודל נשאר לינארי בפרמטרים, כל הכלים שלנו ממשיכים לעבוד — אבל פתאום הוא יודע לתאר עולם עשיר בהרבה. ובסוף נשלם את המחיר: יותר משתנים = סכנת Overfitting, ונצטרך שופטים חדשים (AIC, BIC, R² מתוקנן) כדי לבחור מודל.</p>
+</section>
+
+<section class="card">
+  <h2 id="what"><span class="sec-num">6.1</span> מה זו אינטראקציה?</h2>
+  <p>סיפור מהשיעור: מכירות של חנות תלויות בהשקעה בפרסום (\(X_1\)) ובכמות האנשים באזור (\(X_2\)). אבל רגע — <strong>פרסום לא שווה כלום אם אין אנשים שיראו אותו</strong>. כלומר: ההשפעה של \(X_1\) על המכירות תלויה בערך של \(X_2\). לזה קוראים אינטראקציה, וכך מכניסים אותה למודל:</p>
+  <div class="box formula">
+    <div class="box-title">📐 מודל עם אינטראקציה</div>
+    $$Y=\beta_0+\beta_1X_1+\beta_2X_2+\beta_3\,X_1X_2$$
+    <strong>פענוח:</strong> האיבר החדש \(X_1X_2\) הוא פשוט <strong>מכפלת</strong> שני המשתנים — בפועל: עמודה חדשה בדאטה שכל ערך בה הוא המכפלה של שני הערכים המקוריים. \(\beta_3\) הוא מקדם האינטראקציה: כמה ההשפעה של אחד תלויה בשני. שים לב — המודל עדיין לינארי בפרמטרים (ה-β-ים), אז OLS וכל הפלט הרגיל עובדים בדיוק אותו דבר.
+  </div>
+  <figure>
+    <img src="../assets/lect4/Polynomial_interaction_4__cell005_out0.png" alt="מניפת אינטראקציה">
+    <figcaption>מהשיעור: מכירות מול השקעה בפרסום, קו לכל רמת "כמות אנשים" (0.25 / 0.5 / 0.75). הקווים <strong>לא מקבילים</strong> — נפתחים כמו מניפה: ככל שיש יותר אנשים, השיפוע של הפרסום תלול יותר. זה החתם הוויזואלי של אינטראקציה. (בלי איבר האינטראקציה — שלושת הקווים היו מקבילים, כמו ביחידה 5.)</figcaption>
+  </figure>
+  <div class="box intuition">
+    <div class="box-title">💡 המבחן הוויזואלי — כלל שווה זהב</div>
+    מציירים את Y מול \(X_1\) עבור כמה רמות של \(X_2\): <strong>קווים מקבילים = אין אינטראקציה. מניפה (שיפועים שונים) = יש אינטראקציה.</strong> את הכלל הזה תפגוש שוב מילה במילה ביחידה 10 (גרף האינטראקציה של ANOVA דו-כיווני) — שווה לחרוט.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ אינטראקציה ≠ קורלציה בין המשתנים <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    שאלה שנשאלה בכיתה. אינטראקציה לא בודקת אם \(X_1\) ו-\(X_2\) קשורים <em>זה לזה</em>, והיא לא דורשת קורלציה ביניהם — היא בודקת רק איך הם משפיעים <em>ביחד על Y</em>. (ומה עם המולטיקוליניאריות של עמודת המכפלה עם המקוריות? יש קורלציה, אבל לא מושלמת — המודל ניתן לאמידה. ליתר ביטחון נהוג למרכז את המשתנים לפני המכפלה.)
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">בגרף של ציון מבחן מול שעות למידה, ציירו קו נפרד לכל רמת "איכות שינה". שלושת הקווים יצאו מקבילים לחלוטין. מה המסקנה?</div>
+    <button class="opt">יש אינטראקציה חזקה בין למידה לשינה</button>
+    <button class="opt" data-correct>אין אינטראקציה — התרומה של שעת למידה זהה בכל רמת שינה</button>
+    <button class="opt">אין קשר בין שינה לציון</button>
+    <button class="opt">יש מולטיקוליניאריות</button>
+    <div class="q-explain">💬 מקבילים = אותו שיפוע לכולם = ההשפעה של X₁ לא תלויה ב-X₂ = אין אינטראקציה. שים לב: שינה עדיין יכולה להשפיע על הציון (הקווים בגבהים שונים — אפקט ראשי!) — פשוט בלי לשנות את ערך השעה הנלמדת. אפקט ראשי ואינטראקציה הם שני דברים נפרדים.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="interpret"><span class="sec-num">6.2</span> איך מפרשים את המקדמים? הכלל שמשנה הכל</h2>
+  <p>ברגע שיש אינטראקציה, אין יותר "השיפוע של \(X_1\)" — יש שיפוע <strong>שתלוי בערך של \(X_2\)</strong>. רואים את זה בגזירה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 ההשפעה השולית — דרך נגזרת חלקית</div>
+    $$\frac{\partial y}{\partial x_1}=\beta_1+\beta_3x_2 \qquad\qquad \frac{\partial y}{\partial x_2}=\beta_2+\beta_3x_1$$
+    <strong>פענוח:</strong> "בכמה משתנה Y כשמזיזים את \(x_1\) ביחידה" = \(\beta_1+\beta_3x_2\) — ביטוי שמכיל את \(x_2\)! כלומר השיפוע של \(x_1\) זז עם \(x_2\), ולהפך. ו-\(\beta_3\) הוא קצב השינוי של השיפוע.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ העיקרון ששווה הכי הרבה נקודות <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    (מודגש בסיכום:) במודל עם אינטראקציה, <strong>מקדם ראשי תקף רק כשהמשתנה שהוא באינטראקציה איתו שווה אפס</strong>. \(\beta_1\) הוא השיפוע של \(x_1\) רק כאשר \(x_2=0\); \(\beta_2\) הוא האפקט של \(x_2\) רק כאשר \(x_1=0\). מי שמפרש את \(\beta_1\) כ"השיפוע של \(x_1\) תמיד" — טועה בדיוק במקום שהמבחן בודק.
+  </div>
+  <p><strong>ומה אומר הסימן של \(\beta_3\)?</strong> <span class="src-badge">📓 תוכן מקובץ סיכום</span></p>
+  <table class="tbl">
+    <tr><th>\(\beta_3\)</th><th>המשמעות</th></tr>
+    <tr><td>= 0</td><td>ההשפעות נפרדות וחיבוריות — עולם בלי אינטראקציה (קווים מקבילים)</td></tr>
+    <tr><td>&gt; 0</td><td>המשתנים <strong>מחזקים</strong> זה את זה — הגדלת האחד מגדילה את השפעת השני</td></tr>
+    <tr><td>&lt; 0</td><td>המשתנים <strong>מחלישים</strong> זה את זה — הגדלת האחד שוחקת את השפעת השני</td></tr>
+  </table>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך — הדוגמה המספרית מהשיעור</span> <span class="src-badge">📓 תוכן מקובץ סיכום</span>
+    <div class="q-text">נתון המודל \(y=2+1\cdot x_1+0.5\cdot x_2+0.3\cdot x_1x_2\). מהו השיפוע של \(x_1\) כאשר \(x_2=2\)?</div>
+    <button class="opt">1 — המקדם של x₁</button>
+    <button class="opt" data-correct>1.6 — כי השיפוע הוא \(\beta_1+\beta_3x_2=1+0.3\times 2\)</button>
+    <button class="opt">0.3 — מקדם האינטראקציה</button>
+    <button class="opt">2.1 — סכום כל המקדמים חוץ מהחותך... בערך</button>
+    <div class="q-explain">💬 הנגזרת החלקית: \(\partial y/\partial x_1=\beta_1+\beta_3x_2=1+0.3\cdot 2=1.6\). המקדם 1 לבדו הוא השיפוע רק בעולם שבו \(x_2=0\). כאן \(\beta_3>0\) — המשתנים מחזקים זה את זה: ככל ש-\(x_2\) גדול, כל יחידה של \(x_1\) שווה יותר.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="dummy-int"><span class="sec-num">6.3</span> אינטראקציה עם משתנה דמה — שיפוע לכל קבוצה</h2>
+  <p>המקרה הכי חשוב למבחן: \(x_2\) הוא דמה (0/1). דוגמת השיעור: שכר לפי שנות ניסיון (\(x_1\), רציף) ומחלקה (\(x_2\): הנדסה=0, שיווק=1). הפלט:</p>
+  <table class="tbl ols-table">
+    <tr><th></th><th>coef</th><th>t</th><th>P&gt;|t|</th></tr>
+    <tr><td><strong>const</strong></td><td>3953.42</td><td>63.0</td><td>0.000</td></tr>
+    <tr><td><strong>experience</strong></td><td>507.81</td><td>47.7</td><td>0.000</td></tr>
+    <tr><td><strong>department_Marketing</strong></td><td>-369.30</td><td>-4.2</td><td>0.000</td></tr>
+    <tr><td><strong>experience × department_Marketing</strong></td><td>-213.87</td><td>-14.4</td><td>0.000</td></tr>
+  </table>
+  <p>בוא נפרק את זה לשני קווים — קו לכל מחלקה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 מציבים את הדמה ומקבלים שני עולמות</div>
+    $$x_2=0\;(הנדסה):\quad y=3953+507.8\,x_1 \qquad \text{שיפוע } 507.8$$
+    $$x_2=1\;(שיווק):\quad y=(3953-369.3)+(507.8-213.9)\,x_1 \qquad \text{שיפוע } 293.9$$
+    <strong>פענוח:</strong> הדמה מזיז את החותך (כמו ביחידה 5), אבל <strong>האינטראקציה משנה את השיפוע</strong>: מהנדס מרוויח כ-508$ על כל שנת ניסיון, איש שיווק רק כ-294$. ומקדם האינטראקציה ‎−213.87‎ הוא <strong>בדיוק ההפרש בין השיפועים</strong> — בכמה שיפוע השיווק נמוך משיפוע ההנדסה. זהו. זה כל הסוד של שאלה 9.
+  </div>
+  <figure>
+    <img src="../assets/lect4/Polynomial_interaction_4__cell040_out0.png" alt="שני קווים בשיפועים שונים">
+    <figcaption>מהשיעור: שכר מול ניסיון — קו הנדסה (כתום, תלול) מול קו שיווק (כחול, מתון). שים לב שהפער בין הקווים <strong>גדל עם הניסיון</strong>: ב-0 שנות ניסיון הפער הוא \(\beta_2=-369\), ובכל שנה הוא גדל ב-\(\beta_3\) — כבר לא "פער קבוע" כמו ביחידה 5!</figcaption>
+  </figure>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מגרש משחקים: מקדם האינטראקציה מסובב את הקו</div>
+    <p class="w-hint">התרחיש של שאלה 9 במבחן: אורך חיים מול משקל, לשתי קבוצות עישון. הזז את סליידר מקדם האינטראקציה β₃ וראה: ב-0 הקווים מקבילים; ככל שהוא זז — השיפוע של הלא-מעשנים "נפתח" ביחס לבסיס. לחץ על הכפתור כדי לעמוד בדיוק על ערכי המבחן.</p>
+    <div class="widget-controls">
+      <label>מקדם האינטראקציה β₃: <input type="range" id="w-int-b3" min="-0.5" max="0.8" step="any" value="0"> <span class="val" id="w-int-b3-val">0</span></label>
+      <button class="w-btn" id="w-int-exam">🎯 כוון לערך משאלה 9 (0.3187)</button>
+    </div>
+    <div class="plot-box" id="w-int-plot" style="height:340px"></div>
+    <div class="widget-readout" id="w-int-readout"></div>
+  </div>
+
+  <div class="box exam">
+    <div class="box-title">🎯 שאלה 9 מהמבחן לדוגמא</div>
+    חוזים אורך חיים לפי משקל ורמת עישון (לא מעשנים / מעשנים קלים / מעשנים כבדים = <strong>קבוצת הבסיס</strong>). מהפלט: weight = ‎−0.4507‎; smoke_non_smokers = 8.7326; <strong>weight:smoke_non_smokers = 0.3187</strong> (ועוד שורות). השאלה: מה משמעות המספר 0.3187?
+  </div>
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 9 מהמבחן לדוגמא</span>
+    <div class="q-text">מה משמעות המספר 0.3187 בשורת weight:smoke_non_smokers?</div>
+    <button class="opt" data-correct>בכמה השיפוע של המשקל עבור לא מעשנים גדול מזה של מעשנים כבדים</button>
+    <button class="opt">פי כמה השיפוע של המשקל עבור לא מעשנים גדול מזה של מעשנים כבדים</button>
+    <button class="opt">בכמה השיפוע של המשקל עבור לא מעשנים גדול מזה של כלל האוכלוסייה</button>
+    <button class="opt">פי כמה השיפוע של המשקל עבור לא מעשנים גדול מזה של מעשנים קלים</button>
+    <div class="q-explain">💬 מקדם אינטראקציה עם דמה = <strong>הפרש שיפועים מול קבוצת הבסיס</strong>. שלוש מלכודות במסיחים: "פי כמה" (זה הפרש, לא יחס!), "כלל האוכלוסייה" (ההשוואה היא תמיד מול הבסיס — מעשנים כבדים), ו"מעשנים קלים" (קבוצה אחרת לגמרי). בדיוק כמו ‎−213.87‎ בדוגמת השכר — רק שכאן ההפרש חיובי: אצל לא-מעשנים המשקל מזיק פחות.</div>
+  </div>
+  <div class="quiz">
+    <span class="q-label">המשך — בדוק שאתה שולט</span>
+    <div class="q-text">באותו פלט: מה השיפוע של המשקל עבור <strong>לא מעשנים</strong>?</div>
+    <button class="opt">0.3187</button>
+    <button class="opt" data-correct>‎−0.4507 + 0.3187 = −0.132</button>
+    <button class="opt">‎−0.4507</button>
+    <button class="opt">8.7326</button>
+    <div class="q-explain">💬 שיפוע קבוצה = שיפוע הבסיס + מקדם האינטראקציה שלה: ‎−0.4507+0.3187=−0.132‎. כלומר: כל ק"ג עדיין מקצר חיים אצל לא-מעשנים, אבל הרבה פחות מאשר אצל מעשנים כבדים (‎−0.451‎). ו-8.7326? זה הזזת ה<strong>חותך</strong> — אפקט הדמה עצמו, לא השיפוע.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="poly"><span class="sec-num">6.4</span> רגרסיה פולינומית — עקומות בעולם לינארי</h2>
+  <p>השדרוג השני: מה אם הקשר בין X ל-Y מתעקל? ביחידה 4 פתרנו עם טרנספורמציה על Y. עכשיו דרך שנייה — <strong>מוסיפים חזקות של X כעמודות</strong>:</p>
+  <div class="box formula">
+    <div class="box-title">📐 המודל הפולינומי</div>
+    $$f(x)=\beta_0+\beta_1x+\beta_2x^2+\beta_3x^3+\dots$$
+    <strong>פענוח:</strong> כל חזקה היא עוד עמודה בדאטה (\(x^2\) היא עמודת "x בריבוע" וכו'). המודל שוב <strong>לינארי בפרמטרים</strong> — אותו OLS, אותו פלט — אבל העקומה שהוא מצייר יכולה להתפתל כרצונה. בפייתון: <code>PolynomialFeatures</code>.
+  </div>
+  <details class="fold">
+    <summary>🔎 שאלה מהכיתה: מה ההבדל בין טרנספורמציה על Y לבין פולינום על X? <span class="src-badge">📓 תוכן מקובץ סיכום</span></summary>
+    <p>תשובת המרצה: הבדל מהותי. טרנספורמציה על Y היא שינוי סקלה — עובדים בעולם החדש וממירים חזרה בסוף (וכזכור מיחידה 4, היא גם משנה את הנחות השאריות). פולינום על X, לעומת זאת, <strong>מוסיף משתנים למודל</strong> — וכל משתנה נוסף מגיע עם מחיר: סיכון ל-Overfitting. וזה בדיוק הנושא הבא.</p>
+  </details>
+  <figure>
+    <img src="../assets/lect4/polynomial_data_introl__cell004_out0.png" alt="נתוני סינוס עם מגמה">
+    <figcaption>נתוני השיעור: סינוס + מגמה לינארית + רעש. 15 נקודות שחולקו ל-10 Train (כחול — המודל לומד מהן) ו-5 Test (כתום — המודל לא רואה אותן באימון). קו ישר ברור שלא יספיק כאן — צריך פולינום. אבל מאיזו דרגה?</figcaption>
+  </figure>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מגרש משחקים: Overfitting בשידור חי</div>
+    <p class="w-hint">אלה בדיוק נתוני השיעור וההתאמות המדויקות שלו (חושבו מראש ב-numpy). גרור את דרגת הפולינום מ-1 עד 10 ועקוב אחרי שני ה-MSE: על ה-Train (מה שהמודל ראה) ועל ה-Test (מה שלא). שים לב מה קורה בדרגה 4... ומה קורה בדרגה 9.</p>
+    <div class="widget-controls">
+      <label>דרגת הפולינום: <input type="range" id="w-of-degree" min="1" max="10" step="1" value="1"> <span class="val" id="w-of-degree-val">1</span></label>
+    </div>
+    <div class="plot-box" id="w-of-plot" style="height:360px"></div>
+    <div class="widget-readout" id="w-of-readout"></div>
+  </div>
+
+  <div class="box intuition">
+    <div class="box-title">💡 מה זה Overfitting באמת — שינון מול הבנה</div>
+    מודל מורכב מדי <strong>משנן</strong> את נקודות האימון: העקומה עוברת בול דרך כולן (עובדה מתמטית: דרך \(n\) נקודות תמיד עובר פולינום מדרגה \(n-1\) — עם 10 נקודות train, דרגה 9 נותנת R²=1 מושלם). אבל בין הנקודות הוא משתולל, ועל נתונים חדשים הוא נכשל בענק (MSE של 99.8!). כמו סטודנט ששינן את פתרונות התרגילים בעל-פה — מושלם על מה שראה, אבוד על שאלה חדשה. <span class="src-badge">📓 תוכן מקובץ סיכום</span> ומהחידוד בכיתה: ה-MSE על ה-<strong>train</strong> תמיד יורד (או נשאר) כשמעלים דרגה — כי המודל הגדול תמיד יכול "לוותר" על האיבר הנוסף ולשחזר את הקטן. על ה-<strong>test</strong> אין שום הבטחה כזאת — והפער בין השניים הוא בדיוק ההגדרה של Overfitting.
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="selection"><span class="sec-num">6.5</span> אז איך בוחרים מודל? R² מתוקנן, AIC ו-BIC</h2>
+  <p>למה לא פשוט לבחור לפי R²? כי <strong>R² רגיל אף פעם לא יורד כשמוסיפים משתנים</strong> — בדרגה 10 הוא מגיע ל-0.993 והכי "טוב", בדיוק במודל הכי מנופח. R² הוא שופט מושחת בתחרות הזאת. יש שתי גישות הוגנות:</p>
+  <p><strong>גישה 1 — Train/Test:</strong> מה שראית בווידג'ט: מפצלים (בדרך כלל 80/20 או 70/30), מאמנים על החלק הראשון ושופטים לפי ה-MSE על השני. בנתוני השיעור: דרגה 4 מנצחת (MSE=0.281). החיסרון: "בזבזנו" נתונים על ה-test.</p>
+  <p><strong>גישה 2 — מדדים שקונסים מורכבות</strong> <span class="src-badge">📓 תוכן מקובץ סיכום</span> (שאלה מהכיתה: "איך לא לוותר על דאטה?") — מאמנים על הכל, ומשלמים קנס על כל פרמטר:</p>
+  <div class="box formula">
+    <div class="box-title">📐 שלושת השופטים</div>
+    $$AIC=n\ln\!\Big(\frac{RSS}{n}\Big)+2k \qquad BIC=n\ln\!\Big(\frac{RSS}{n}\Big)+k\ln(n) \qquad R^2_{adj}=1-\frac{(1-R^2)(n-1)}{n-k-1}$$
+    <strong>פענוח:</strong> \(RSS\) — סכום ריבועי השאריות (כמה המודל מפספס); \(n\) — מספר תצפיות. שים לב ל-\(k\) — הוא מוגדר <strong>שונה</strong> בין הנוסחאות: ב-AIC וב-BIC \(k\) = מספר הפרמטרים <strong>כולל</strong> החותך, ואילו בנוסחת \(R^2_{adj}\) \(k\) = מספר המשתנים המסבירים <strong>בלי</strong> החותך. ב-AIC/BIC: האיבר הראשון יורד כשההתאמה משתפרת ("הנחה"), והשני עולה עם כל פרמטר ("קנס") — <strong>המודל הכי "זול" מנצח (מינימום)</strong>. ההבדל היחיד ביניהם: גובה הקנס — \(k\ln(n)\) של BIC גדול מ-\(2k\) של AIC (כבר מ-8 תצפיות), ולכן BIC בוחר מודלים חסכוניים יותר. ו-\(R^2_{adj}\): R² עם עונש — יורד אם המשתנה החדש לא תורם מספיק (מקסימום מנצח).
+  </div>
+  <figure>
+    <img src="../assets/lect4/polynomial_data_introl__cell035_out0.png" alt="AIC ו-BIC לפי דרגה">
+    <figcaption>מהשיעור: AIC ו-BIC לכל דרגה (מחושבים על כל 15 הנקודות, בלי פיצול). שניהם צונחים למינימום חד <strong>בדרגה 4</strong> — בדיוק הדרגה שה-Test בחר! שלושת המדדים (גם R²adj, שמגיע לשיא 0.9845 בדרגה 4) מסכימים פה אחד.</figcaption>
+  </figure>
+  <div class="box intuition">
+    <div class="box-title">💡 שני דגשים של המרצה על המדדים <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    <strong>1)</strong> לערך של AIC או BIC <strong>אין משמעות בפני עצמו</strong> — הם רק להשוואה בין מודלים על אותם נתונים (18.75 זה "טוב"? אין תשובה. קטן מהמתחרים? מנצח). לעומתם R²adj כן ניתן לקריאה אבסולוטית (0.98 מעולה, 0.3 חלש). <strong>2)</strong> אין הכרעה חד-משמעית באיזה מדד להשתמש — לרוב שלושתם מגיעים לאותה מסקנה.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ שתי עובדות על R²adj שהמבחן אוהב</div>
+    <strong>1)</strong> בניגוד ל-R², הוא <strong>יכול לרדת</strong> כשמוסיפים משתנה גרוע — זו כל הפואנטה שלו. (אבל הוא לא "תמיד יורד" — משתנה טוב מעלה אותו!) <strong>2)</strong> בניגוד ל-R², הוא <strong>יכול להיות שלילי</strong> — במודל גרוע במיוחד עם הרבה פרמטרים. תמיד מתקיים \(R^2_{adj}\le R^2\).
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 12 מהמבחן לדוגמא</span>
+    <div class="q-text">מה ההבדל בין R² ו-R²adj?</div>
+    <button class="opt">א. R² יכול להיות בין 0 ל-1 ואילו R²adj יכול להיות בין ‎−1 ל-1</button>
+    <button class="opt">ב. R²adj לוקח בחשבון את כמות הפרמטרים של המודל ו-R² לא</button>
+    <button class="opt">ג. R²adj ממזער את ה-likelihood ואילו R² ממזער את ה-MSE</button>
+    <button class="opt" data-correct>ד. תשובות א ו-ב נכונות</button>
+    <div class="q-explain">💬 ב' ודאי נכונה — הקנס על פרמטרים הוא כל הרעיון. א' נכונה ברוח הכוונה: R² חסום בין 0 ל-1 (ל-OLS עם חותך), בעוד R²adj יכול לצאת <strong>שלילי</strong> — זה ההבדל שהאופציה מצביעה עליו. ג' שגויה — אף אחד מהם הוא לא "ממזער" משהו, שניהם מדדי טיב על אותו מודל OLS. לכן: ד.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">חוקרת מדווחת: "המודל שלי השיג AIC של 18.75!" מה אפשר להסיק?</div>
+    <button class="opt">מודל מצוין — AIC נמוך מ-20 נחשב טוב</button>
+    <button class="opt" data-correct>כלום — לערך AIC בודד אין משמעות; הוא מדד השוואתי בלבד בין מודלים על אותם נתונים</button>
+    <button class="opt">המודל מסביר 18.75% מהשונות</button>
+    <button class="opt">יש למודל 18-19 פרמטרים</button>
+    <div class="q-explain">💬 דגש מרצה מהשיעור: AIC/BIC משמעותיים רק בהשוואה — "הכי נמוך מבין המועמדים" מנצח, אבל למספר עצמו אין סרגל אבסולוטי (הוא אפילו יכול להיות שלילי). זה בדיוק ההבדל מ-R²adj, שכן נקרא לבד.</div>
+  </div>
+
+  <details class="fold">
+    <summary>🔎 בונוס: כשהמדדים מגלים את האמת (דוגמת הכנסות החנות)</summary>
+    <p>בשיעור בנו דאטה של הכנסות חנות מ-3 משתנים (תנועת רגל, פרסום, מתחרים), כשהאמת המוגרלת עצמה כללה איברים ריבועיים ואינטראקציה — כלומר "האמת" היא פולינום מדרגה 2. הריצו מודלים מדרגה 1 עד 10 (שים לב להתפוצצות: בדרגה 10 עם 3 משתנים יש כבר 286 עמודות!) — ו-BIC בחר <strong>בדיוק דרגה 2</strong>. המדדים לא סתם "מענישים מורכבות" — הם מזהים את המבנה האמיתי של הנתונים.</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">6.6</span> סיכום היחידה + מה חשוב לבחינה</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>אינטראקציה</td><td>עמודת מכפלה \(X_1X_2\); מניפה בגרף = יש, מקבילים = אין</td></tr>
+    <tr><td>פירוש עם אינטראקציה</td><td>שיפוע \(x_1\) = \(\beta_1+\beta_3x_2\); מקדם ראשי תקף רק כשהשני = 0</td></tr>
+    <tr><td>אינטראקציה עם דמה</td><td>שיפוע לכל קבוצה; מקדם האינטראקציה = <strong>הפרש השיפועים מהבסיס</strong></td></tr>
+    <tr><td>פולינום</td><td>חזקות של X כעמודות; עדיין לינארי בפרמטרים</td></tr>
+    <tr><td>Overfitting</td><td>שינון ה-train (MSE→0, R²=1) עם קריסה על ה-test</td></tr>
+    <tr><td>בחירת מודל</td><td>Test-MSE מינימלי, או AIC/BIC מינימלי / R²adj מקסימלי; לא לפי R²!</td></tr>
+    <tr><td>R²adj</td><td>קונס פרמטרים; יכול לרדת ויכול להיות שלילי; תמיד ≤ R²</td></tr>
+  </table>
+  <div class="box exam">
+    <div class="box-title">🎯 מוקדי בחינה ביחידה הזאת</div>
+    <strong>שאלה 9:</strong> מקדם אינטראקציה עם דמה = <strong>בכמה</strong> (לא פי כמה!) השיפוע של הקבוצה שונה משיפוע <strong>קבוצת הבסיס</strong>. <strong>שאלה 12:</strong> R²adj מתחשב במספר הפרמטרים ויכול להיות שלילי — תשובה ד (א+ב). <strong>אין בדף העזר:</strong> אף אחת מהנוסחאות של היחידה — אבל ההיגיון חשוב יותר מהשינון: קנס על מורכבות, הפרש שיפועים.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">מודל א' (3 פרמטרים): R²=0.85. מודל ב' (25 פרמטרים): R²=0.91. לפי מה נכריע ביניהם?</div>
+    <button class="opt">מודל ב' — R² גבוה יותר</button>
+    <button class="opt" data-correct>נשווה AIC/BIC/R²adj (או ביצועי Test) — ייתכן מאוד שהשיפור ב-R² הוא רק שינון של 22 פרמטרים נוספים</button>
+    <button class="opt">מודל א' — פחות פרמטרים תמיד עדיף</button>
+    <button class="opt">אי אפשר להשוות מודלים עם מספר פרמטרים שונה</button>
+    <div class="q-explain">💬 R² רגיל תמיד עולה עם פרמטרים — 0.91 מול 0.85 לא אומר כלום בלי לשקלל את המחיר. המדדים המתקנים (או test set) עושים בדיוק את זה. וגם "פחות תמיד עדיף" שגוי — לפעמים המורכבות מוצדקת (כמו דרגה 4 אצלנו). האיזון הוא הכל.</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="topic05.html"><div class="dir">→ הקודם</div><div class="dest">יחידה 5: רגרסיה מרובה</div></a>
+    <a href="#" style="opacity:.5; pointer-events:none"><div class="dir">הבא ←</div><div class="dest">יחידה 7: בחירת משתנים (ייבנה בהמשך)</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>
