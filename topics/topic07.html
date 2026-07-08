@@ -10,7 +10,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
-<script defer src="../js/stepwise-widget.js?v=8"></script>
+<script defer src="../js/stepwise-widget.js?v=9"></script>
 </head>
 <body data-topic="topic07">
 <div id="progress-track"><div id="progress-bar"></div></div>
@@ -83,12 +83,15 @@
 </section>
 
 <section class="card">
-  <h2 id="simulator"><span class="sec-num">7.3</span> Stepwise בשידור חי — הסימולטור 🎛️</h2>
-  <p>הדוגמה המודרכת מהמחברת של השיעור: 4 מועמדים (X1–X4), ספי 0.05/0.10. הרץ אותה צעד-צעד ושים לב במיוחד למה שקורה ל-X1 — הוא נכנס <strong>ראשון</strong>, בתור המועמד הכי מבטיח... ותראה איך זה נגמר:</p>
+  <h2 id="simulator"><span class="sec-num">7.3</span> שלוש השיטות בשידור חי — הסימולטור 🎛️</h2>
+  <p>אותו תרחיש בדיוק לכל שלוש השיטות (מבוסס על הדוגמה המודרכת מהמחברת): 4 מועמדים, כש-<strong>X1 ו-X2 מתואמים</strong> ("מספרים את אותו סיפור" — X2 מעט טוב יותר), X3 מועיל, ו-X4 חסר ערך. בחר שיטה, הרץ צעד-צעד, ו<strong>השווה את המודלים הסופיים</strong> — במיוחד שים לב מה קורה ל-X1 בכל שיטה:</p>
 
   <div class="widget">
-    <div class="w-title">🎛️ סימולטור Stepwise — צעד אחר צעד</div>
+    <div class="w-title">🎛️ סימולטור בחירת משתנים — שלוש השיטות, צעד אחר צעד</div>
     <div class="widget-controls">
+      <label><input type="radio" name="w-sw-method" value="forward" checked> Forward</label>
+      <label><input type="radio" name="w-sw-method" value="backward"> Backward</label>
+      <label><input type="radio" name="w-sw-method" value="stepwise"> Stepwise</label>
       <button class="w-btn" id="w-sw-next">▶ הצעד הבא</button>
       <button class="w-btn" id="w-sw-reset" style="background:#5b6478">↺ מהתחלה</button>
     </div>
@@ -97,9 +100,20 @@
     <div id="w-sw-log"></div>
   </div>
 
+  <details class="fold">
+    <summary>🔎 סיימת את שלושתן? השוואת התוצאות (ספוילר!)</summary>
+    <table class="tbl">
+      <tr><th>שיטה</th><th>המסלול</th><th>המודל הסופי</th></tr>
+      <tr><td><strong>Forward</strong></td><td>X1 נכנס ← X2 נכנס ← X3 נכנס</td><td>X1 + X2 + X3 — <span style="color:var(--bad)">כולל את X1 המיותר!</span></td></tr>
+      <tr><td><strong>Backward</strong></td><td>X4 מוסר ← X1 מוסר</td><td>X2 + X3 ✓</td></tr>
+      <tr><td><strong>Stepwise</strong></td><td>X1 נכנס ← X2 נכנס ← X1 מוסר ← X3 נכנס</td><td>X2 + X3 ✓</td></tr>
+    </table>
+    <p>שלוש שיטות, אותם נתונים — <strong>שני מודלים סופיים שונים</strong>. Forward נתקע עם X1 כי אין לו מנגנון הוצאה; Backward ו-Stepwise הגיעו לאותה תשובה הפעם, אבל גם זה לא מובטח באופן כללי. אף שיטה לא "יודעת" שהיא צודקת — כולן היוריסטיקות. וזו, שחור על גבי לבן, התשובה לשאלה 10 במבחן: <strong>אף אחת מהן לא עדיפה</strong>.</p>
+  </details>
+
   <div class="quiz">
-    <span class="q-label">בדוק את עצמך — על מה שראית עכשיו</span>
-    <div class="q-text">X1 נכנס ראשון למודל (p=0.001!) ובכל זאת הוסר בהמשך. למה?</div>
+    <span class="q-label">בדוק את עצמך — על מה שראית בלשונית Stepwise</span>
+    <div class="q-text">ב-Stepwise, X1 נכנס ראשון למודל (p=0.001!) ובכל זאת הוסר בהמשך. למה?</div>
     <button class="opt">באג באלגוריתם — משתנה שנכנס ראשון לא אמור לצאת</button>
     <button class="opt" data-correct>אחרי ש-X2 המתואם איתו נכנס, X1 הפסיק לתרום תרומה ייחודית — המובהקות שלו (בהינתן X2) צנחה מתחת לסף</button>
     <button class="opt">כי X1 היה עם ה-p הכי גבוה מלכתחילה</button>

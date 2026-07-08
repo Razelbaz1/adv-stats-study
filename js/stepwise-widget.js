@@ -1,62 +1,117 @@
-/* ===== ווידג'ט יחידה 7 — סימולטור Stepwise צעד-אחר-צעד =====
-   מבוסס על הדוגמה המודרכת מהמחברת של השיעור: ספי כניסה p<0.05, הסרה p>0.10.
-   4 מועמדים, X1 נכנס ראשון ומוסר בהמשך בגלל קורלציה עם X2. DOM בלבד, בלי Plotly. */
+/* ===== ווידג'ט יחידה 7 — סימולטור בחירת משתנים: Forward / Backward / Stepwise =====
+   תרחיש אחיד ל-4 מועמדים (מבוסס על הדוגמה המודרכת מהמחברת): X1 ו-X2 מתואמים
+   ("מספרים את אותו סיפור", X2 טוב יותר), X3 מועיל, X4 חסר ערך.
+   ספים: כניסה p<0.05, הסרה p>0.10. DOM בלבד, בלי Plotly. */
 (function () {
   'use strict';
 
-  /* כל צעד: תיאור, טבלת p-values של המועמדים/החברים, החלטה, ומצב המודל אחרי */
-  var STEPS = [
-    {
-      phase: 'התחלה',
-      model: [],
-      table: { title: 'p-value של כל מועמד (אילו היה נכנס לבדו)', rows: [['X1', 0.001, 'min'], ['X2', 0.030, ''], ['X3', 0.210, ''], ['X4', 0.550, '']] },
-      decision: 'צעד קדימה (Forward): המועמד עם ה-p הנמוך ביותר הוא X1 (p=0.001), והוא עובר את סף הכניסה 0.05 ⇐ <strong>X1 נכנס</strong>.',
-      modelAfter: ['X1']
+  var METHODS = {
+    forward: {
+      label: 'Forward Selection',
+      intro: '<strong>Forward:</strong> מתחילים ממודל ריק. בכל סבב בוחנים את כל המועמדים שבחוץ ומכניסים את בעל ה-p הנמוך ביותר — אם הוא מתחת לסף הכניסה 0.05. <strong>אין מנגנון הוצאה.</strong>',
+      steps: [
+        {
+          phase: 'סבב 1 — כניסה',
+          table: { title: 'p-value של כל מועמד (בהינתן המודל הריק)', rows: [['X1', 0.001, 'min'], ['X2', 0.030, ''], ['X3', 0.210, ''], ['X4', 0.550, '']] },
+          decision: 'המינימלי הוא X1 (p=0.001) &lt; 0.05 ⇐ <strong>X1 נכנס</strong>.',
+          modelAfter: ['X1']
+        },
+        {
+          phase: 'סבב 2 — כניסה',
+          table: { title: 'p-value של המועמדים שנותרו (בהינתן X1)', rows: [['X2', 0.020, 'min'], ['X3', 0.180, ''], ['X4', 0.470, '']] },
+          decision: 'המינימלי הוא X2 (p=0.020) &lt; 0.05 ⇐ <strong>X2 נכנס</strong>. 👀 שים לב: ברגע ש-X2 נכנס, המובהקות של X1 (בהינתן X2) צונחת ל-p≈0.13 — אבל Forward <strong>בכלל לא בודק את זה</strong>. אין לו מבט אחורה.',
+          modelAfter: ['X1', 'X2']
+        },
+        {
+          phase: 'סבב 3 — כניסה',
+          table: { title: 'p-value של המועמדים שנותרו (בהינתן X1, X2)', rows: [['X3', 0.046, 'min'], ['X4', 0.510, '']] },
+          decision: 'המינימלי הוא X3 (p=0.046) &lt; 0.05 ⇐ <strong>X3 נכנס</strong>.',
+          modelAfter: ['X1', 'X2', 'X3']
+        },
+        {
+          phase: 'סבב 4 — עצירה 🛑',
+          table: { title: 'p-value של המועמד האחרון', rows: [['X4', 0.610, '']] },
+          decision: 'אף מועמד לא עובר את סף הכניסה (0.610 &gt; 0.05) ⇐ <strong>עצירה</strong>.<br>המודל הסופי: <strong>X1 + X2 + X3</strong> — כולל את X1, שכבר מזמן איבד את המובהקות שלו (p≈0.14 בהינתן האחרים)! זו בדיוק החולשה של Forward: מי שנכנס — נשאר, גם אם התייתר. את התיקון תראה בלשונית Stepwise.',
+          modelAfter: ['X1', 'X2', 'X3'],
+          final: true
+        }
+      ]
     },
-    {
-      phase: 'סבב 1 — בדיקת הסרה',
-      model: ['X1'],
-      table: { title: 'p-value של החברים במודל', rows: [['X1', 0.001, 'ok']] },
-      decision: 'צעד אחורה (Backward): אף חבר לא עובר את סף ההסרה 0.10 ⇐ אף אחד לא יוצא. ממשיכים לסבב הבא.',
-      modelAfter: ['X1']
+    backward: {
+      label: 'Backward Elimination',
+      intro: '<strong>Backward:</strong> מתחילים מהמודל המלא (כל הארבעה בפנים). בכל סבב מסירים את בעל ה-p <strong>הגבוה</strong> ביותר — אם הוא מעל סף ההסרה 0.10 — ומריצים מחדש. <strong>אין מנגנון הכנסה.</strong>',
+      steps: [
+        {
+          phase: 'סבב 1 — הסרה',
+          table: { title: 'p-value של כל החברים במודל המלא {X1, X2, X3, X4}', rows: [['X1', 0.210, ''], ['X2', 0.006, 'ok'], ['X3', 0.055, 'ok'], ['X4', 0.620, 'bad']] },
+          decision: 'הגבוה ביותר הוא X4 (p=0.620) &gt; 0.10 ⇐ <strong>X4 מוסר</strong>. מריצים את המודל מחדש — כל המובהקויות יחושבו שוב.',
+          modelAfter: ['X1', 'X2', 'X3']
+        },
+        {
+          phase: 'סבב 2 — הסרה',
+          table: { title: 'p-value של החברים במודל {X1, X2, X3}', rows: [['X1', 0.130, 'bad'], ['X2', 0.007, 'ok'], ['X3', 0.042, 'ok']] },
+          decision: 'הגבוה ביותר הוא X1 (p=0.130) &gt; 0.10 ⇐ <strong>X1 מוסר</strong>. 💡 למה דווקא הוא? X1 מתואם עם X2 — בהינתן ש-X2 במודל, X1 לא תורם תרומה ייחודית.',
+          modelAfter: ['X2', 'X3']
+        },
+        {
+          phase: 'סבב 3 — עצירה 🛑',
+          table: { title: 'p-value של החברים במודל {X2, X3}', rows: [['X2', 0.008, 'ok'], ['X3', 0.040, 'ok']] },
+          decision: 'הגבוה ביותר (0.040) מתחת לסף ההסרה ⇐ כל החברים מובהקים ⇐ <strong>עצירה</strong>.<br>המודל הסופי: <strong>X2 + X3</strong>. שים לב: Backward הגיע כאן לאותה תוצאה כמו Stepwise — אבל בדרך הפוכה לגמרי, וזה ממש לא מובטח תמיד.',
+          modelAfter: ['X2', 'X3'],
+          final: true
+        }
+      ]
     },
-    {
-      phase: 'סבב 2 — כניסה',
-      model: ['X1'],
-      table: { title: 'p-value של המועמדים (בהינתן ש-X1 במודל)', rows: [['X2', 0.020, 'min'], ['X3', 0.180, ''], ['X4', 0.470, '']] },
-      decision: 'Forward: המינימום הוא X2 (p=0.020) < 0.05 ⇐ <strong>X2 נכנס</strong>. המודל עכשיו: X1 + X2.',
-      modelAfter: ['X1', 'X2']
-    },
-    {
-      phase: 'סבב 2 — בדיקת הסרה 💥',
-      model: ['X1', 'X2'],
-      table: { title: 'p-value של החברים במודל {X1, X2}', rows: [['X1', 0.130, 'bad'], ['X2', 0.004, 'ok']] },
-      decision: 'Backward: פתאום X1 כבר לא מובהק! p=0.130 > סף ההסרה 0.10 ⇐ <strong>X1 מוסר מהמודל</strong>. 💡 מה קרה? X1 ו-X2 מתואמים — הם "מספרים את אותו סיפור", וברגע ש-X2 (המספר הטוב יותר) נכנס, X1 הפסיק לתרום תרומה ייחודית. זו בדיוק הסיבה ש-Stepwise בודק הסרה אחרי כל כניסה.',
-      modelAfter: ['X2']
-    },
-    {
-      phase: 'סבב 3 — כניסה',
-      model: ['X2'],
-      table: { title: 'p-value של המועמדים (בהינתן ש-X2 במודל)', rows: [['X1', 0.130, ''], ['X3', 0.040, 'min'], ['X4', 0.380, '']] },
-      decision: 'Forward: המינימום הוא X3 (p=0.040) < 0.05 ⇐ <strong>X3 נכנס</strong>. (שים לב: X1 מוזמן לנסות שוב — אבל p=0.130 לא עובר.)',
-      modelAfter: ['X2', 'X3']
-    },
-    {
-      phase: 'סבב 3 — בדיקת הסרה',
-      model: ['X2', 'X3'],
-      table: { title: 'p-value של החברים במודל {X2, X3}', rows: [['X2', 0.008, 'ok'], ['X3', 0.040, 'ok']] },
-      decision: 'Backward: שניהם מתחת לסף ההסרה 0.10 ⇐ אף אחד לא יוצא.',
-      modelAfter: ['X2', 'X3']
-    },
-    {
-      phase: 'סבב 4 — עצירה 🛑',
-      model: ['X2', 'X3'],
-      table: { title: 'p-value של המועמדים שנותרו', rows: [['X1', 0.210, ''], ['X4', 0.520, '']] },
-      decision: '<strong>העצירה — הרגע של שאלה 13 במבחן:</strong> אף מועמד לא עובר את סף הכניסה (המינימום 0.210 > 0.05) <strong>וגם</strong> אף חבר לא עובר את סף ההסרה ⇐ אין שינוי אפשרי ⇐ <strong>האלגוריתם עוצר</strong>. המודל הסופי: Y = β₀ + β₂X₂ + β₃X₃. שים לב: X1 שנכנס ראשון בכלל לא במודל הסופי!',
-      modelAfter: ['X2', 'X3'],
-      final: true
+    stepwise: {
+      label: 'Stepwise',
+      intro: '<strong>Stepwise:</strong> מתחילים ממודל ריק. אחרי כל כניסה (כמו Forward) בודקים אם מישהו בפנים איבד מובהקות ומסירים אותו (כמו Backward). ספים: כניסה p&lt;0.05, הסרה p&gt;0.10.',
+      steps: [
+        {
+          phase: 'סבב 1 — כניסה',
+          table: { title: 'p-value של כל מועמד (בהינתן המודל הריק)', rows: [['X1', 0.001, 'min'], ['X2', 0.030, ''], ['X3', 0.210, ''], ['X4', 0.550, '']] },
+          decision: 'המינימלי הוא X1 (p=0.001) &lt; 0.05 ⇐ <strong>X1 נכנס</strong>.',
+          modelAfter: ['X1']
+        },
+        {
+          phase: 'סבב 1 — בדיקת הסרה',
+          table: { title: 'p-value של החברים במודל {X1}', rows: [['X1', 0.001, 'ok']] },
+          decision: 'אף חבר לא מעל סף ההסרה 0.10 ⇐ אף אחד לא יוצא. לסבב הבא.',
+          modelAfter: ['X1']
+        },
+        {
+          phase: 'סבב 2 — כניסה',
+          table: { title: 'p-value של המועמדים (בהינתן X1)', rows: [['X2', 0.020, 'min'], ['X3', 0.180, ''], ['X4', 0.470, '']] },
+          decision: 'המינימלי הוא X2 (p=0.020) &lt; 0.05 ⇐ <strong>X2 נכנס</strong>. המודל: X1 + X2.',
+          modelAfter: ['X1', 'X2']
+        },
+        {
+          phase: 'סבב 2 — בדיקת הסרה 💥',
+          table: { title: 'p-value של החברים במודל {X1, X2}', rows: [['X1', 0.130, 'bad'], ['X2', 0.004, 'ok']] },
+          decision: 'פתאום X1 כבר לא מובהק! p=0.130 &gt; 0.10 ⇐ <strong>X1 מוסר</strong>. 💡 X1 ו-X2 מתואמים — "מספרים את אותו סיפור" — וברגע ש-X2 (המספר הטוב יותר) נכנס, X1 התייתר. בדיוק בגלל הרגע הזה Stepwise בודק הסרה אחרי כל כניסה.',
+          modelAfter: ['X2']
+        },
+        {
+          phase: 'סבב 3 — כניסה',
+          table: { title: 'p-value של המועמדים (בהינתן X2)', rows: [['X1', 0.130, ''], ['X3', 0.040, 'min'], ['X4', 0.380, '']] },
+          decision: 'המינימלי הוא X3 (p=0.040) &lt; 0.05 ⇐ <strong>X3 נכנס</strong>. (שים לב: X1 שהוסר חזר לרשימת המועמדים ונבחן שוב — אבל 0.130 לא עובר.)',
+          modelAfter: ['X2', 'X3']
+        },
+        {
+          phase: 'סבב 3 — בדיקת הסרה',
+          table: { title: 'p-value של החברים במודל {X2, X3}', rows: [['X2', 0.008, 'ok'], ['X3', 0.040, 'ok']] },
+          decision: 'שניהם מתחת לסף ההסרה ⇐ אף אחד לא יוצא.',
+          modelAfter: ['X2', 'X3']
+        },
+        {
+          phase: 'סבב 4 — עצירה 🛑',
+          table: { title: 'p-value של המועמדים שנותרו', rows: [['X1', 0.210, ''], ['X4', 0.520, '']] },
+          decision: '<strong>הרגע של שאלה 13 במבחן:</strong> אף מועמד לא עובר את סף הכניסה (0.210 &gt; 0.05) <strong>וגם</strong> אף חבר לא עובר את סף ההסרה ⇐ אין שינוי אפשרי ⇐ <strong>עצירה</strong>.<br>המודל הסופי: <strong>X2 + X3</strong> (‏Y = β₀ + β₂X₂ + β₃X₃). ‏X1 שנכנס ראשון — בכלל לא בפנים!',
+          modelAfter: ['X2', 'X3'],
+          final: true
+        }
+      ]
     }
-  ];
+  };
 
   document.addEventListener('DOMContentLoaded', function () {
     var stage = document.getElementById('w-sw-stage');
@@ -66,6 +121,10 @@
     var btnReset = document.getElementById('w-sw-reset');
     var idx = -1;
 
+    function currentMethod() {
+      var r = document.querySelector('input[name="w-sw-method"]:checked');
+      return METHODS[r ? r.value : 'forward'];
+    }
     function chips(model) {
       if (!model.length) return '<em style="color:var(--muted)">מודל ריק (רק חותך)</em>';
       return model.map(function (v) {
@@ -81,19 +140,21 @@
         return '<tr style="' + style + '"><td style="direction:ltr;text-align:center">' + r[0] + '</td><td style="direction:ltr;text-align:center">' + r[1].toFixed(3) + note + '</td></tr>';
       }).join('');
       return '<div style="font-size:.88rem;color:var(--muted);margin-bottom:4px">' + t.title + '</div>' +
-             '<table class="tbl" style="max-width:420px"><tr><th>משתנה</th><th>p-value</th></tr>' + rows + '</table>';
+             '<table class="tbl" style="max-width:440px"><tr><th>משתנה</th><th>p-value</th></tr>' + rows + '</table>';
     }
     function render() {
+      var m = currentMethod();
       if (idx < 0) {
-        stage.innerHTML = '<p><strong>ספי ההחלטה:</strong> כניסה — p &lt; 0.05 · הסרה — p &gt; 0.10.<br>המודל מתחיל ריק. לחץ "הצעד הבא" כדי להריץ את האלגוריתם.</p><p>המודל כרגע: ' + chips([]) + '</p>';
+        var startModel = m === METHODS.backward ? ['X1', 'X2', 'X3', 'X4'] : [];
+        stage.innerHTML = '<p>' + m.intro + '</p><p>המודל בהתחלה: ' + chips(startModel) + '</p><p style="color:var(--muted);font-size:.9rem">לחץ "הצעד הבא" כדי להריץ.</p>';
         log.innerHTML = '';
         btnNext.disabled = false;
         btnNext.textContent = '▶ הצעד הבא';
         return;
       }
-      var s = STEPS[idx];
+      var s = m.steps[idx];
       stage.innerHTML =
-        '<div style="font-weight:800;color:var(--accent);margin-bottom:6px">' + s.phase + '</div>' +
+        '<div style="font-weight:800;color:var(--accent);margin-bottom:6px">' + m.label + ' · ' + s.phase + '</div>' +
         tableHtml(s.table) +
         '<p style="margin-top:10px">' + s.decision + '</p>' +
         '<p>המודל אחרי הצעד: ' + chips(s.modelAfter) + '</p>';
@@ -107,9 +168,13 @@
       }
     }
     btnNext.addEventListener('click', function () {
-      if (idx < STEPS.length - 1) { idx++; render(); }
+      var m = currentMethod();
+      if (idx < m.steps.length - 1) { idx++; render(); }
     });
     btnReset.addEventListener('click', function () { idx = -1; render(); });
+    document.querySelectorAll('input[name="w-sw-method"]').forEach(function (r) {
+      r.addEventListener('change', function () { idx = -1; render(); });
+    });
     render();
   });
 })();
