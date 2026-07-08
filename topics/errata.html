@@ -201,8 +201,53 @@
 </section>
 
 <section class="card">
-  <h2 id="next">שיעורים 5–11</h2>
-  <p>ייבדקו ויתווספו כאן ככל שנבנה את היחידות המתאימות (רגרסיה מרובה, פולינומית, ANOVA...).</p>
+  <h2 id="l5">שיעור 5 (עמ' 31–40)</h2>
+
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 33</span><br>
+    <span class="quote">❌ "מבחינה מתמטית אי-אפשר לייצר מודל לינארי שיש Multicollinearity"</span><br>
+    <span class="fix">✓ ערבוב בין שני מצבים: תלות <strong>מושלמת</strong> (מלכודת הדמה) — באמת אין פתרון יחיד; תלות <strong>גבוהה-אך-לא-מושלמת</strong> — המודל ניתן לאמידה רגילה, רק שהאומדים לא יציבים והשונות שלהם מנופחת.</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 39</span><br>
+    <span class="quote">❌ "ככל שנוסיף יותר משתנים ה-R² adjusted יהיה יותר קטן"</span><br>
+    <span class="fix">✓ שגוי — הוא יכול לעלות או לרדת: עולה כשהמשתנה החדש תורם מספיק, יורד כשלא. (הגרף בעמ' 40 בסיכום עצמו מראה אותו עולה מדרגה 3 ל-4!) מה שכן תמיד נכון: R²adj ≤ R².</span>
+  </div>
+  <div class="err"><span class="sev hi">חשוב</span> <span class="pg">עמ' 39</span><br>
+    <span class="quote">❌ "R² adjusted ייתן פלט בין 0 ל-1"</span><br>
+    <span class="fix">✓ הוא יכול לצאת <strong>שלילי</strong> (כש-R² נמוך ו-k גדול יחסית ל-n) — וזה בדיוק מה ששאלה 12 במבחן בודקת! ערך שלילי = מודל גרוע מהותית.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 34</span><br>
+    <span class="quote">❌ "הוספת X² לא יוצרת Multicollinearity כי התלות לא לינארית"</span><br>
+    <span class="fix">✓ אין תלות <strong>מושלמת</strong>, אבל במדגם X ו-X² בדרך כלל בקורלציה גבוהה מאוד — מולטיקוליניאריות מעשית שמנפחת שונות (הסיכום עצמו מודה בזה במשפט הבא). פתרון מקובל: מרכוז X לפני ההעלאה בריבוע.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 33</span><br>
+    <span class="quote">❌ "כשנרצה לייצר מודל שמבצע חיזוי תהיה לנו בעיה"</span><br>
+    <span class="fix">✓ החיזוי דווקא שורד (הצירוף יציב) — מה שנהרס זה פירוש המקדמים הבודדים וההסקה עליהם.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 32</span><br>
+    <span class="quote">❌ "תלות לינארית גבוהה בין האומדים של המשתנים"</span><br>
+    <span class="fix">✓ התלות היא בין <strong>המשתנים המסבירים</strong> (עמודות הדאטה); התוצאה שלה היא ניפוח השונות של האומדים.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 33</span><br>
+    <span class="quote">❌ "בכמה משתנה המשתנה המוסבר (תאונות) על כל תזוזה של סטיית-תקן של המסביר"</span><br>
+    <span class="fix">✓ חסרה יחידת התוצאה: השינוי ב-Y נמדד <strong>בסטיות תקן של Y</strong>, לא בתאונות גולמיות. שני הצדדים מתוקננים — בדיוק ההבדל בין התשובה הנכונה למסיח בשאלה 3 במבחן.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 35</span><br>
+    <span class="quote">❌ "לדרגה 9 ה-MSE train הכי נמוך"</span><br>
+    <span class="fix">✓ לפי הטבלה באותו עמוד — דרגה 10 (1.1e-13) נמוכה מדרגה 9 (5.0e-13). על ה-test החלק נכון.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 36</span><br>
+    <span class="quote">❌ "OLS עושה את זה ע"י איפוס מקדמים... בוודאות נקבל את ה-MSE הכי נמוך כי גוזרים ומשווים ל-0"</span><br>
+    <span class="fix">✓ הטיעון הנכון הוא <strong>קינון</strong>: המודל מדרגה גבוהה <em>יכול</em> לבחור מקדם אפס ולשחזר את הפשוט, ולכן לא יהיה גרוע ממנו על ה-train — אבל בפועל OLS כמעט אף פעם לא מאפס מקדמים (איפוס אמיתי זה Lasso). ו"גוזרים ומשווים ל-0" מבטיח מינימום רק בזכות הקמירות.</span>
+  </div>
+  <div class="err"><span class="sev lo">ניסוח</span> <span class="pg">עמ' 36</span><br>
+    <span class="quote">❌ "מונוטוני יורד — או שיורד או שלא משתנה"</span><br>
+    <span class="fix">✓ הניסוח המדויק: מונוטוני <strong>לא-עולה</strong> (non-increasing), ונכון רק למודלים מקוננים על אותם נתוני אימון.</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="next">שיעורים 6–11</h2>
+  <p>ייבדקו ויתווספו כאן ככל שנבנה את היחידות המתאימות (פולינומית, בחירת מודל, ANOVA...).</p>
 </section>
 
 </main>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 5 · רגרסיה מרובה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<script defer src="https://cdn.plot.ly/plotly-gl3d-2.35.2.min.js"></script>
+<script defer src="../assets/factory_data.js"></script>
+<script defer src="../js/multireg-widgets.js"></script>
+<style>
+  .ols-table td { direction: ltr; text-align: center; font-family: Consolas, monospace; font-size: .88rem; }
+  .ols-table th { text-align: center; }
+</style>
+</head>
+<body data-topic="topic05">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 5</span>
+  <h1>רגרסיה מרובה</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">5.0</span> מאיפה באנו ולאן אנחנו הולכים</h2>
+  <p>ביחידה 4 חזינו משכורת משנות לימוד — משתנה מסביר אחד, קו אחד. אבל העולם האמיתי מרובה סיבות: תאונות במפעל תלויות גם בהדרכות הבטיחות, גם בהשקעה במכונות, וגם באיזה מפעל מדובר. היחידה הזאת עונה על שלוש שאלות: <strong>איך מכניסים כמה משתנים למודל אחד</strong> (כולל קטגוריות כמו "עיר"), <strong>איך מדרגים מי מהם הכי משפיע</strong>, ו<strong>מה נשבר</strong> כשהמשתנים תלויים זה בזה.</p>
+  <p>הדוגמה שתלווה אותנו לכל אורך היחידה — היא מהשיעור, והיא אמיתית עד הפרט האחרון: <strong>מפעל מתכות</strong> עם 125 תצפיות משלוש ערים, ובגרף התלת-ממדי האינטראקטיבי למטה תוכל לסובב אותה בעצמך.</p>
+</section>
+
+<section class="card">
+  <h2 id="model"><span class="sec-num">5.1</span> המודל המרובה — ממקו למישור</h2>
+  <p>הנתונים: לכל חודש-מפעל נמדדו <strong>שעות הדרכת בטיחות</strong> (0–4), <strong>השקעה בבטיחות מכונות</strong> (0–30 אלפי דולר), ו<strong>מספר התאונות</strong>. המודל:</p>
+  <div class="box formula">
+    <div class="box-title">📐 רגרסיה מרובה</div>
+    $$\hat{Y}=\hat{b}_0+\hat{b}_1X_1+\hat{b}_2X_2 \qquad\Rightarrow\qquad \widehat{תאונות}=348.08-9.51\cdot הדרכה-1.88\cdot השקעה$$
+    <strong>פענוח:</strong> אותה תבנית מיחידה 4, רק עם עוד איברים. גיאומטרית: מסביר אחד = קו, שניים = <strong>מישור</strong> בתלת-ממד, שלושה ומעלה = אי אפשר לצייר (אבל האלגברה עובדת אותו דבר). מספר הפרמטרים במודל עם חותך: מספר המשתנים + 1.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 הפירוש הנכון של מקדם — המשפט ששווה נקודות <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    המרצה ציין במפורש ששאלת "מה אומר המקדם של X בפלט" היא שאלת מבחן פוטנציאלית. הנוסח המלא: <strong>"על כל שעת הדרכה נוספת, מספר התאונות יורד בממוצע ב-9.5 — בהינתן ששאר המשתנים קבועים"</strong>. שלוש המילים האחרונות (ceteris paribus) הן ההבדל בין רגרסיה פשוטה למרובה: המקדם מודד את התרומה של המשתנה <em>בנטרול</em> כל השאר. בלעדיהן — התשובה חסרה.
+  </div>
+  <details class="fold">
+    <summary>🔎 ומה משמעות החותך כשיש כמה משתנים? <span class="src-badge">📓 תוכן מקובץ סיכום</span></summary>
+    <p>שאלה שנשאלה בכיתה. תשובה: הערך של Y כאשר <strong>כל</strong> המשתנים המסבירים שווים אפס — כאן: 348 תאונות בחודש בלי שום הדרכה ובלי שום השקעה. ותובנה חשובה מהמרצה: רגרסיה היא מודל מתמטי שלא "מפעיל היגיון" — היא תחזיר חיזוי גם לקלט שלא ייתכן לוגית (כמו "אדם בגובה 0"). האחריות על ההיגיון היא שלנו.</p>
+  </details>
+  <div class="box example">
+    <div class="box-title">✏️ חיזוי — בדיוק כמו ביחידה 4, רק וקטור ארוך יותר</div>
+    כמה תאונות צפויות עם 20 שעות הדרכה ו-10 אלפי דולר השקעה?<br>
+    \(\hat{Y}=348.079-9.508\times 20-1.876\times 10=139.16\). בקוד: <code>results.predict(np.array([[1, 20, 10]]))</code> — וכרגיל, לא לשכוח את ה-1 של החותך בתחילת הווקטור.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 בסגנון שאלת מבחן שהמרצה הזכיר</span> <span class="src-badge">📓 תוכן מקובץ סיכום</span>
+    <div class="q-text">במודל התאונות, מה הפירוש המלא של המקדם ‎−1.88‎ של ההשקעה?</div>
+    <button class="opt">על כל אלף דולר השקעה, התאונות יורדות ב-1.88 — תמיד</button>
+    <button class="opt" data-correct>על כל אלף דולר השקעה נוספת, התאונות יורדות בממוצע ב-1.88 — כששעות ההדרכה מוחזקות קבועות</button>
+    <button class="opt">ההשקעה מסבירה 1.88% מהשונות בתאונות</button>
+    <button class="opt">ההשקעה היא המשתנה הכי פחות חשוב כי המקדם שלה הכי קטן</button>
+    <div class="q-explain">💬 ברגרסיה מרובה כל מקדם הוא "בהינתן שאר המשתנים קבועים" — בלי התוספת הזאת התשובה נחשבת חסרה. והאופציה האחרונה היא מלכודת שנפוצץ בסעיף 5.5: מקדם גולמי קטן ≠ השפעה קטנה, כי היחידות שונות (אלפי דולר מול שעות!).</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="output"><span class="sec-num">5.2</span> קריאת הפלט — עכשיו עם יותר שורות</h2>
+  <p>הפלט של statsmodels למודל הזה (R²=0.858, F=368.1, n=125):</p>
+  <table class="tbl ols-table">
+    <tr><th></th><th>coef</th><th>t</th><th>P&gt;|t|</th><th>[0.025</th><th>0.975]</th></tr>
+    <tr><td><strong>intercept</strong></td><td>348.0794</td><td>182.0</td><td>0.000</td><td>344.3</td><td>351.9</td></tr>
+    <tr><td><strong>guidence</strong></td><td>-9.5080</td><td>-16.89</td><td>0.000</td><td>-10.62</td><td>-8.39</td></tr>
+    <tr><td><strong>invsetment</strong></td><td>-1.8757</td><td>-21.24</td><td>0.000</td><td>-2.05</td><td>-1.70</td></tr>
+  </table>
+  <p>הכל בדיוק כמו ביחידה 4, רק שעכשיו יש <strong>מבחן t נפרד לכל משתנה</strong>: כל שורה בודקת \(H_0: b_i=0\) — "האם המשתנה הזה בכלל תורם, בהינתן שכל השאר כבר במודל?". כאן כל ה-p-values הם 0.000 — כולם נשארים. <strong>וכלל העבודה מהשיעור:</strong> משתנה שלא מובהק ⇐ מוציאים אותו ומריצים מודל חדש.</p>
+  <p>(אגב השמות המשובשים — <code>guidence</code> ו-<code>invsetment</code> — אלו שגיאות כתיב שקיימות בדאטה המקורי של הקורס. אם תתקן אותן הקוד שלך יקרוס... נשארנו נאמנים למקור 😄)</p>
+</section>
+
+<section class="card">
+  <h2 id="viz"><span class="sec-num">5.3</span> לראות את זה — המישור בתלת-ממד 🎛️</h2>
+  <p>הגיע הרגע שהבטחתי: הנתונים <strong>האמיתיים</strong> מהשיעור (כל 125 התצפיות, חולצו מקובץ הנתונים המקורי) בתלת-ממד אינטראקטיבי. <strong>סובב עם האצבע או העכבר</strong>, וגלה בעצמך למה משתני דמה משנים את התמונה:</p>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מגרש משחקים: מהנקודות אל המישורים</div>
+    <p class="w-hint">התחל מהנקודות בלבד וסובב — רואה ששלושת הצבעים (מפעלים) חיים בגבהים שונים? עכשיו עבור למודל הבסיסי וראה איך מישור אחד מנסה לפשר בין כולם, ואז למודל עם הדמה — שלושה מישורים מקבילים.</p>
+    <div class="widget-controls">
+      <label><input type="radio" name="w-3d-model" value="points" checked> רק הנתונים</label>
+      <label><input type="radio" name="w-3d-model" value="basic"> + המישור הבסיסי (R²=0.858)</label>
+      <label><input type="radio" name="w-3d-model" value="dummy"> + שלושה מישורים עם דמה (R²=0.993)</label>
+    </div>
+    <div class="plot-box" id="w-3d-plot" style="height:440px"></div>
+    <div class="widget-readout" id="w-3d-readout"></div>
+  </div>
+
+  <details class="fold">
+    <summary>🔎 איך בכלל מציירים מישור? (meshgrid מהשיעור)</summary>
+    <p>כדי לצייר משטח, המחשב צריך רשת של נקודות: <code>np.meshgrid</code> לוקח שני וקטורים (למשל ערכי הדרכה וערכי השקעה) ו"פורש" מהם את כל השילובים האפשריים — רשת דו-ממדית. על כל נקודת רשת מחשבים \(Z=b_0+b_1X+b_2Y\), ומקבלים את המישור. כך בדיוק צויר הגרף בהרצאה (ההוא עם צבעי ה-cividis).</p>
+  </details>
+
+  <p>ובהצגה דו-ממדית מהשיעור — תאונות מול השקעה, קו לכל רמת הדרכה:</p>
+  <figure>
+    <img src="../assets/lect3/Lesson3_Linear_regression__cell029_out0.png" alt="קווים מקבילים לפי רמת הדרכה">
+    <figcaption>מהשיעור: חיזויי המודל הבסיסי — חמישה קווים <strong>מקבילים</strong> (אחד לכל רמת הדרכה 0–4). למה מקבילים? כי במודל בלי אינטראקציות, ההשפעה של השקעה זהה בכל רמת הדרכה. תזכור את המילה "מקבילים" — היא הלב של יחידה 6.</figcaption>
+  </figure>
+  <details class="fold">
+    <summary>🔎 שאלה מהכיתה: למה אחרי הוספת הדמה הקווים כבר לא ישרים? <span class="src-badge">📓 תוכן מקובץ סיכום</span></summary>
+    <p>כשמציירים את חיזויי מודל-הדמה על אותו גרף (תאונות מול השקעה, צבע = רמת הדרכה), הקווים יוצאים משוננים — קופצים למעלה ולמטה. הסיבה: כל "קו" צבעוני מערבב נקודות משלוש ערים שונות, ולכל עיר חותך אחר. הפרדה מלאה הייתה דורשת 3 ערים × 5 רמות הדרכה = <strong>15 קווים</strong>. המודל עדיין לגמרי לינארי — רק הציור מערבב קבוצות.</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2 id="dummies"><span class="sec-num">5.4</span> משתני דמה — איך מכניסים "עיר" למשוואה</h2>
+  <p>יש לנו משתנה רביעי: <code>Factory</code> — אריאל / חיפה / ירושלים. אבל רגרסיה אוכלת רק מספרים. אז מה, נקודד אריאל=1, חיפה=2, ירושלים=3?</p>
+  <div class="box warning">
+    <div class="box-title">⚠️ קידוד אורדינלי לקטגוריות בלי סדר — טעות! <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    אם נקודד ערים כ-1/2/3, המודל "יבין" שירושלים (3) היא פי 3 אריאל (1), ושחיפה נמצאת "באמצע" ביניהן — שטויות, אין שום סדר טבעי בין ערים. קידוד מספרי רציף מתאים רק לקטגוריות עם סדר אמיתי (קטן/בינוני/גדול).
+  </div>
+  <p>הפתרון: <strong>One-Hot Encoding</strong> — עמודת "מתג" 0/1 לכל קטגוריה (<code>pd.get_dummies</code>). אבל למודל מכניסים רק <strong>k−1</strong> עמודות:</p>
+  <div class="box formula">
+    <div class="box-title">📐 המודל עם משתני דמה</div>
+    $$\hat{Y}=\hat{b}_0+\hat{b}_1X_1+\hat{b}_2X_2+\hat{d}_1D_{Ariel}+\hat{d}_2D_{Haifa}$$
+    $$\widehat{תאונות}=360.54-10.02\cdot הדרכה-1.98\cdot השקעה-11.61\cdot D_{אריאל}-21.69\cdot D_{חיפה}$$
+    <strong>פענוח:</strong> \(D_{Ariel}\) = 1 אם התצפית מאריאל, אחרת 0 (וכנ"ל חיפה). ואיפה ירושלים? היא <strong>קטגוריית הבסיס</strong>: כששני המתגים כבויים (\(D_1=D_2=0\)) — זו ירושלים. המקדם \(d_1=-11.61\) אומר: באריאל יש בממוצע 11.6 תאונות <strong>פחות מבירושלים</strong>, באותן שעות הדרכה ואותה השקעה.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 למה רק k−1 עמודות? מלכודת משתני הדמה <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    שאלה שנשאלה בכיתה: "למה לא להוסיף גם D₃ לירושלים?" שתי תשובות: <strong>1)</strong> היא מיותרת — אם לא אריאל ולא חיפה, בהכרח ירושלים; העמודה השלישית לא מוסיפה שום מידע. <strong>2)</strong> היא מזיקה — שלוש העמודות מסתכמות תמיד ל-1, שזו בדיוק עמודת החותך ⇐ תלות לינארית מושלמת ⇐ המודל קורס (זו המולטיקוליניאריות של סעיף 5.6). לכן: k קטגוריות ⇐ k−1 עמודות דמה, תמיד.
+  </div>
+  <p><strong>והתוצאה?</strong> R² קפץ מ-0.858 ל-<strong>0.993</strong> — המיקום הסביר כמעט את כל הרעש שנשאר. גיאומטרית: במקום מישור אחד, שלושה מישורים <strong>מקבילים</strong> — הדמה מזיז את הגובה (החותך), לא את השיפועים. ראית את זה בתלת-ממד למעלה; עכשיו נבין את זה ב-2D, בדיוק במבנה של שאלה 1 במבחן:</p>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מגרש משחקים: משתני דמה = קווים מקבילים</div>
+    <p class="w-hint">שלוש קטגוריות, קו אחד לכל אחת. הזז את הסליידרים של d₂ ו-d₃ (המקדמים של הדמה) וצפה: הקווים רק עולים ויורדים — לעולם לא משנים שיפוע. המספרים על ציר Y הם החיתוכים ב-X=0 — בדיוק מה ששאלה 1 במבחן נותנת לך.</p>
+    <div class="widget-controls">
+      <label>d₂ (קטגוריה 2): <input type="range" id="w-dm-d2" min="-20" max="20" step="any" value="5"> <span class="val" id="w-dm-d2-val">5</span></label>
+      <label>d₃ (קטגוריה 3): <input type="range" id="w-dm-d3" min="-20" max="20" step="any" value="-8"> <span class="val" id="w-dm-d3-val">-8</span></label>
+      <button class="w-btn" id="w-dm-exam">🎯 כוון לערכי שאלה 1 מהמבחן</button>
+    </div>
+    <div class="plot-box" id="w-dm-plot" style="height:340px"></div>
+    <div class="widget-readout" id="w-dm-readout"></div>
+  </div>
+
+  <div class="box exam">
+    <div class="box-title">🎯 שאלה 1 מהמבחן לדוגמא</div>
+    התאמה לינארית ל-3 קטגוריות עם משתנה מסביר אחד: \(y=b_0+b_1x+d_2D_2+d_3D_3\), כשקטגוריה 1 היא הבסיס. נתון שכאשר X=0: קטגוריה 1 → 30.114, קטגוריה 2 → 39.806, קטגוריה 3 → 25.065 (בגרף: שלושה קווים מקבילים). <strong>מהו הערך של d₂?</strong> ענה למטה — ואם אתה תקוע, לחץ על הכפתור בווידג'ט למעלה.
+  </div>
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 1 מהמבחן לדוגמא</span>
+    <div class="q-text">מהו הערך של d₂?</div>
+    <button class="opt" data-correct>א. 9.69</button>
+    <button class="opt">ב. ‎−9.69</button>
+    <button class="opt">ג. ‎−5.04</button>
+    <button class="opt">ד. לא ניתן לדעת על סמך הנתונים</button>
+    <div class="q-explain">💬 כש-X=0, הקו של הבסיס נמצא ב-\(b_0=30.114\) והקו של קטגוריה 2 ב-\(b_0+d_2=39.806\). לכן \(d_2=39.806-30.114=9.69\) — מקדם דמה = ההפרש האנכי מקו הבסיס. והמסיח ג (‎−5.04‎)? זה בערך \(d_3\): ‏\(25.065-30.114=-5.049\) (המבחן עיגל ל-‎−5.04‎) — מי שהתבלבל בין הקטגוריות נפל שם.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלה שנשאלה בכיתה</span> <span class="src-badge">📓 תוכן מקובץ סיכום</span>
+    <div class="q-text">מפלט המודל (עם ירושלים כבסיס) עולה שמקדמי אריאל וחיפה מובהקים. אילו זוגות ערים אפשר לקבוע שהם שונים מובהקות זה מזה? 1. אריאל–חיפה  2. ירושלים–חיפה  3. ירושלים–אריאל</div>
+    <button class="opt">כל שלושת הזוגות</button>
+    <button class="opt" data-correct>רק 2 ו-3</button>
+    <button class="opt">רק 1</button>
+    <button class="opt">אף אחד — צריך ANOVA</button>
+    <div class="q-explain">💬 מבחני ה-t בפלט משווים כל דמה <strong>רק לקטגוריית הבסיס</strong> (ירושלים). על אריאל מול חיפה לא בוצע שום מבחן! ההפרש בין המקדמים (כ-10) הוא אומדן טוב להפרש ביניהן — אבל בלי מבחן אין קביעת מובהקות. (איך כן בודקים? מבחן על צירוף מקדמים, או פשוט להריץ מחדש עם אריאל כבסיס.)</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="standardized"><span class="sec-num">5.5</span> מקדמים מתוקננים — מי באמת המשפיע הגדול?</h2>
+  <p>שאלה טבעית: איזה משתנה הכי משפיע על התאונות? מבט נאיבי במקדמים הגולמיים אומר: הדרכה (‎−10.02‎) "גדולה" פי 5 מהשקעה (‎−1.98‎). אבל רגע — הדרכה נמדדת <strong>בשעות</strong> והשקעה <strong>באלפי דולרים</strong>. להשוות אותם ישירות זה כמו להשוות 5 ק"ג עם 5 ק"מ!</p>
+  <div class="box formula">
+    <div class="box-title">📐 המקדם המתוקנן (Standardized Coefficient)</div>
+    $$\beta_i^{std}=\hat{b}_i\cdot\frac{s_{X_i}}{s_Y}$$
+    <strong>פענוח:</strong> לוקחים את המקדם הגולמי \(\hat{b}_i\) ומכפילים ביחס סטיות התקן — של המשתנה המסביר חלקי של המוסבר. התוצאה עונה על שאלה הוגנת ואחידה: <strong>בכמה סטיות תקן של Y ישתנה Y, כשהמשתנה המסביר זז סטיית תקן אחת</strong> (ושאר המשתנים קבועים). סטיית תקן היא "מטבע אוניברסלי" (תקנון — יחידה 1!), אז עכשיו כולם מדברים באותה שפה. <span class="src-badge">📓 תוכן מקובץ סיכום</span> הערת המרצה: סטיות התקן בנוסחה הן בעצמן אומדים מהמדגם.
+  </div>
+  <div class="box example">
+    <div class="box-title">✏️ הדירוג מהשיעור — והתהפוכה</div>
+    <table class="tbl">
+      <tr><th>משתנה</th><th>מקדם גולמי</th><th>מקדם מתוקנן</th><th>דירוג השפעה</th></tr>
+      <tr><td>השקעה</td><td>-1.98</td><td><strong>-0.765</strong></td><td>🥇 1</td></tr>
+      <tr><td>הדרכה</td><td>-10.02</td><td>-0.607</td><td>🥈 2</td></tr>
+      <tr><td>חיפה</td><td>-21.69</td><td>-0.410</td><td>🥉 3</td></tr>
+      <tr><td>אריאל</td><td>-11.61</td><td>-0.239</td><td>4</td></tr>
+    </table>
+    שים לב להיפוך המלא: לפי המקדמים הגולמיים חיפה (‎−21.7‎) "הכי חזקה" וההשקעה (‎−1.98‎) "הכי חלשה" — ואחרי התקנון מתגלה שדווקא <strong>ההשקעה המשפיעה ביותר</strong>. הדירוג נעשה לפי <strong>ערך מוחלט</strong> של המקדם המתוקנן.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 3 מהמבחן לדוגמא</span>
+    <div class="q-text">כאשר נרצה לדרג את המשתנים המסבירים מהו הכי משפיע על המשתנה המוסבר, נעשה את הדבר הבא:</div>
+    <button class="opt">נדרג לפי המקדמים שקיבלנו בערך מוחלט</button>
+    <button class="opt" data-correct>נדרג לפי כמה סטיות תקן של המשתנה המוסבר משתנות כפונקציה של עליה של סטיית תקן אחת של המשתנים המסבירים</button>
+    <button class="opt">נדרג לפי כמה יחידות של המשתנה המוסבר משתנות כפונקציה של עליה אחת של המשתנים המסבירים</button>
+    <button class="opt">נדרג לפי כמה המשתנה המוסבר משתנה כפונקציה של עליה של סטיית תקן אחת של המשתנים המסבירים</button>
+    <div class="q-explain">💬 זו בדיוק הגדרת המקדם המתוקנן: סטיות תקן של Y על סטיית תקן של X — שני הצדדים מתוקננים. המסיחים ערמומיים: האופציה הראשונה (מקדמים גולמיים בערך מוחלט) נופלת על בעיית היחידות (ראינו: ההיפוך המלא!), והרביעית מפספסת שגם השינוי ב-Y חייב להימדד בסטיות תקן. קרא כל מילה.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="multicollinearity"><span class="sec-num">5.6</span> מולטיקוליניאריות — כשהמשתנים מספרים את אותו סיפור</h2>
+  <p><strong>ההגדרה:</strong> תלות לינארית בין משתנים מסבירים — כשמשתנה אחד ניתן לחישוב (בקירוב או במדויק) מהאחרים. בשיעור עשו ניסוי מבוקר גאוני: הוסיפו למודל את <strong>אותה השקעה פעמיים</strong> — פעם בדולרים ופעם בשקלים (כפול 4):</p>
+  <div class="box formula">
+    <div class="box-title">📐 למה המודל מתבלבל — האלגברה</div>
+    $$y=\beta_0+\beta_1\cdot shekels+\beta_2\cdot dollars = \beta_0+dollars\cdot(4\beta_1+\beta_2)$$
+    <strong>פענוח:</strong> כי שקלים = 4×דולרים (שער ההמרה בדוגמה), המודל תלוי רק ב<strong>צירוף</strong> \(4\beta_1+\beta_2\). כל פיצול שמקיים את הצירוף נותן בדיוק את אותן תחזיות: \((0,\,-1.876)\)? \((-0.469,\,0)\)? \((-0.441,\,-0.110)\)? כולם שקולים — <strong>אינסוף פתרונות</strong>, והמחשב בוחר אחד שרירותי. ובדיקה יפה: הפיצול שהמחשב בחר בשיעור מקיים \(4(-0.441)+(-0.110)=-1.876\) — בדיוק מקדם ההשקעה מהמודל הנקי!
+  </div>
+  <div class="box example">
+    <div class="box-title">✏️ מה זה עשה בפועל (מהשיעור)</div>
+    במודל עם שקלים+דולרים בלבד: המקדמים התפצלו שרירותית (‎−0.110‎ ו-‎−0.441‎), והמקדם המתוקנן של "דולרים" יצא ‎−0.043‎ מול ‎−0.682‎ ל"שקלים" — <strong>למרות שזה אותו משתנה בדיוק</strong>. ובמודל ה"מקולקל" המלא (עם כל 3 הדמה + השקעה כפולה): R² נשאר 0.993 והחיזוי בסדר גמור, אבל המקדמים השתגעו (ירושלים פתאום +98.5!) ו-statsmodels צעק: <strong>Cond. No. = 4.03e+17</strong> והערה [2] על מטריצה סינגולרית.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 מה נשבר ומה שורד — ההבחנה החשובה</div>
+    מולטיקוליניאריות <strong>לא בהכרח פוגעת בחיזוי</strong> — הצירוף הכולל יציב. מה שנהרס זה <strong>הפירוש</strong>: אי אפשר יותר לדעת מי תורם מה, השונות של האומדים מתנפחת, והדירוג בסעיף 5.5 מאבד משמעות. וחשוב להבחין: תלות <strong>מושלמת</strong> (כמו מלכודת הדמה) ⇐ אין בכלל פתרון יחיד, חובה להשמיט עמודה; תלות <strong>גבוהה-אך-לא-מושלמת</strong> ⇐ המודל רץ, אבל אל תסמוך על המקדמים הבודדים. <span class="src-badge">📓 תוכן מקובץ סיכום</span> דגש מרצה: גם כשה-summary נראה תקין — השונות של האומדים גבוהה מאוד, והתוכנה תזרוק אזהרה.
+  </div>
+  <p><strong>איך מזהים בפלט?</strong> Cond. No. אסטרונומי (חזקות של 10 במקום עשרות) + הערה [2] על singular matrix. זה statsmodels שצועק "יש לך משתנים כפולים".</p>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">במודל יש מולטיקוליניאריות חזקה בין שני מסבירים. מה הכי נפגע?</div>
+    <button class="opt">דיוק החיזוי הכולל של המודל</button>
+    <button class="opt" data-correct>היכולת לפרש כל מקדם בנפרד — האומדים לא יציבים והשונות שלהם מתנפחת</button>
+    <button class="opt">ה-R² צונח תמיד לאפס</button>
+    <button class="opt">שום דבר — המחשב מסתדר</button>
+    <div class="q-explain">💬 החיזוי הכולל יכול להישאר מצוין (בדוגמה: R²=0.993 גם במודל המקולקל!) כי הצירוף יציב. מה שמת זה הפירוש: "כמה תורמת ההשקעה?" — אין תשובה, כי הקרדיט מתפצל שרירותית. לכן משמיטים עמודות תלויות — וזו בדיוק הסיבה למלכודת הדמה.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">5.7</span> סיכום היחידה + מה חשוב לבחינה</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>מודל מרובה</td><td>\(\hat{Y}=b_0+b_1X_1+b_2X_2+\dots\) — מישור במקום קו; מקדם = תרומה <strong>בהינתן שאר קבועים</strong></td></tr>
+    <tr><td>משתני דמה</td><td>קטגוריה ⇐ מתגי 0/1; k קטגוריות ⇐ k−1 עמודות; המקדם = הפרש מקטגוריית הבסיס; קווים/מישורים מקבילים</td></tr>
+    <tr><td>מבחני הדמה בפלט</td><td>כל דמה נבחן רק מול הבסיס — לא בין קטגוריות אחרות!</td></tr>
+    <tr><td>מקדם מתוקנן</td><td>\(b_i\cdot s_{X_i}/s_Y\) — סטיות תקן של Y על סטיית תקן של X; מדרגים לפי ערך מוחלט</td></tr>
+    <tr><td>מולטיקוליניאריות</td><td>תלות לינארית בין מסבירים ⇐ מקדמים שרירותיים ושונות מנופחת; החיזוי שורד, הפירוש מת</td></tr>
+  </table>
+  <div class="box exam">
+    <div class="box-title">🎯 מוקדי בחינה ביחידה הזאת</div>
+    <strong>שאלה 1:</strong> מקדם דמה = ההפרש האנכי בין קו הקטגוריה לקו הבסיס בחיתוך עם ציר Y (‏d₂ = 39.806−30.114 = 9.69). <strong>שאלה 3:</strong> דירוג השפעה = מקדמים מתוקננים — "סטיות תקן של Y על סטיית תקן של X" (שני הצדדים מתוקננים!). <strong>ומהכיתה:</strong> פירוש מקדם חייב "בהינתן שאר קבועים"; מבחני דמה משווים רק לבסיס. <strong>שים לב:</strong> אף אחת מהנוסחאות האלה לא בדף העזר.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">למה במודל עם חותך אסור להכניס את כל שלוש עמודות הדמה של הערים?</div>
+    <button class="opt">כי זה מאט את החישוב</button>
+    <button class="opt" data-correct>כי שלוש העמודות מסתכמות תמיד ל-1 — בדיוק עמודת החותך — ונוצרת תלות לינארית מושלמת שמונעת פתרון יחיד</button>
+    <button class="opt">כי הקטגוריה השלישית לא חשובה</button>
+    <button class="opt">מותר, זה רק עניין של סגנון</button>
+    <div class="q-explain">💬 מלכודת משתני הדמה: אריאל+חיפה+ירושלים = 1 לכל תצפית = עמודת החותך ⇐ מולטיקוליניאריות מושלמת ⇐ אינסוף פתרונות. משמיטים עמודה אחת והיא הופכת לקטגוריית הבסיס שכולם נמדדים ביחס אליה. (והקטגוריה שמושמטת לא "לא חשובה" — היא פשוט נבלעת בחותך.)</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="topic04.html"><div class="dir">→ הקודם</div><div class="dest">יחידה 4: רגרסיה לינארית פשוטה</div></a>
+    <a href="#" style="opacity:.5; pointer-events:none"><div class="dir">הבא ←</div><div class="dest">יחידה 6: אינטראקציות ורגרסיה פולינומית (ייבנה בהמשך)</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>
