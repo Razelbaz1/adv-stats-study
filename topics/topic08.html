@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 8 · ANOVA חד-כיוונית</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<script defer src="../js/anova-widget.js?v=1"></script>
+</head>
+<body data-topic="topic08">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 8</span>
+  <h1>ANOVA חד-כיוונית</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">8.0</span> מאיפה באנו ולאן אנחנו הולכים</h2>
+  <p>פרק חדש בקורס! יחידה 7 סגרה את נושא הרגרסיות ("סוף נושא רגרסיות" 🎓), ועכשיו אנחנו פותחים את השליש האחרון: <strong>ANOVA</strong> — Analysis of Variance, ניתוח שונות. ואם יש לך תחושת דז'ה-וו — בצדק. עוד ביחידה 1 הבטחנו לך שני דברים: שהתפלגות <strong>F</strong> ("יחס בין שתי שונויות") תקבל תפקיד ראשי, ושהשם <strong>Mean Square</strong> יחזור. היחידה הזאת היא בדיוק קיום ההבטחה.</p>
+  <p>גם הכלים מוכרים: ביחידה 3 השווינו תוחלות של <strong>שתי</strong> קבוצות עם מבחן t. עכשיו נשאל את השאלה הטבעית הבאה — מה עושים כשיש <strong>שלוש קבוצות או יותר</strong>? נבנה את המבחן מאפס: השערות ← פירוק השונות ← דרגות חופש ← טבלת ANOVA ← מבחן F. שלוש שאלות מבחן (14, 15, 16) גרות כאן, ושתי מעבדות אינטראקטיביות 🎛️ מחכות בפנים.</p>
+  <p style="color:var(--muted); font-size:.9rem">ביחידה הזאת אנחנו בונים את המבחן עצמו; ביחידה 9 נלמד מה עושים אחריו (Tukey) ומה עושים כשההנחות שלו נשברות (Levene, Shapiro-Wilk, Welch, Kruskal-Wallis) — שם גם נפתח לעומק את טבלאות דף העזר שלך.</p>
+</section>
+
+<section class="card">
+  <h2 id="question"><span class="sec-num">8.1</span> השאלה: שלוש קבוצות, ממוצעים שונים — אמיתי או רעש?</h2>
+  <p>הדוגמה שמלווה את כל ההרצאה: משווים <strong>ציוני תלמידים בשלוש שיטות הוראה</strong> — פרונטלי, היברידי ומקוון (זום), 30 תלמידים בכל קבוצה (N=90). מחשבים ממוצעים ומקבלים: פרונטלי ≈ 69.4, היברידי ≈ 74.9, מקוון ≈ 82.2. המקוון "מנצח". סגרנו עניין?</p>
+
+  <div class="quiz">
+    <span class="q-label">שאלה שנשאלה בכיתה</span> <span class="src-badge">📓 תוכן מקובץ סיכום</span>
+    <div class="q-text">למה בכלל צריך מבחן סטטיסטי? למה לא פשוט להשוות את הממוצעים ולהכריז על הקבוצה עם הממוצע הגבוה כמנצחת?</div>
+    <button class="opt">כי ממוצע הוא מדד לא אמין ועדיף חציון</button>
+    <button class="opt" data-correct>כי גם אם אין שום הבדל אמיתי בין השיטות, ממוצעי מדגם לעולם לא ייצאו זהים במקרה — צריך לבדוק אם ההבדל גדול ממה שאקראיות לבדה מייצרת</button>
+    <button class="opt">כי אסור להסיק מסקנות בלי לחשב p-value, זה החוק</button>
+    <button class="opt">כי צריך קודם לוודא שהמדגמים באותו גודל</button>
+    <div class="q-explain">💬 זו הנשמה של כל הקורס: מדגם הוא הגרלה. תגריל 3 קבוצות מאותה אוכלוסייה בדיוק — תקבל 3 ממוצעים שונים, תמיד. השאלה היא אף פעם לא "האם הממוצעים שונים" (הם תמיד שונים!) אלא "האם הם שונים <strong>יותר מדי</strong> בשביל להיות סתם מזל". את זה בדיוק ANOVA הולך לכמת — ותכף תראה את זה בעיניים במעבדה של 8.3.</div>
+  </div>
+
+  <figure>
+    <img src="../assets/lect5/two_way_anova_statsmodels_rtl_v2-Copy1__cell012_out1.png" alt="ממוצע מכירות לפי מיקום — שלוש קבוצות">
+    <figcaption>מחומרי ההרצאה (דוגמת המכירות): ממוצע לפי שלוש קטגוריות מיקום. שים לב מה תרשים עמודות כזה <strong>מסתיר</strong> — את הפיזור בתוך כל קבוצה! עמודת ה-med גבוהה, אבל אם בתוך כל קבוצה הערכים מתפזרים פרא, ההבדל הזה יכול להיות סתם רעש. בלי לראות את הפיזור — אי אפשר לשפוט. זה בדיוק החוסר ש-ANOVA משלים.</figcaption>
+  </figure>
+
+  <h3 id="hypotheses">ההשערות — שאלה 14</h3>
+  <div class="box formula">
+    <div class="box-title">📐 השערות ANOVA חד-כיוונית</div>
+    $$H_0:\; \mu_1 = \mu_2 = \cdots = \mu_k \qquad\qquad H_1:\; \text{לא כל התוחלות שוות}$$
+    <strong>פענוח:</strong> \(\mu_i\) — התוחלת (הממוצע האמיתי באוכלוסייה) של קבוצה \(i\); \(k\) — מספר הקבוצות (אצלנו 3 שיטות הוראה). <strong>H0</strong> אומרת: לשיטת ההוראה אין שום השפעה, כל הקבוצות נדגמות מאוכלוסייה עם אותה תוחלת. <strong>H1</strong> אומרת: <em>לפחות</em> תוחלת אחת שונה מהשאר — ותו לא.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ שתי מלכודות בניסוח H1 — בדיוק המסיחים של שאלה 14</div>
+    <strong>מלכודת 1:</strong> H1 היא <em>לא</em> "כל הממוצעים שונים זה מזה". מספיק שקבוצה אחת חורגת — גם אם כל השאר זהות לחלוטין — כדי ש-H1 תתקיים.<br>
+    <strong>מלכודת 2:</strong> <span class="src-badge">📓 תוכן מקובץ סיכום</span> לא לערבב בין "H1 מתקיימת" לבין "נדחה את H0": זה שתוחלת אחת שונה <em>באוכלוסייה</em> מספיק כדי ש-H1 תהיה נכונה — אבל האם <em>נזהה</em> את זה ונדחה את H0 בפועל תלוי בנתונים, בגודל ההבדל וברעש. הבחנה שכבר פגשת ביחידה 3 (עוצמת מבחן!).
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 14 מהמבחן לדוגמא</span>
+    <div class="q-text">ב-One Way ANOVA עם 4 קבוצות, מהי השערת האפס?</div>
+    <button class="opt">א. כל הממוצעים שונים זה מזה</button>
+    <button class="opt">ב. לפחות ממוצע אחד שונה</button>
+    <button class="opt" data-correct>ג. כל ממוצעי האוכלוסייה שווים</button>
+    <button class="opt">ד. לפחות שני ממוצעים שווים</button>
+    <div class="q-explain">💬 H0 היא תמיד עולם ה"שום דבר לא קורה": כל 4 התוחלות שוות (ג). שים לב למסיחים: ב זו בדיוק H1 (לפחות אחד שונה), א זו טעות נפוצה על H1 (לא נדרש שכולם יהיו שונים), ו-ד לא מתארת אף השערה במבחן. טיפ לזיהוי מהיר: המילים "לפחות אחד" כמעט תמיד שייכות ל-H1, והשוויון המלא ל-H0.</div>
+  </div>
+
+  <h3 id="model">המודל: כל ציון מורכב משלושה חלקים</h3>
+  <div class="box formula">
+    <div class="box-title">📐 מודל ה-ANOVA <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    $$y_{ij} = \mu + \alpha_i + \varepsilon_{ij}$$
+    <strong>פענוח:</strong> \(y_{ij}\) — הציון של תלמיד \(j\) בקבוצה \(i\) (האינדקס הראשון = קבוצה, השני = מי בתוכה); \(\mu\) — הממוצע הכללי של כולם; \(\alpha_i\) — ה"תוספת" של קבוצה \(i\) (כמה השיטה הזאת מעל/מתחת לממוצע הכללי); \(\varepsilon_{ij}\) — רעש אישי של התלמיד (יום טוב, יום רע). במונחי המודל, H0 מקבלת ניסוח אלגנטי: \(\alpha_1=\alpha_2=\cdots=\alpha_k=0\) — לאף קבוצה אין תוספת משלה.<br>
+    ומה מניחים על הרעש? \(\varepsilon_{ij}\sim N(0,\sigma^2)\) — <strong>פענוח:</strong> תוחלת 0 (הרעש לא מטה שיטתית לאף כיוון) ושונות \(\sigma^2\), כאשר אותה \(\sigma^2\) <em>אחת</em> משותפת לכל הקבוצות. את רשימת הנחות המודל המלאה נפגוש ב-8.7, אבל את \(\sigma^2\) — "שונות הרעש" — כדאי להכיר כבר עכשיו, כי היא תככב ב-8.5.
+  </div>
+  <details class="fold">
+    <summary>🔎 בונוס: ANOVA היא בעצם… רגרסיה! (החיבור ליחידות 4–6)</summary>
+    <p>תסתכל שוב על המודל: קבוע + אפקט לפי קטגוריה + שגיאה. זה מזכיר משהו? זו בדיוק <strong>רגרסיה עם משתני דמה</strong> מיחידה 5! אם נקודד את שיטת ההוראה כשני משתני דמה (בדיוק כמו מהנדס/איש שיווק), נקבל רגרסיה שהחותך שלה הוא ממוצע קבוצת הבסיס וכל מקדם הוא הפרש ממוצעים. ובאמת — בהמשך תראה שבפייתון מריצים ANOVA עם <code>smf.ols</code>, אותה פונקציה בדיוק מהרגרסיות. גם מבחן ה-F הכולל שראית חבוי בפלט ה-summary עוד מיחידה 4 ("F-statistic") — הוא הוא מבחן ה-ANOVA. ומתנה קטנה לעתיד: ה-R² של הרגרסיה הזאת שווה בדיוק ל-SSB/SST שנפגוש עוד רגע.</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2 id="decomposition"><span class="sec-num">8.2</span> הרעיון הגדול: פירוק השונות — SST = SSB + SSW</h2>
+  <p>איך מכמתים "ההבדל בין הקבוצות גדול ממה שהרעש מסביר"? הרעיון הגאוני של פישר: לוקחים את <strong>כל הפיזור</strong> בנתונים ומפרקים אותו לשני חלקים — החלק שנובע מהבדלים <strong>בין</strong> הקבוצות (האות 📣) והחלק שנובע מפיזור <strong>בתוך</strong> הקבוצות (הרעש 📻). <span class="src-badge">📓 תוכן מקובץ סיכום</span> כפי שהודגש בכיתה: כל מהות המבחן היא השוואה בין שתי שונויות — בין הקבוצות מול בתוך הקבוצות.</p>
+
+  <div class="box formula">
+    <div class="box-title">📐 שלושת סכומי הריבועים — הנוסחאות שחייבים לזכור בעל-פה</div>
+    $$SS_T = \sum_{i=1}^{k}\sum_{j=1}^{n_i}\big(y_{ij}-\bar{y}_{..}\big)^2 \qquad
+      SS_B = \sum_{i=1}^{k} n_i\big(\bar{y}_{i.}-\bar{y}_{..}\big)^2 \qquad
+      SS_W = \sum_{i=1}^{k}\sum_{j=1}^{n_i}\big(y_{ij}-\bar{y}_{i.}\big)^2$$
+    $$\Large SS_T = SS_B + SS_W$$
+    <strong>פענוח:</strong> \(y_{ij}\) — התצפית ה-\(j\) בקבוצה \(i\); \(\bar{y}_{i.}\) — ממוצע קבוצה \(i\) (הנקודה במקום \(j\) אומרת "מיצענו על פני כל התצפיות בקבוצה"); \(\bar{y}_{..}\) — הממוצע הכללי (מיצענו על הכול); \(n_i\) — גודל קבוצה \(i\); \(k\) — מספר הקבוצות; \(N=\sum n_i\) — סך כל התצפיות.<br>
+    <strong>SS<sub>T</sub></strong> (Total) — כמה כל תצפית רחוקה מהממוצע הכללי: כל הפיזור שיש בעולם. <strong>SS<sub>B</sub></strong> (Between) — כמה ממוצעי הקבוצות רחוקים מהממוצע הכללי, כשכל קבוצה "שוקלת" לפי גודלה \(n_i\): האות. <strong>SS<sub>W</sub></strong> (Within) — כמה כל תצפית רחוקה מהממוצע <em>של הקבוצה שלה</em>: הרעש. והפלא: האות והרעש מסתכמים <em>בדיוק</em> לפיזור הכולל.
+  </div>
+
+  <div class="box intuition">
+    <div class="box-title">💡 למה הפירוק הזה עובד? (האינטואיציה מאחורי הזהות)</div>
+    קח תצפית אחת: המרחק שלה מהממוצע הכללי מתפצל לשני קטעים — מהתצפית עד ממוצע הקבוצה שלה (רעש), ומממוצע הקבוצה עד הממוצע הכללי (אות): \((y_{ij}-\bar{y}_{..}) = (y_{ij}-\bar{y}_{i.}) + (\bar{y}_{i.}-\bar{y}_{..})\). כשמרבעים וסוכמים את הפיצול הזה על כל התצפיות, איברי ההצלבה מתאפסים (כי סכום הסטיות מהממוצע בכל קבוצה הוא 0 — עוד רגע נשתמש בעובדה הזאת גם לדרגות חופש!) ונשארת הזהות הנקייה. אגב שמות: בספרים אחרים תפגוש את SS<sub>W</sub> בשם <strong>SSE</strong> (Error) ואת SS<sub>B</sub> בשם SSTr (Treatment) — אותו דבר בדיוק.
+  </div>
+
+  <div class="box example">
+    <div class="box-title">🧮 דוגמה מההרצאה — לחשב הכל ביד</div>
+    שלוש קבוצות של 3 תצפיות: A = {4, 5, 6}, B = {7, 8, 9}, C = {10, 11, 12}.<br>
+    ממוצעי הקבוצות: \(\bar{y}_{A.}=5,\; \bar{y}_{B.}=8,\; \bar{y}_{C.}=11\); הממוצע הכללי: \(\bar{y}_{..}=8\).<br>
+    <strong>SS<sub>B</sub></strong> = 3·(5−8)² + 3·(8−8)² + 3·(11−8)² = 27 + 0 + 27 = <strong>54</strong><br>
+    <strong>SS<sub>W</sub></strong> = [(4−5)²+(5−5)²+(6−5)²] + [(7−8)²+(8−8)²+(9−8)²] + [(10−11)²+(11−11)²+(12−11)²] = 2+2+2 = <strong>6</strong><br>
+    <strong>SS<sub>T</sub></strong> = (4−8)²+(5−8)²+⋯+(12−8)² = 16+9+4+1+0+1+4+9+16 = <strong>60</strong>. ובדיקה: 54 + 6 = 60 ✓<br>
+    שים לב מה המספרים מספרים: כמעט כל הפיזור (54 מתוך 60 = 90%) מגיע מההבדלים בין הקבוצות — אות חזק, רעש חלש.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">במחקר כלשהו חושב SS<sub>T</sub> = 200 ו-SS<sub>B</sub> = 150. מה הערך של SS<sub>W</sub>?</div>
+    <button class="opt" data-correct>50 — לפי הזהות, מה שלא בין הקבוצות הוא בתוכן</button>
+    <button class="opt">350 — סוכמים את שניהם</button>
+    <button class="opt">0.75 — מחלקים</button>
+    <button class="opt">אי אפשר לדעת בלי הנתונים הגולמיים</button>
+    <div class="q-explain">💬 הזהות SST = SSB + SSW עובדת <strong>תמיד</strong>, בלי קשר לנתונים: SSW = 200 − 150 = 50. זה בדיוק הטריק שאיתו משלימים טבלת ANOVA חסרה במבחן (מחכה לך ב-8.6). ובונוס: 150/200 = 75% מהפיזור מוסבר על-ידי הקבוצות — מספר שעוד יקבל שם ביחידה 9.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="lab"><span class="sec-num">8.3</span> מעבדת אות ורעש 🎛️ — לראות את הפירוק חי</h2>
+  <p>לפני שנמשיך לנוסחאות — בוא <strong>תרגיש</strong> את זה. במעבדה למטה שלוש קבוצות (ניחשת נכון — פרונטלי, היברידי, מקוון). אתה שולט בשלושה דברים: כמה הממוצעים האמיתיים רחוקים זה מזה (האות), כמה רעש יש בתוך כל קבוצה, וכמה תצפיות בכל קבוצה. הקווים הצבעוניים = ממוצעי הקבוצות; המקווקו השחור = הממוצע הכללי; תיבת "הצג את הסטיות" (כבר מסומנת) מציירת את שני מרכיבי הפירוק: <span style="color:#4f6df5;font-weight:700">כחול עבה</span> = המרחקים שבונים את SSB, <span style="color:#d99114;font-weight:700">כתום דק</span> = המרחקים שבונים את SSW.</p>
+  <p style="font-size:.92rem; color:var(--muted)">הצצה קדימה: בשורה התחתונה של המעבדה מופיע מספר בשם <strong>F</strong>. נגדיר אותו כמו שצריך רק ב-8.5 — בינתיים קרא אותו כך: "פי כמה האות גדול מהרעש" (אחרי נרמול קטן שנלמד), כאשר MSB = האות המנורמל ו-MSW = הרעש המנורמל. ו"דוחים את H0" = ה-F חצה את הערך הקריטי שלו.</p>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מעבדת פירוק השונות — אות מול רעש</div>
+    <p class="w-hint">משימות מודרכות: (1) לחץ "H0 נכונה" — כל הקבוצות מאותה אוכלוסייה בדיוק. שים לב שהממוצעים בכל זאת יצאו שונים, וש-F יושב בסביבות 1 — רחוק מהערך הקריטי. (2) הגדל בהדרגה את המרחק ותפוס את הרגע שבו F חוצה את הערך הקריטי (נסה גם את "גבולי" — ושים לב כמה p קרוב שם ל-0.05). (3) קבע מרחק, והגדל רק את הרעש — מה קורה ל-F?</p>
+    <div class="widget-controls">
+      <label>מרחק בין הממוצעים: <input type="range" id="w-an-sep" min="0" max="10" step="0.5" value="3"> <span class="val" id="w-an-sep-val">3.0</span></label>
+      <label>רעש בתוך הקבוצות: <input type="range" id="w-an-noise" min="1" max="8" step="0.5" value="4"> <span class="val" id="w-an-noise-val">4.0</span></label>
+      <label>n בכל קבוצה: <input type="range" id="w-an-n" min="4" max="30" step="1" value="10"> <span class="val" id="w-an-n-val">10</span></label>
+    </div>
+    <div class="widget-controls">
+      <label><input type="checkbox" id="w-an-show" checked> הצג את הסטיות (כחול = SSB, כתום = SSW)</label>
+      <button class="w-btn" id="w-an-preset-h0">🎬 H0 נכונה</button>
+      <button class="w-btn" id="w-an-preset-hard">🎬 גבולי</button>
+      <button class="w-btn" id="w-an-preset-clear">🎬 מובהק בבירור</button>
+    </div>
+    <div id="w-an-stage" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px;margin-top:10px"></div>
+    <div class="widget-readout" id="w-an-readout"></div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך — על מה שראית במעבדה</span>
+    <div class="q-text">קיבעת את המרחק בין הממוצעים והגדלת רק את הרעש בתוך הקבוצות. מה קרה לסטטיסטי F?</div>
+    <button class="opt">לא השתנה — הרי המרחק בין הממוצעים נשאר אותו דבר</button>
+    <button class="opt">גדל — יותר שונות בנתונים פירושה יותר ראיות</button>
+    <button class="opt" data-correct>קטן — המכנה (MSW) גדל, ואותו אות נבלע ברעש</button>
+    <button class="opt">F תמיד נשאר בסביבות 1</button>
+    <div class="q-explain">💬 F הוא <strong>יחס</strong>: אות חלקי רעש. אותו הבדל בין ממוצעים הוא "ענק" כשהקבוצות הדוקות ו"כלום" כשהן מפוזרות. ודקות למתקדמים: אם שמת לב, גם ה-SSB גדל קצת כשהגדלת את הרעש — ממוצעי המדגם עצמם רועדים יותר — אבל ה-MSW גדל הרבה יותר מהר, אז היחס מתכווץ. זו גם הסיבה שתחת H0 הסטטיסטי לא יוצא אפס אלא מרחף סביב 1: הרעש מייצר הבדלי-ממוצעים מדומים בדיוק בקצב שה-MSW מודד.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="df"><span class="sec-num">8.4</span> דרגות חופש: מידע פחות אילוצים — שאלה 16</h2>
+  <p>לפני שנרכיב את המבחן, חייבים לעצור על המושג שהקורס הזה אוהב לשאול עליו: <strong>דרגות חופש</strong> (df). ההגדרה שניתנה בכיתה שווה חריטה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 דרגות חופש <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    $$df = \text{מספר פיסות המידע} - \text{מספר האילוצים}$$
+    <strong>פענוח:</strong> "מידע" — כמה מספרים יש לנו; "אילוץ" — כל דבר שכבר ידוע ומגביל אותם. df סופר לכמה מספרים נשאר <em>חופש אמיתי</em> להשתנות — כלומר כמה מידע בלתי-תלוי באמת יש בידינו.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 שלושה מספרים, אילוץ אחד</div>
+    נניח שאני מגלה לך ששלושה מספרים מסתכמים ל-30. כמה חופש יש לך לבחור אותם? רק <strong>2</strong>: ברגע שבחרת 10 ו-12, השלישי <em>חייב</em> להיות 8. שלושה מספרים − אילוץ אחד = 2 דרגות חופש. עכשיו תיזכר ביחידה 2: בדיוק בגלל זה אומד השונות מחלק ב-\(n-1\) — הסטיות מהממוצע מקיימות תמיד \(\sum(x_i-\bar{x})=0\) (זה האילוץ!), אז מתוך \(n\) סטיות רק \(n-1\) חופשיות. במדגם {2, 4, 6} הסטיות הן ‎−2, 0, +2‎: תגלה לי שתיים מהן — ואני אגיד לך את השלישית.
+  </div>
+
+  <h3 id="df-anova">ומה ב-ANOVA? אותו רעיון, פעמיים</h3>
+  <table class="tbl">
+    <tr><th>רכיב</th><th>המידע</th><th>האילוץ</th><th>df</th></tr>
+    <tr><td><strong>בתוך הקבוצות</strong> (SS<sub>W</sub>)</td><td>N תצפיות</td><td>בכל קבוצה סכום הסטיות מהממוצע שלה = 0 — אילוץ אחד <strong>לכל קבוצה</strong> ⇐ k אילוצים</td><td style="direction:ltr;text-align:center"><strong>N − k</strong></td></tr>
+    <tr><td><strong>בין הקבוצות</strong> (SS<sub>B</sub>)</td><td>k ממוצעי קבוצות</td><td>הממוצע המשוקלל של ממוצעי הקבוצות חייב לצאת הממוצע הכללי — אילוץ אחד</td><td style="direction:ltr;text-align:center"><strong>k − 1</strong></td></tr>
+    <tr><td><strong>סה"כ</strong> (SS<sub>T</sub>)</td><td>N תצפיות</td><td>סכום הסטיות מהממוצע הכללי = 0 — אילוץ אחד</td><td style="direction:ltr;text-align:center"><strong>N − 1</strong></td></tr>
+  </table>
+  <div class="box formula">
+    <div class="box-title">📐 גם דרגות החופש מתפרקות בדיוק כמו השונות</div>
+    $$df_T = df_B + df_W \qquad\Longleftrightarrow\qquad N-1 = (k-1) + (N-k)$$
+    <strong>פענוח:</strong> \(N\) — סך כל התצפיות; \(k\) — מספר הקבוצות. המידע הכולל (\(N-1\)) מתחלק בלי שארית: \(k-1\) דרגות "הולכות" להבדלים בין הקבוצות, \(N-k\) נשארות לרעש. פירוק כפול — גם ה-SS וגם ה-df — וזה מה שהופך את טבלת ANOVA לפאזל שאפשר להשלים.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ דיוק חשוב על האילוץ של ה-Between (הסיכום של החבר התבלבל כאן)</div>
+    האילוץ שמוריד את ה-df מ-k ל-k−1 הוא: בהינתן הממוצע הכללי, ממוצעי הקבוצות מקיימים \(\sum_i n_i(\bar{y}_{i.}-\bar{y}_{..})=0\) — כלומר ממוצע הקבוצה האחרונה <em>נקבע אוטומטית</em> מהאחרים. שים לב שזה בדיוק המבנה של סעיף ג בשאלה 16 — אבל הוא האילוץ של ה-<strong>Between</strong>, לא של ה-Within! זו ההבחנה שהשאלה בודקת.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 16 מהמבחן לדוגמא</span>
+    <div class="q-text">למה מספר דרגות החופש של ה-Within הוא N − k?</div>
+    <button class="opt">א. בגלל שיש שוויון שונויות</button>
+    <button class="opt" data-correct>ב. בגלל שבכל קבוצה יש את האילוץ Σ (x<sub>i,j</sub> − x̄<sub>j</sub>) = 0</button>
+    <button class="opt">ג. בגלל האילוץ Σ n<sub>j</sub>(x̄<sub>j</sub> − x̄) = 0</button>
+    <button class="opt">ד. אף תשובה אינה נכונה</button>
+    <div class="q-explain">💬 ה-SSW מחושב מהסטיות של כל תצפית מממוצע <strong>הקבוצה שלה</strong> — ובכל אחת מ-k הקבוצות הסטיות האלה מסתכמות לאפס. N פיסות מידע − k אילוצים = N−k. תשובה: ב. המסיח המסוכן הוא ג: זה אילוץ אמיתי וחשוב — אבל הוא של ה-<strong>Between</strong> (הוא שנותן k−1), לא של ה-Within. ו-א בכלל שייכת להנחות המודל, לא לדרגות חופש.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="ftest"><span class="sec-num">8.5</span> מ-SS ל-MS ל-F: המבחן עצמו — שאלה 15</h2>
+  <p>יש לנו אות (SSB) ורעש (SSW) — אבל אי אפשר להשוות אותם ישירות! למה? כי הם בנויים מכמויות שונות של מידע. וכאן חוזרת ההבטחה מיחידה 1: מחלקים כל SS בדרגות החופש שלו ומקבלים <strong>Mean Square</strong> — ריבוע ממוצע, שהוא בעצם "שונות ליחידת מידע":</p>
+
+  <div class="box formula">
+    <div class="box-title">📐 ריבועים ממוצעים וסטטיסטי המבחן</div>
+    $$MS_B = \frac{SS_B}{k-1} \qquad MS_W = \frac{SS_W}{N-k} \qquad\Longrightarrow\qquad F = \frac{MS_B}{MS_W}$$
+    <strong>פענוח:</strong> \(MS_B\) — השונות בין הקבוצות אחרי נרמול במידע שבנה אותה (\(k-1\)); \(MS_W\) — השונות בתוך הקבוצות אחרי נרמול (\(N-k\)) — זה בעצם אומדן ל-\(\sigma^2\), שונות הרעש; \(F\) — היחס ביניהם: <strong>פי כמה האות גדול מהרעש</strong>. תחת H0 שניהם אומדים את אותו \(\sigma^2\), ולכן \(F\approx 1\); כשיש הבדל אמיתי בין הקבוצות, ה-\(MS_B\) מתנפח וה-F בורח למעלה.
+  </div>
+
+  <div class="box warning">
+    <div class="box-title">⚠️ למה אסור להשוות SSB ל-SSW ישירות (טעות שמופיעה גם בסיכום)</div>
+    מפתה לחשוב: "אם אין הבדל אמיתי בין הקבוצות, SSB ו-SSW אמורים לצאת דומים". <strong>ממש לא!</strong> תחת H0, כל דרגת חופש "תורמת" בממוצע \(\sigma^2\) אחד: \(E(SS_B)=(k-1)\sigma^2\) לעומת \(E(SS_W)=(N-k)\sigma^2\). בדוגמת ההרצאה (2 מול 87 דרגות חופש) זה אומר שגם <strong>בלי שום אפקט אמיתי</strong>, ה-SSW צפוי לצאת גדול פי ~43 מה-SSB — פשוט כי הוא בנוי מהרבה יותר פיסות מידע. וזה עובד גם הפוך: כשהאות חזק מאוד, SSB דווקא יכול לעקוף את SSW — בדוגמת היד שלנו מ-8.2 יצא 54 מול 6! המסקנה: המספרים הגולמיים לא ברי-השוואה, לשום כיוון. ההשוואה ההוגנת היא רק <strong>אחרי</strong> החלוקה ב-df: תחת H0 מתקיים \(E(MS_B)=E(MS_W)=\sigma^2\) — הריבועים ה<em>ממוצעים</em> הם שאמורים לצאת דומים, והיחס שלהם הוא שאמור להיות בסביבות 1.
+  </div>
+
+  <p>ובאיזו התפלגות משווים את ה-F שקיבלנו? <span class="src-badge">📓 תוכן מקובץ סיכום</span> בסיכום מהכיתה כתוב רק "הסטטיסטי מתפלג F" — נשלים את מה שחסר שם, כי זה בדיוק מה שהמבחן אוהב לשאול: אילו פרמטרים?</p>
+
+  <div class="box formula">
+    <div class="box-title">📐 התפלגות הסטטיסטי תחת H0</div>
+    $$F = \frac{MS_B}{MS_W} \;\sim\; F(k-1,\; N-k) \quad \text{תחת } H_0$$
+    <strong>פענוח:</strong> שני הפרמטרים של התפלגות F הם בדיוק שתי דרגות החופש מהטבלה — של המונה (\(k-1\), ה-Between) ושל המכנה (\(N-k\), ה-Within), <em>באותו סדר</em>. דוחים את H0 כאשר \(F > F_{1-\alpha}(k-1, N-k)\) — הערך הקריטי בזנב הימני. המבחן הוא <strong>חד-צדדי ימני</strong> תמיד: רק F גדול מעיד נגד H0 (אות חזק מרעש), כי תחת H1 ה-F רק גדל — הוא אף פעם לא "בורח" כלפי מטה.
+  </div>
+
+  <details class="fold">
+    <summary>🔎 בונוס: השרשרת המלאה מיחידה 1 — איך נולדת התפלגות F של המבחן</summary>
+    <p>זוכר את שרשרת ההתפלגויות? נורמלית ← חי-בריבוע ← F. הנה היא בפעולה, חוליה-חוליה:</p>
+    <p><strong>1)</strong> לפי הנחות המודל, השגיאות נורמליות: \(\varepsilon_{ij}\sim N(0,\sigma^2)\), ולכן \(\varepsilon_{ij}/\sigma \sim N(0,1)\) — אלה ה-Z-ים שלנו.<br>
+    <strong>2)</strong> מיחידה 1: סכום של m ריבועי Z בלתי-תלויים מתפלג \(\chi^2_m\). ואכן: \(SS_W/\sigma^2 \sim \chi^2_{N-k}\) (תמיד!), ותחת H0 גם \(SS_B/\sigma^2 \sim \chi^2_{k-1}\). שים לב — דרגות החופש של החי-בריבוע הן בדיוק ה-df שספרנו ב-8.4. זו לא מקריות, זו הסיבה האמיתית לספירה.<br>
+    <strong>3)</strong> SSB ו-SSW בלתי-תלויים (עובדה לא טריוויאלית — משפט קוכרן, למי שירצה לחפש), ומיחידה 1: יחס של שני חי-בריבוע, כל אחד מחולק ב-df שלו, מתפלג F. הצב: \(\dfrac{(SS_B/\sigma^2)/(k-1)}{(SS_W/\sigma^2)/(N-k)} = \dfrac{MS_B}{MS_W} \sim F(k-1,N-k)\).</p>
+    <p>ושים לב ליופי: ה-\(\sigma^2\) הלא-ידוע <strong>מצטמצם</strong> ביחס — ולכן אפשר לחשב את F מהנתונים בלי לדעת את שונות הרעש האמיתית. וגם הפאנץ' לקראת יחידה 9: כל השרשרת נשענת על החוליה הראשונה — הנורמליות. בלעדיה הסכומים אינם חי-בריבוע, היחס אינו F, וה-p-value פשוט לא נכון. לכן בודקים הנחות.</p>
+  </details>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 15 מהמבחן לדוגמא</span>
+    <div class="q-text">כדי לחשב MS<sub>B</sub> מחלקים את ה-SS<sub>B</sub> במספר הדרגות חופש ולא במספר הקבוצות, למה?</div>
+    <button class="opt">א. כי יש אילוצים בתוך המידע — ומספר הדרגות חופש הוא מתאר את כמות המידע הבלתי תלוי</button>
+    <button class="opt">ב. כדי שזה יתפלג חי בריבוע</button>
+    <button class="opt">ג. כדי שהשונויות בקבוצות יהיו שוות</button>
+    <button class="opt" data-correct>ד. תשובות א ו-ב נכונות</button>
+    <div class="q-explain">💬 שתי הסיבות הן שני צדדים של אותו מטבע: <strong>א</strong> — מתוך k סטיות של ממוצעי הקבוצות רק k−1 בלתי-תלויות (האילוץ מ-8.4), אז חלוקה ב-k−1 סופרת את המידע האמיתי ונותנת אומדן לא מוטה (זוכר את n−1 מיחידה 2? אותו סיפור). <strong>ב</strong> — תחת H0 מתקיים \(SS_B/\sigma^2\sim\chi^2_{k-1}\) עם k−1 דרגות חופש, והגדרת התפלגות F דורשת לחלק כל חי-בריבוע <em>ב-df שלו</em> — רק כך היחס באמת מתפלג F. ג היא הנחת מודל, לא קשורה לחלוקה. תשובה: ד.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="anova-table"><span class="sec-num">8.6</span> טבלת ANOVA: לקרוא, לבנות — ולהשלים</h2>
+  <p>את כל מה שבנינו אורזים בטבלה סטנדרטית אחת — זו שכל תוכנה סטטיסטית מדפיסה וזו שתקבל במבחן. הנה הטבלה האמיתית מדוגמת שיטות ההוראה של ההרצאה (k=3, N=90):</p>
+
+  <table class="tbl">
+    <tr><th>מקור השונות</th><th style="text-align:center">SS</th><th style="text-align:center">df</th><th style="text-align:center">MS</th><th style="text-align:center">F</th><th style="text-align:center">Sig. (p)</th></tr>
+    <tr><td><strong>בין הקבוצות</strong> (Between)</td><td style="direction:ltr;text-align:center">2485.88</td><td style="direction:ltr;text-align:center">2</td><td style="direction:ltr;text-align:center">1242.94</td><td style="direction:ltr;text-align:center"><strong>17.57</strong></td><td style="direction:ltr;text-align:center">≈ 0.0000004</td></tr>
+    <tr><td><strong>בתוך הקבוצות</strong> (Within)</td><td style="direction:ltr;text-align:center">6155.69</td><td style="direction:ltr;text-align:center">87</td><td style="direction:ltr;text-align:center">70.76</td><td></td><td></td></tr>
+    <tr><td><strong>סה"כ</strong> (Total)</td><td style="direction:ltr;text-align:center">8641.57</td><td style="direction:ltr;text-align:center">89</td><td></td><td></td><td></td></tr>
+  </table>
+  <p>עבור על העקיבות בעצמך — הכול נסגר: ‎2485.88 + 6155.69 = 8641.57 (הזהות!), ‎2 + 87 = 89 (גם ב-df!), ‎1242.94 = 2485.88/2, ‎70.76 = 6155.69/87, ‎17.57 = 1242.94/70.76. האות גדול פי 17.5 מהרעש — הרבה מעבר לערך הקריטי \(F_{0.95}(2,87)\approx 3.10\) — ולכן p זעיר ודוחים את H0: שיטת ההוראה משפיעה על הציונים.</p>
+
+  <p>וכך זה נראה בפייתון — שים לב שזו ממש הפונקציה מהרגרסיות:</p>
+  <pre><code>import statsmodels.formula.api as smf
+import statsmodels.api as sm
+
+model = smf.ols('score ~ C(method)', data=df).fit()   # C() = משתנה קטגוריאלי
+aov = sm.stats.anova_lm(model, typ=2)                  # טבלת ה-ANOVA
+# C(method):  sum_sq=2485.88, df=2,  F=17.57, PR(>F)=3.9e-07
+# Residual:   sum_sq=6155.69, df=87</code></pre>
+
+  <div class="box exam">
+    <div class="box-title">🎯 אזהרת מבחן ששווה זהב <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    מהסיכום, כמעט ציטוט: <strong>המרצה אמר שהוא יכול לתת שאלה עם טבלת ANOVA שחלק מהערכים בה חסרים</strong>, ותצטרך להשלים את התאים לפי הקשרים: MS = SS/df, ‏F = MSB/MSW, ‏SST = SSB+SSW, ‏df<sub>T</sub> = df<sub>B</sub>+df<sub>W</sub>. בדיוק בשביל זה בנינו לך מאמן:
+  </div>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מאמן השלמת טבלה — התרגיל מההרצאה, צעד אחר צעד</div>
+    <p class="w-hint">נבדקו 4 קבוצות עם 24 תצפיות בסך הכול. ידועים רק SS<sub>B</sub> = 180 ו-SS<sub>T</sub> = 306. השלם את כל הטבלה: חשב כל תא בראש (או על דף!) ורק אז חשוף אותו.</p>
+    <div class="widget-controls">
+      <button class="w-btn" id="w-tc-next">▶ גלה את הצעד הבא</button>
+      <button class="w-btn" id="w-tc-reset" style="background:#5b6478">↺ מהתחלה</button>
+    </div>
+    <div id="w-tc-table" style="margin-top:10px"></div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:10px">יומן הפתרון:</div>
+    <div id="w-tc-log"></div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך — וריאציה חדשה על אותו תרגיל</span>
+    <div class="q-text">במחקר אחר: k = 3 קבוצות, N = 30 תצפיות, SS<sub>B</sub> = 90, SS<sub>T</sub> = 306. מה ערך הסטטיסטי F?</div>
+    <button class="opt">45 — מחלקים את SSB בדרגות החופש שלו</button>
+    <button class="opt" data-correct>5.63 — כי MSB = 45, MSW = 8, והיחס הוא 45/8</button>
+    <button class="opt">0.42 — מחלקים SSB ב-SST פחות SSB</button>
+    <button class="opt">2.81 — מחלקים את 5.63 בשתי דרגות החופש</button>
+    <div class="q-explain">💬 המסלול המלא: SSW = 306−90 = 216; דרגות חופש: df<sub>B</sub> = 3−1 = 2, df<sub>W</sub> = 30−3 = 27; ריבועים ממוצעים: MSB = 90/2 = 45, MSW = 216/27 = 8; ולבסוף F = 45/8 = <strong>5.63</strong>. שים לב למסיח הראשון: 45 הוא רק ה-MSB — מי שעוצר שם שכח את כל המכנה. תרגל את המסלול הזה עד שהוא אוטומטי — אין אותו בדף העזר!</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="whatnext"><span class="sec-num">8.7</span> דחינו את H0 — מה בעצם למדנו? (ומה לא)</h2>
+  <p>F = 17.57, ‏p זעיר, דוחים את H0. מרגיש כמו סוף הסיפור — אבל זו בדיוק הנקודה שההרצאה עצרה עליה: <span class="src-badge">📓 תוכן מקובץ סיכום</span> <strong>דחיית H0 ב-ANOVA נותנת מידע חלקי בלבד</strong> — יודעים שלא כל התוחלות שוות, אבל לא <em>אילו</em> קבוצות שונות מאילו. הדוגמה שניתנה: עם 10 קבוצות ייתכן שקבוצות 1–9 זהות לחלוטין ורק קבוצה 10 חריגה — וה-ANOVA ייתן בדיוק אותה תשובה: "יש הבדל".</p>
+
+  <div class="box warning">
+    <div class="box-title">⚠️ מובהק ≠ גדול, וגם ≠ "כולם שונים"</div>
+    שתי מסקנות ש<em>אסור</em> להסיק מ-ANOVA מובהק: (1) ש<strong>כל</strong> הקבוצות שונות זו מזו — אולי רק זוג אחד; (2) שההבדל <strong>גדול</strong> — עם N ענק גם הבדל זניח יוצא מובהק (זוכר את השיעור של Cohen's d מיחידה 3? אותו עיקרון). את "בין מי למי" עונים מבחני ההמשך (Post-Hoc) ואת "כמה גדול" עונים מדדי גודל אפקט — שניהם כוכבי יחידה 9.
+  </div>
+
+  <p>ומה עם ההנחות? כדי שכל הבניין יעמוד — שה-F באמת יתפלג F — המודל מניח שלושה דברים: <strong>(1)</strong> תצפיות בלתי-תלויות (נובע מתכנון הניסוי), <strong>(2)</strong> שגיאות נורמליות \(\varepsilon_{ij}\sim N(0,\sigma^2)\), <strong>(3)</strong> אותה שונות \(\sigma^2\) בכל הקבוצות (הומוסקדסטיות — מכירים מיחידה 4!). איך בודקים אותן (Levene, Shapiro-Wilk, QQ-plot) ומה עושים כשהן נשברות (Welch, Kruskal-Wallis) — זה הלב של יחידה 9.</p>
+
+  <div class="box intuition">
+    <div class="box-title">💡 איפה זה פוגש את דף העזר שלך</div>
+    פתח את דף העזר לבחינה ותראה שהוא בנוי בדיוק על הצומת הזה: טבלת "מצב ← מבחן גלובלי ← Post-Hoc" (השורה הראשונה: הנחות מתקיימות ← One-Way ANOVA ← Tukey HSD) וטבלת "הנחה ← מבחן ← מה עושים כשמופרת". כלומר: את <strong>ההחלטות</strong> הדף נותן לך בחינם. מה שהוא <strong>לא</strong> נותן — וחייב לשבת בראש — זה כל מה שלמדת היום: הנוסחאות של SS/MS/F, דרגות החופש וההשערות. תחלק את זמן השינון בהתאם.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">מבחן ANOVA על 4 קבוצות יצא מובהק (p = 0.003). מה המסקנה המדויקת ביותר?</div>
+    <button class="opt">כל 4 הקבוצות שונות זו מזו</button>
+    <button class="opt">הקבוצה עם הממוצע הגבוה ביותר שונה מובהק מכל השאר</button>
+    <button class="opt" data-correct>לפחות זוג תוחלות אחד שונה — אבל המבחן לא אומר איזה</button>
+    <button class="opt">ההבדלים בין הקבוצות גדולים מבחינה מעשית</button>
+    <div class="q-explain">💬 זה כל מה ש-ANOVA מוכן להתחייב עליו: "לא כולן שוות". איזה זוג (או זוגות) אחראי לכך — רק Post-Hoc כמו Tukey יגיד (יחידה 9); האם ההבדל גדול מעשית — רק גודל אפקט יגיד (גם יחידה 9). והמסיח האחרון הוא תזכורת: p קטן מעיד על ודאות שיש הבדל, לא על גודלו.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">8.8</span> סיכום היחידה + מה חשוב לבחינה</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>השערות (Q14)</td><td>H0: כל התוחלות שוות · H1: לפחות אחת שונה (לא "כולן שונות"!)</td></tr>
+    <tr><td>המודל</td><td>\(y_{ij}=\mu+\alpha_i+\varepsilon_{ij}\); ‏H0 ⇐ כל ה-\(\alpha_i=0\). בעצם רגרסיה עם משתני דמה</td></tr>
+    <tr><td>הפירוק</td><td>SST = SSB + SSW — כל הפיזור מתחלק לאות (בין) ורעש (בתוך)</td></tr>
+    <tr><td>דרגות חופש (Q16)</td><td>df = מידע − אילוצים: ‏B: ‏k−1 · ‏W: ‏N−k (אילוץ לכל קבוצה!) · ‏T: ‏N−1, ומתקיים (k−1)+(N−k)=N−1</td></tr>
+    <tr><td>Mean Squares (Q15)</td><td>MS = SS/df — מחלקים ב-df כי זה המידע הבלתי-תלוי וכי כך היחס מתפלג F</td></tr>
+    <tr><td>המבחן</td><td>F = MSB/MSW ~ F(k−1, N−k) תחת H0; דוחים בזנב הימני בלבד כאשר F גדול מהקריטי</td></tr>
+    <tr><td>טבלה חסרה</td><td>משלימים עם: MS=SS/df · ‏F=MSB/MSW · ‏SST=SSB+SSW · ‏dfT=dfB+dfW</td></tr>
+    <tr><td>מה הדחייה אומרת</td><td>"לא כל התוחלות שוות" — לא איזה זוג ולא כמה גדול ⇐ יחידה 9</td></tr>
+  </table>
+
+  <div class="box exam">
+    <div class="box-title">🎯 מוקדי בחינה ביחידה הזאת</div>
+    <strong>שאלה 14:</strong> H0 = כל ממוצעי האוכלוסייה שווים; "לפחות אחד שונה" זה H1 — אל תיפול על המסיח. <strong>שאלה 15:</strong> מחלקים ב-df ולא במספר הקבוצות מ<em>שתי</em> הסיבות — מידע בלתי-תלוי (אילוצים) וגם התאמה להתפלגות חי-בריבוע/F — התשובה המשולבת. <strong>שאלה 16:</strong> ‏df<sub>W</sub>=N−k בגלל אילוץ סכום-הסטיות-אפס <em>בכל קבוצה</em>; היזהר מהמסיח עם האילוץ של ה-Between (הוא נותן את k−1). <strong>ובנוסף:</strong> תרגל השלמת טבלה חסרה (המרצה הבטיח 😉) — ואף אחת מהנוסחאות האלה <em>לא נמצאת בדף העזר</em>.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">כל ההשערות של H0 נכונות — באמת אין שום הבדל בין הקבוצות. סביב איזה ערך אמור "לרחף" הסטטיסטי F?</div>
+    <button class="opt" data-correct>סביב 1 — כי MSB ו-MSW אומדים אז את אותה שונות רעש σ²</button>
+    <button class="opt">סביב 0 — אין הבדל, אין אות</button>
+    <button class="opt">סביב הערך הקריטי</button>
+    <button class="opt">סביב N − k</button>
+    <div class="q-explain">💬 תחת H0 שני הריבועים הממוצעים הם שני אומדים בלתי-תלויים של אותו \(\sigma^2\), ולכן היחס שלהם מרחף סביב 1. הוא לא יוצא 0 — כי ממוצעי מדגם אף פעם לא זהים במקרה (ראית את זה במעבדה בתרחיש "H0 נכונה"). דחייה מגיעה רק כשה-F מטפס הרבה מעל 1, אל מעבר לערך הקריטי של F(k−1, N−k).</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="topic07.html"><div class="dir">→ הקודם</div><div class="dest">יחידה 7: בחירת משתנים</div></a>
+    <a href="#" style="opacity:.5; pointer-events:none"><div class="dir">הבא ←</div><div class="dest">יחידה 9: השוואות מרובות והפרות הנחות (ייבנה בהמשך)</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>
