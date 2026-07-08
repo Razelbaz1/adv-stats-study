@@ -105,6 +105,71 @@
     draw();
   }
 
+  /* =====================================================================
+     ווידג'ט C — R² מתוקנן: מתי הוא שלילי, ומה קורה ב-n−k−1=0
+  ===================================================================== */
+  function initAdjR2() {
+    var el = document.getElementById('w-adj-plot');
+    if (!el) return;
+    var out = document.getElementById('w-adj-readout');
+    var sR = document.getElementById('w-adj-r2');
+    var sN = document.getElementById('w-adj-n');
+    var sK = document.getElementById('w-adj-k');
+    var YMIN = -10;
+
+    function adj(r2, n, k) { return 1 - (1 - r2) * (n - 1) / (n - k - 1); }
+
+    function draw() {
+      var r2 = parseFloat(sR.value), n = parseInt(sN.value, 10), k = parseInt(sK.value, 10);
+      var df = n - k - 1;
+      /* עקומת R²adj כפונקציה של k (באותו R² ו-n) */
+      var xs = [], ys = [], kk, kmax = Math.min(40, n - 2);
+      for (kk = 1; kk <= kmax; kk++) { xs.push(kk); ys.push(Math.max(YMIN, adj(r2, n, kk))); }
+      var traces = [
+        { x: [0, 41], y: [0, 0], mode: 'lines', line: { color: '#9aa3b8', width: 1.5, dash: 'dot' }, hoverinfo: 'skip', showlegend: false },
+        { x: xs, y: ys, mode: 'lines', line: { color: '#7c3aed', width: 3 }, hoverinfo: 'skip', name: 'R²adj לפי k' }
+      ];
+      if (n - 1 <= 41) {
+        traces.push({ x: [n - 1, n - 1], y: [YMIN, 1.1], mode: 'lines', line: { color: '#e05252', width: 2, dash: 'dash' }, hoverinfo: 'skip', name: 'k = n−1: חלוקה באפס' });
+      }
+      if (df > 0 && k <= 40) {
+        traces.push({ x: [k], y: [Math.max(YMIN, adj(r2, n, k))], mode: 'markers', marker: { size: 13, color: adj(r2, n, k) < 0 ? '#e05252' : '#1fa971', line: { width: 2, color: '#fff' } }, hoverinfo: 'skip', name: 'המודל שלך' });
+      }
+      Plotly.react(el, traces, Object.assign({}, BASE_LAYOUT, {
+        showlegend: true, legend: { orientation: 'h', y: 1.14 },
+        xaxis: { title: 'מספר משתנים מסבירים k', range: [0, 41], fixedrange: true },
+        yaxis: { title: 'R²adj', range: [YMIN - 0.5, 1.15], fixedrange: true }
+      }), CFG);
+
+      var html;
+      if (df > 0) {
+        var a = adj(r2, n, k), pen = (n - 1) / df;
+        var eq = '<span dir="ltr">1 − (1−' + r2 + ')·(' + (n - 1) + '/' + df + ') = ' + fmt(a, 3) + '</span>';
+        var verdict;
+        if (a >= 0.7) verdict = '✅ מודל במצב טוב — הקנס קטן ביחס להסבר.';
+        else if (a >= 0) verdict = '🟡 הקנס מכרסם: המדד נמוך משמעותית מ-R²=' + r2 + '.';
+        else verdict = '🔴 <strong>R²adj שלילי!</strong> המשמעות: ביחס לכמות הפרמטרים ששרפת, המודל שלך גרוע יותר מ"מודל הממוצע" הטיפש. פורמלית — מקדם הקנס <span dir="ltr">(n−1)/(n−k−1) = ' + fmt(pen, 1) + '</span> ניפח את (1−R²) מעבר ל-1.';
+        html = 'R²adj = ' + eq + ' · דרגות חופש לשארית: n−k−1 = <strong>' + df + '</strong> · מקדם הקנס: <strong>' + fmt(pen, 2) + '</strong><br>' + verdict;
+      } else if (df === 0) {
+        html = '💥 <strong>חלוקה באפס! n−k−1 = 0.</strong> מה קורה כאן בעצם: יש בדיוק פרמטר אחד לכל "חתיכת מידע" (k משתנים + חותך = n תצפיות) — המודל <strong>רווי</strong>: הוא עובר בול דרך כל הנקודות (זוכר? דרך n נקודות עובר פולינום מדרגה n−1). לא נשארה אף דרגת חופש לאמוד את השגיאה, ולכן למושג "אחוז שונות מוסברת מתוקנן" אין בכלל הגדרה — התוכנה תחזיר NaN/אינסוף. זה האח הגדול של סיפור ה-n−1 מיחידות 1–2: כל פרמטר "אוכל" דרגת חופש, וכאן נגמר האוכל.';
+      } else {
+        html = '🚫 <strong>n−k−1 שלילי: יותר פרמטרים מתצפיות!</strong> אי אפשר בכלל לאמוד מודל כזה באופן יחיד (אינסוף פתרונות שעוברים דרך כל הנקודות — כמו במולטיקוליניאריות מושלמת מיחידה 5). הנוסחה תחזיר מספר, אבל הוא חסר משמעות לחלוטין — הסימן של המכנה התהפך. בעולם האמיתי: עוד לפני שמגיעים לכאן, עצור והקטן את המודל.';
+      }
+      out.innerHTML = html;
+      document.getElementById('w-adj-r2-val').textContent = r2;
+      document.getElementById('w-adj-n-val').textContent = n;
+      document.getElementById('w-adj-k-val').textContent = k;
+    }
+    [sR, sN, sK].forEach(function (s) { s.addEventListener('input', draw); });
+    document.getElementById('w-adj-neg').addEventListener('click', function () {
+      sR.value = 0.1; sN.value = 20; sK.value = 15; draw();
+    });
+    document.getElementById('w-adj-zero').addEventListener('click', function () {
+      sR.value = 0.85; sN.value = 15; sK.value = 14; draw();
+    });
+    draw();
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     if (typeof Plotly === 'undefined') {
       document.querySelectorAll('.widget').forEach(function (w) {
@@ -114,5 +179,6 @@
     }
     initInteraction();
     initOverfit();
+    initAdjR2();
   });
 })();
