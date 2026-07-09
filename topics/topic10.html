@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 10 · ANOVA דו-כיוונית</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<script defer src="../js/anova3-widget.js?v=1"></script>
+</head>
+<body data-topic="topic10">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 10</span>
+  <h1>ANOVA דו-כיוונית</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">10.0</span> מאיפה באנו ולאן אנחנו הולכים</h2>
+  <p>הגענו ליחידה האחרונה — כל הכבוד על הדרך! 🎓 ביחידות 8–9 השווינו קבוצות לפי <strong>גורם אחד</strong> (שיטת הוראה). אבל העולם האמיתי מורכב יותר: מכירות תלויות גם בסוג האריזה <em>וגם</em> במיקום במדף; יבול תלוי גם בזן הצמח <em>וגם</em> בסוג הדשן. היום נשווה קבוצות לפי <strong>שני גורמים בו-זמנית</strong> — וזה יפתח לנו רעיון חדש ויפהפה שאין לו מקבילה בעולם הגורם היחיד: <strong>אינטראקציה</strong>.</p>
+  <p>ואולי כבר יש לך תחושה מוכרת. את המילה "אינטראקציה" פגשנו ביחידה 6, ברגרסיה: שם ראינו שאיבר \(X_1\cdot X_2\) גורם לכך שההשפעה של משתנה אחד <em>תלויה</em> בערך של השני, ושבגרף זה מתבטא בקווים לא-מקבילים. אותו רעיון בדיוק חוזר כאן — רק שהפעם שני הגורמים קטגוריים. וזה הגיוני: הרי גילינו כבר ב-8.1 ש-ANOVA היא בעצם רגרסיה במסווה.</p>
+  <div class="box warning">
+    <div class="box-title">ℹ️ הערה על היחידה הזאת</div>
+    ‏ANOVA דו-כיוונית <strong>לא מופיעה במבחן לדוגמא</strong> — לכן זו יחידת סיום והעשרה, בלי שאלות מבחן ממוספרות. עדיין שווה מאוד: זה חומר שנלמד בהרצאה (דוגמת בקבוקי הקולה), הוא סוגר את התמונה של כל משפחת ה-ANOVA, והמושג "אינטראקציה" הוא מהחשובים בסטטיסטיקה שימושית. אין לחץ — תיהנה מהנוף מהפסגה.
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="setup"><span class="sec-num">10.1</span> שני גורמים במקום אחד: דוגמת בקבוקי הקולה</h2>
+  <p>הדוגמה שתלווה אותנו לאורך היחידה (ישר מההרצאה): חברת משקאות בודקת מה משפיע על <strong>מכירות קולה</strong>. שני גורמים נבדקים יחד:</p>
+  <ul>
+    <li><strong>גורם A — סוג הבקבוק</strong>: זכוכית / פלסטיק (2 רמות, נסמן \(a=2\)).</li>
+    <li><strong>גורם B — מיקום במדף</strong>: נמוך / אמצעי / גבוה — low / med / high (3 רמות, \(b=3\)).</li>
+  </ul>
+  <p>‏2 × 3 = 6 <strong>תאים</strong> (צירופים), ובכל תא 2 חנויות שנמדדו — סה"כ 12 תצפיות. עכשיו, במקום שאלה אחת, יש לנו <strong>שלוש</strong> שאלות נפרדות:</p>
+  <table class="tbl">
+    <tr><th>השאלה</th><th>נקראת</th><th>בשפה יומיומית</th></tr>
+    <tr><td>האם סוג הבקבוק משפיע על המכירות (בממוצע על פני כל המדפים)?</td><td><strong>אפקט ראשי של A</strong></td><td>"פלסטיק מוכר יותר מזכוכית?"</td></tr>
+    <tr><td>האם המיקום משפיע (בממוצע על פני שני הבקבוקים)?</td><td><strong>אפקט ראשי של B</strong></td><td>"מדף אמצעי מוכר יותר?"</td></tr>
+    <tr><td>האם ההשפעה של גורם אחד <em>תלויה</em> ברמת השני?</td><td><strong>אינטראקציה A×B</strong></td><td>"הפלסטיק מרוויח מהמדף האמצעי יותר מהזכוכית?"</td></tr>
+  </table>
+
+  <figure>
+    <img src="../assets/lect5/two_way_anova_statsmodels_rtl_v2-Copy1__cell012_out0.png" alt="ממוצע מכירות לפי סוג בקבוק">
+    <figcaption>מהשיעור: ממוצע המכירות לפי סוג הבקבוק בלבד — זכוכית ≈ 40.8 מול פלסטיק ≈ 67.8. תרשים כזה עונה על השאלה הראשונה (האפקט הראשי של A): הפלסטיק מוכר יותר. אבל שים לב מה הוא <strong>ממצע ומסתיר</strong> — הוא מאחד את כל שלושת המדפים לעמודה אחת. השאלה השלישית, האינטראקציה, גרה בדיוק בפירוט שהתרשים הזה מוחק.</figcaption>
+  </figure>
+</section>
+
+<section class="card">
+  <h2 id="model"><span class="sec-num">10.2</span> המודל ושלוש משפחות ההשערות</h2>
+  <p>המודל מרחיב את זה של יחידה 8 באיבר אחד חדש — איבר האינטראקציה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 המודל הדו-כיווני</div>
+    $$Y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \varepsilon_{ijk}$$
+    <strong>פענוח:</strong> \(Y_{ijk}\) — התצפית ה-\(k\) בתא שבו גורם A ברמה \(i\) וגורם B ברמה \(j\) (שלושה אינדקסים: רמת A, רמת B, ומי בתוך התא); \(\mu\) — הממוצע הכללי; \(\alpha_i\) — האפקט הראשי של רמה \(i\) בגורם A (כמה סוג הבקבוק הזה מעל/מתחת לממוצע); \(\beta_j\) — האפקט הראשי של רמה \(j\) בגורם B (המיקום); \((\alpha\beta)_{ij}\) — <strong>איבר האינטראקציה</strong>: תוספת ייחודית לצירוף המסוים הזה, מעבר לסכום שני האפקטים הנפרדים; \(\varepsilon_{ijk}\) — הרעש, ‏\(\varepsilon_{ijk}\sim N(0,\sigma^2)\), אותה \(\sigma^2\) בכל התאים (בדיוק ההנחות של יחידה 8, רק שעכשיו "קבוצה" = תא).
+  </div>
+  <p>וכל אפקט מקבל משפחת השערות משלו — <strong>שלושה מבחני F נפרדים</strong> באותה טבלה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 שלוש ההשערות</div>
+    $$H_0^{(A)}:\; \alpha_1=\cdots=\alpha_a=0 \qquad H_0^{(B)}:\; \beta_1=\cdots=\beta_b=0 \qquad H_0^{(AB)}:\; (\alpha\beta)_{ij}=0 \;\;\forall i,j$$
+    <strong>פענוח:</strong> \(H_0^{(A)}\) — לגורם A אין שום אפקט ראשי (כל ה-\(\alpha_i\) אפס); \(H_0^{(B)}\) — לגורם B אין אפקט ראשי; \(H_0^{(AB)}\) — <strong>אין אינטראקציה כלל</strong> (כל איברי \((\alpha\beta)_{ij}\) אפס, לכל \(i\) ולכל \(j\) — זה מה שהסימן \(\forall\) אומר: "לכל"). כל השערה נבדקת ב-F נפרד, וכל אחת יכולה לצאת מובהקת או לא, באופן בלתי-תלוי.
+  </div>
+  <details class="fold">
+    <summary>🔎 בונוס: איך בכלל אומדים את \(\alpha_i\) שאף פעם לא רואים ישירות?</summary>
+    <p>האפקט של רמה מסוימת לא נצפה כמספר בנתונים — הוא נאמד: \(\hat{\alpha}_i = \bar{Y}_{i\cdot\cdot} - \bar{Y}_{\cdot\cdot\cdot}\), כלומר <strong>הממוצע השולי של הרמה פחות הממוצע הכללי</strong>. הנקודות בסימון \(\bar{Y}_{i\cdot\cdot}\) אומרות "מיצענו על כל מה שבמקום הנקודה" — כאן, על כל רמות B ועל כל התצפיות. דוגמה מהקולה: הפלסטיק ‏\(\hat{\alpha}_{\text{plastic}} = 67.83 - 54.33 = +13.5\) — הפלסטיק מוכר בממוצע ‏13.5 יחידות מעל הממוצע הכללי. וכדי שהאפקטים יהיו מוגדרים היטב, מטילים אילוץ זיהוי (Sum-to-Zero): \(\sum_i \alpha_i = 0\) — האפקטים מתאזנים סביב 0 (הזכוכית ‏‎−13.5‎, הפלסטיק ‏+13.5).</p>
+  </details>
+</section>
+
+<section class="card">
+  <h2 id="interaction"><span class="sec-num">10.3</span> הכוכבת: אינטראקציה — וכלל הקווים המקבילים</h2>
+  <p>זה הרעיון החדש של היחידה, אז נעצור עליו. <strong>אינטראקציה = ההשפעה של גורם אחד תלויה ברמה של הגורם השני.</strong> בקולה: אם הפלסטיק מוכר יותר מזכוכית ב-<em>אותה מידה</em> בכל שלושת המדפים — אין אינטראקציה, שני הגורמים "עובדים בנפרד". אבל אם הפלסטיק מרוויח מהמדף האמצעי הרבה יותר מהזכוכית — ההשפעות שזורות זו בזו, יש אינטראקציה.</p>
+
+  <div class="box intuition">
+    <div class="box-title">💡 המבחן הוויזואלי — כלל שווה זהב (וכבר ראית אותו ביחידה 6!)</div>
+    מציירים <strong>גרף אינטראקציה</strong>: ציר X = רמות גורם אחד, קו נפרד לכל רמה של הגורם השני, וציר Y = ממוצע התא.<br>
+    <strong>קווים מקבילים ⇐ אין אינטראקציה</strong> (הפער בין הקווים קבוע — ההשפעה של גורם אחד זהה בכל רמות השני).<br>
+    <strong>קווים לא-מקבילים / מצטלבים ⇐ יש אינטראקציה</strong> (הפער משתנה — ההשפעה תלויה ברמה).<br>
+    בדיוק כמו במניפת הרגרסיה מיחידה 6, רק שכאן הצירים קטגוריים.
+  </div>
+
+  <p>הכי טוב לראות את זה בעיניים. במעבדה למטה: גרור את "עוצמת האינטראקציה" מ-0 (עולם אדיטיבי, קווים מקבילים) עד לדוגמת הקולה האמיתית ומעבר — וצפה בטבלת ה-ANOVA משתנה בזמן אמת. שים לב במיוחד: <strong>ה-SS של האפקטים הראשיים (A ו-B) כמעט לא זזים — רק ה-SS של האינטראקציה גדל.</strong></p>
+
+  <div class="widget">
+    <div class="w-title">🎛️ חוקר האינטראקציה — מקבילים או לא?</div>
+    <p class="w-hint">משימות: (1) לחץ "דוגמת הקולה" (עוצמה=1, רעש=1) — הטבלה למטה היא <strong>בדיוק</strong> טבלת ההרצאה (‏SS_A=2187, ‏F_AB=11.09, ‏p=0.0097). (2) לחץ "עולם אדיטיבי": הקווים מקבילים, ‏SS_AB=0, ‏p=1. (3) גרור את העוצמה מעלה וראה איך הקווים נפתחים והאינטראקציה נהיית מובהקת. (4) סמן "הצג תחזית אדיטיבית" כדי לראות את הקווים המקבילים ה"היו-אמורים-להיות" מתחת לקווים בפועל — הפער ביניהם הוא בדיוק האינטראקציה.</p>
+    <div class="widget-controls">
+      <label>עוצמת אינטראקציה: <input type="range" id="w-iv-lam" min="0" max="3" step="0.1" value="1"> <span class="val" id="w-iv-lam-val">1.0</span></label>
+      <label>רעש בתוך התאים: <input type="range" id="w-iv-noise" min="0.5" max="4" step="0.25" value="1"> <span class="val" id="w-iv-noise-val">1.0</span></label>
+    </div>
+    <div class="widget-controls">
+      <label><input type="checkbox" id="w-iv-ghost" checked> הצג תחזית אדיטיבית (קווי רפאים מקווקווים)</label>
+      <button class="w-btn" id="w-iv-add">🎬 עולם אדיטיבי</button>
+      <button class="w-btn" id="w-iv-cola">🎬 דוגמת הקולה</button>
+      <button class="w-btn" id="w-iv-strong">🎬 אינטראקציה חזקה</button>
+    </div>
+    <div id="w-iv-stage" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px;margin-top:10px"></div>
+    <div class="widget-readout" id="w-iv-readout"></div>
+  </div>
+
+  <figure>
+    <img src="../assets/lect5/two_way_anova_statsmodels_rtl_v2-Copy1__cell027_out1.png" alt="גרף אינטראקציה של נתוני הקולה">
+    <figcaption>מהשיעור: גרף האינטראקציה על נתוני הקולה האמיתיים. שים לב שהקווים <strong>לא מקבילים</strong> — במיוחד הזינוק של הפלסטיק במדף האמצעי (‏med): שם הוא קופץ ל-89 בעוד הזכוכית מגיעה רק ל-51, פער של 38; אבל במדף הגבוה הפער מצטמצם דרמטית. השונות בפער היא בדיוק מה שהאינטראקציה המובהקת (‏p=0.0097) תופסת.</figcaption>
+  </figure>
+
+  <div class="box warning">
+    <div class="box-title">⚠️ הכלל החשוב ביותר ביחידה: אינטראקציה מובהקת? פרש אותה קודם!</div>
+    כשהאינטראקציה מובהקת, <strong>אסור לפרש את האפקטים הראשיים כאילו הם עומדים בפני עצמם</strong>. למה? כי המשפט "פלסטיק מוכר יותר מזכוכית" נעשה חצי-אמת: זה נכון בענק במדף האמצעי, אבל כמעט מתאזן במדף הגבוה. האפקט הראשי (הממוצע על פני כל המדפים) מטשטש את הסיפור האמיתי. לכן: <strong>קודם מפרשים את האינטראקציה</strong> (איפה ההשפעה חזקה ואיפה חלשה), ורק אם אין אינטראקציה מובהקת — פונים לפרש את האפקטים הראשיים בנפרד.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">בגרף אינטראקציה, שני הקווים יוצאים מקבילים לחלוטין לכל אורכם. מה זה אומר?</div>
+    <button class="opt">גורם A לא משפיע כלל על התוצאה</button>
+    <button class="opt" data-correct>אין אינטראקציה — ההשפעה של כל גורם קבועה ולא תלויה ברמת הגורם השני (אבל כל אחד מהם עדיין יכול להיות בעל אפקט ראשי חזק)</button>
+    <button class="opt">שני הגורמים לא משפיעים על התוצאה</button>
+    <button class="opt">בהכרח יש אפקט ראשי מובהק לשני הגורמים</button>
+    <button class="opt">שגיאה בנתונים — קווים אף פעם לא באמת מקבילים</button>
+    <div class="q-explain">💬 קווים מקבילים = <strong>אין אינטראקציה</strong> בלבד. זה לא אומר כלום על האפקטים הראשיים: קווים מקבילים אבל <em>רחוקים</em> זה מזה = אפקט ראשי חזק של הגורם שמפריד ביניהם, בלי אינטראקציה; קווים מקבילים ו<em>עולים</em> = אפקט ראשי של הגורם על ציר X. המרחק בין הקווים = אפקט ראשי אחד; השיפוע המשותף = אפקט ראשי שני; אי-המקבילות = אינטראקציה. שלושה דברים נפרדים.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="decomposition"><span class="sec-num">10.4</span> פירוק השונות — עכשיו לארבעה חלקים</h2>
+  <p>אותו רעיון מיחידה 8, מוכלל: כל הפיזור מתפרק — אבל הפעם ל<strong>ארבעה</strong> חלקים במקום שניים, כי יש שני אפקטים ראשיים ועוד אינטראקציה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 הפירוק הדו-כיווני (מערך מאוזן)</div>
+    $$SS_T = SS_A + SS_B + SS_{AB} + SS_E$$
+    <strong>פענוח:</strong> \(SS_T\) — כל הפיזור סביב הממוצע הכללי; \(SS_A, SS_B\) — כמה מהפיזור מוסבר על-ידי כל אפקט ראשי; \(SS_{AB}\) — כמה מוסבר על-ידי האינטראקציה; \(SS_E\) — הרעש שנשאר בתוך התאים. ("מערך מאוזן" = אותו מספר תצפיות בכל תא — התנאי שבזכותו הפירוק נקי לגמרי.)
+  </div>
+  <p>שני האפקטים הראשיים מחושבים בדיוק כמו ה-SSB של יחידה 8 (סטיית ממוצע שולי מהממוצע הכללי, משוקללת). החדש הוא ה-SS של האינטראקציה, ויש לו אינטואיציה יפהפייה:</p>
+  <div class="box formula">
+    <div class="box-title">📐 SS האינטראקציה = סטייה מ"עולם אדיטיבי"</div>
+    $$\widehat{Y}_{ij}^{\,\text{add}} = \bar{Y}_{i\cdot\cdot} + \bar{Y}_{\cdot j\cdot} - \bar{Y}_{\cdot\cdot\cdot} \qquad
+      SS_{AB} = n\sum_{i,j}\big(\bar{Y}_{ij\cdot} - \widehat{Y}_{ij}^{\,\text{add}}\big)^2$$
+    <strong>פענוח:</strong> \(\bar{Y}_{ij\cdot}\) — ממוצע התא בפועל (רמה \(i\) של A, רמה \(j\) של B); \(\bar{Y}_{i\cdot\cdot}, \bar{Y}_{\cdot j\cdot}\) — הממוצעים השוליים של הרמות; \(\bar{Y}_{\cdot\cdot\cdot}\) — הממוצע הכללי; \(n\) — תצפיות בתא. \(\widehat{Y}_{ij}^{\,\text{add}}\) היא <strong>התחזית של "עולם ללא אינטראקציה"</strong>: מה היה ממוצע התא אילו שני הגורמים פשוט מתחברים (זה בדיוק מה שמייצרים הקווים המקבילים!). ‏\(SS_{AB}\) סוכם את הריבועים של <em>כמה כל תא בפועל חרג מהתחזית האדיטיבית</em>. אם כל התאים בדיוק על התחזית ⇐ \(SS_{AB}=0\) ⇐ קווים מקבילים. חריגה גדולה ⇐ אינטראקציה.
+  </div>
+  <div class="box intuition">
+    <div class="box-title">💡 חיבור למעבדה שראית זה עתה</div>
+    "קווי הרפאים המקווקווים" בווידג'ט הם בדיוק \(\widehat{Y}_{ij}^{\,\text{add}}\) — התחזית האדיטיבית. הקווים המלאים הם ממוצעי התאים בפועל. הפער האנכי בין קו מלא לקו-רפאים בכל נקודה הוא אפקט האינטראקציה של אותו תא, ו-\(SS_{AB}\) פשוט מרבע וסוכם את כל הפערים האלה. לכן כשגררת את העוצמה ל-0, הקווים המלאים "נצמדו" לרפאים ו-\(SS_{AB}\) צנח לאפס.
+  </div>
+  <div class="box formula">
+    <div class="box-title">📐 דרגות החופש</div>
+    $$df_A = a-1 \qquad df_B = b-1 \qquad df_{AB} = (a-1)(b-1) \qquad df_E = N-ab$$
+    <strong>פענוח:</strong> \(a,b\) — מספר הרמות של כל גורם; \(N\) — סך התצפיות; \(ab\) — מספר התאים. שים לב לכוכבת של היחידה: <strong>\(df_{AB} = (a-1)(b-1)\)</strong> — <em>מכפלת</em> דרגות החופש של שני הגורמים (בקולה: ‏\((2-1)(3-1)=2\)). ו-\(df_E = N-ab\) — כמו ב-8.4, אמדנו ממוצע לכל אחד מ-\(ab\) התאים. בדיקת עקביות (כמו תמיד): ‏\((a-1)+(b-1)+(a-1)(b-1)+(N-ab) = N-1 = df_T\).
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="cola-table"><span class="sec-num">10.5</span> דוגמת הקולה מקצה לקצה — וטבלה עם שלושה מבחני F</h2>
+  <p>הנה הנתונים המלאים מההרצאה (2 חנויות בכל תא):</p>
+  <table class="tbl">
+    <tr><th>סוג \ מיקום</th><th style="text-align:center">low</th><th style="text-align:center">med</th><th style="text-align:center">high</th><th style="text-align:center">ממוצע שולי</th></tr>
+    <tr><td><strong>זכוכית</strong></td><td style="direction:ltr;text-align:center">23, 32 → 27.5</td><td style="direction:ltr;text-align:center">47, 55 → 51</td><td style="direction:ltr;text-align:center">40, 48 → 44</td><td style="direction:ltr;text-align:center"><strong>40.83</strong></td></tr>
+    <tr><td><strong>פלסטיק</strong></td><td style="direction:ltr;text-align:center">59, 63 → 61</td><td style="direction:ltr;text-align:center">88, 90 → 89</td><td style="direction:ltr;text-align:center">51, 56 → 53.5</td><td style="direction:ltr;text-align:center"><strong>67.83</strong></td></tr>
+  </table>
+  <p>הממוצע הכללי ‏\(\bar{Y}_{\cdot\cdot\cdot}=54.33\). דוגמה לחישוב ידני של אפקט ראשי — ‏SS של סוג הבקבוק (‏\(n_{i\cdot}=6\) תצפיות בכל רמה של A):</p>
+  <div class="box example">
+    <div class="box-title">🧮 SS של סוג הבקבוק, ביד</div>
+    $$SS_A = 6\,(40.83-54.33)^2 + 6\,(67.83-54.33)^2 = 6(182.25)+6(182.25) = 2187$$
+    ואת ‏SS_AB אפשר לחלץ מהזהות (בדיוק כמו טריק ההשלמה מיחידה 8): ‏\(SS_{AB}=SS_T-SS_A-SS_B-SS_E = 4296.67-2187-1513.17-127 = 469.5\).
+  </div>
+
+  <p>עכשיו נבנה את הטבלה השלמה — שים לב שיש בה <strong>שלוש שורות אפקט</strong> (A, B, ואינטראקציה), וכל שלוש חולקות את אותו ‏MS_E במכנה. תרגל את ההשלמה במאמן:</p>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מאמן טבלת ANOVA דו-כיוונית — נתוני הקולה</div>
+    <p class="w-hint">נתונים ה-SS (מהחישוב הידני) ו-N=12. השלם צעד-אחר-צעד: דרגות חופש (שים לב לנוסחה המיוחדת לאינטראקציה!), ‏MS, ושלושת ה-F. חשב כל תא בראש לפני שאתה חושף.</p>
+    <div class="widget-controls">
+      <button class="w-btn" id="w-t2-next">▶ גלה את הצעד הבא</button>
+      <button class="w-btn" id="w-t2-reset" style="background:#5b6478">↺ מהתחלה</button>
+    </div>
+    <div id="w-t2-table" style="margin-top:10px"></div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:10px">יומן הפתרון:</div>
+    <div id="w-t2-log"></div>
+  </div>
+
+  <p>וכך זה נראה בפייתון — הכוכבית <code>*</code> בין הגורמים היא מה שמוסיפה את האינטראקציה אוטומטית:</p>
+  <pre><code>import statsmodels.formula.api as smf
+import statsmodels.api as sm
+
+# הכוכבית * = שני אפקטים ראשיים + האינטראקציה שלהם
+model = smf.ols('sales ~ C(bottle_type) * C(location)', data=df).fit()
+sm.stats.anova_lm(model, typ=3)
+# C(bottle_type):               F=103.32,  p=5.3e-05
+# C(location):                  F= 35.74,  p=4.6e-04
+# C(bottle_type):C(location):   F= 11.09,  p=0.0097   ← האינטראקציה</code></pre>
+
+  <details class="fold">
+    <summary>🔎 בונוס: מה זה "Type III" ולמה זה לא משנה כאן</summary>
+    <p>ראית בקוד <code>typ=3</code>. Type III הוא אופן חישוב שבו כל אפקט נבדק <strong>אחרי התאמה לכל השאר</strong> (בדיוק כמו "מובהקות בהינתן שאר המשתנים" מיחידה 5!). ‏SPSS משתמש בו כברירת מחדל, ולכן נהוג להוסיף קידוד <code>Sum</code> (Sum-to-Zero) כדי שהחישוב יהיה נכון. אבל הנה הבשורה: <strong>במערך מאוזן</strong> (מספר תצפיות שווה בכל תא, כמו בקולה) — ‏Type I, II ו-III נותנים בדיוק אותה תוצאה! ההבחנה חשובה רק במערכים לא-מאוזנים. אז לצרכינו: לא לדאוג ממנה — רק לדעת שהיא קיימת ולמה SPSS מציג "Type III".</p>
+  </details>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">בניסוי דו-כיווני עם גורם A ב-4 רמות וגורם B ב-3 רמות, כמה דרגות חופש יש לאיבר האינטראקציה?</div>
+    <button class="opt" data-correct>6 — ‏(a−1)(b−1) = 3 × 2</button>
+    <button class="opt">5 — מחברים במקום להכפיל: ‏(4−1)+(3−1)</button>
+    <button class="opt">12 — מספר התאים ‏ab = 4×3</button>
+    <button class="opt">7 — מחברים את מספר הרמות עצמן ‏4+3</button>
+    <div class="q-explain">💬 דרגות החופש של האינטראקציה הן ה<strong>מכפלה</strong> ‏\((a-1)(b-1) = (4-1)(3-1) = 3\times 2 = 6\). שלושת המסיחים לוכדים שלוש טעויות נפוצות: <strong>5</strong> — חיבור במקום כפל, ‏\((a-1)+(b-1)\) (הטעות השכיחה!); <strong>12</strong> — ספירת מספר התאים ‏\(ab\) במקום דרגות החופש; <strong>7</strong> — חיבור מספר הרמות הגולמי ‏\(a+b\). זכור: אפקטים ראשיים = חיסור (\(a-1\)); אינטראקציה = כפל.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">10.6</span> סיכום היחידה — וסיכום הקורס 🎓</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>מתי דו-כיוונית</td><td>משתנה תלוי מספרי + <strong>שני</strong> גורמים קטגוריים</td></tr>
+    <tr><td>המודל</td><td>\(Y_{ijk}=\mu+\alpha_i+\beta_j+(\alpha\beta)_{ij}+\varepsilon_{ijk}\) — שני אפקטים ראשיים + אינטראקציה</td></tr>
+    <tr><td>שלושה מבחנים</td><td>אפקט ראשי A, אפקט ראשי B, ואינטראקציה A×B — כל אחד F נפרד, מכנה משותף MS_E</td></tr>
+    <tr><td>אינטראקציה</td><td>ההשפעה של גורם אחד תלויה ברמת השני; בגרף: <strong>קווים לא-מקבילים</strong></td></tr>
+    <tr><td>SS אינטראקציה</td><td>סטיית ממוצעי התאים מהתחזית האדיטיבית; ‏SST=SSA+SSB+SSAB+SSE</td></tr>
+    <tr><td>דרגות חופש</td><td>‏a−1, ‏b−1, <strong>(a−1)(b−1)</strong>, ‏N−ab</td></tr>
+    <tr><td>כלל הפרשנות</td><td>אינטראקציה מובהקת ⇐ פרש אותה <strong>קודם</strong>, לא את האפקטים הראשיים לבד</td></tr>
+    <tr><td>Type III</td><td>כל אפקט אחרי התאמה לשאר; במערך מאוזן = Type I = II</td></tr>
+  </table>
+
+  <div class="box intuition">
+    <div class="box-title">🎓 הגעת לפסגה — מבט אחורה על כל המסע</div>
+    התחלנו ב<strong>הסתברות והתפלגויות</strong> (יחידה 1: נורמלית, χ², F), עברנו ל<strong>אמידה</strong> (2: הטיה, שונות, MSE) ו<strong>בדיקת השערות</strong> (3: t, p-value, עוצמה). בנינו את <strong>הרגרסיה</strong> על כל גווניה (4–7: ריבועים פחותים, מרובה, אינטראקציות ופולינום, בחירת משתנים), וסגרנו עם משפחת ה-<strong>ANOVA</strong> (8: חד-כיוונית, 9: השוואות מרובות והפרות הנחות, 10: דו-כיוונית). ראית איך הכול מחובר: ה-F מיחידה 1 הפך למבחן של יחידה 8; ה-Mean Square חזר כמובטח; ANOVA התגלתה כרגרסיה; והאינטראקציה מיחידה 6 חזרה כאן בלבוש קטגורי. זו לא ערימה של מבחנים — זו שפה אחת. <strong>כל הכבוד. 🎉</strong>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">מבחן ANOVA דו-כיווני החזיר: אפקט ראשי A מובהק, אפקט ראשי B מובהק, ואינטראקציה A×B מובהקת (p=0.003). מה הצעד הפרשני הנכון?</div>
+    <button class="opt">לדווח שכל אחד מהגורמים משפיע באופן עצמאי וקבוע</button>
+    <button class="opt" data-correct>לפרש קודם את האינטראקציה — ההשפעה של כל גורם תלויה ברמת השני, ולכן האפקטים הראשיים לבדם מטעים</button>
+    <button class="opt">להתעלם מהאינטראקציה כי שני האפקטים הראשיים ממילא מובהקים</button>
+    <button class="opt">לחזור ולהריץ Tukey על שני הגורמים בנפרד</button>
+    <div class="q-explain">💬 כשהאינטראקציה מובהקת, היא <strong>גוברת</strong>: המשמעות של "אפקט ראשי של A" מיטשטשת, כי ההשפעה של A שונה בכל רמה של B. מפרשים קודם את האינטראקציה (למשל דרך גרף האינטראקציה: איפה הפער גדול ואיפה קטן), ורק בהיעדר אינטראקציה מובהקת מפרשים אפקטים ראשיים בנפרד. האופציה הראשונה היא בדיוק המלכודת שהאזהרה ב-10.3 הזהירה מפניה.</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="topic09.html"><div class="dir">→ הקודם</div><div class="dest">יחידה 9: השוואות מרובות והפרות הנחות</div></a>
+    <a href="../index.html"><div class="dir">הבא ←</div><div class="dest">🎓 סיימת את כל הקורס! חזרה למפה</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>
