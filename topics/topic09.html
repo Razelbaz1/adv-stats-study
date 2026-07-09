@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יחידה 9 · השוואות מרובות והפרות הנחות</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<script defer src="../js/anova2-widget.js?v=1"></script>
+</head>
+<body data-topic="topic09">
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<header class="topbar">
+  <span class="crumb"><a href="../index.html">🏠 מפת הקורס</a> ← יחידה 9</span>
+  <h1>השוואות מרובות והפרות הנחות</h1>
+  <span class="spacer"></span>
+  <span class="pct-chip" id="pct-chip">0%</span>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">בעמוד הזה</div>
+  <div id="toc-links"></div>
+</nav>
+
+<main>
+
+<section class="card">
+  <h2 id="intro"><span class="sec-num">9.0</span> מאיפה באנו ולאן אנחנו הולכים</h2>
+  <p>יחידה 8 נגמרה בשלושה חובות פתוחים. דחינו את H0 וידענו רק ש"לא כל התוחלות שוות" — אבל <strong>בין מי למי</strong> ההבדל? (חוב 1). המבחן היה מובהק — אבל <strong>כמה גדול</strong> ההבדל בפועל? (חוב 2). וכל הבניין נשען על שלוש הנחות — <strong>מה עושים כשהן נשברות</strong>? (חוב 3). היחידה הזאת פורעת את שלושתם.</p>
+  <p>וזו גם היחידה הכי "מעשית" בקורס: כמעט כל מה שנלמד כאן מסודר בשתי הטבלאות הגדולות של <a href="../docs/cheat-sheet.pdf" target="_blank">דף העזר שלך</a> — טבלת ההחלטה (מצב ← מבחן גלובלי ← Post-Hoc) וטבלת ההנחות. עד סוף היחידה תדע לקרוא כל שורה בהן ולהבין <em>למה</em> היא שם. שלוש שאלות מבחן (17, 18, 19) גרות כאן, ושתי מעבדות 🎛️ מחכות: מעבדת FWER ונווט ההחלטה.</p>
+</section>
+
+<section class="card">
+  <h2 id="fwer"><span class="sec-num">9.1</span> הבעיה: כל השוואה נוספת היא עוד כרטיס הגרלה לטעות</h2>
+  <p><span class="src-badge">📓 תוכן מקובץ סיכום</span> שיעור 9 נפתח בשאלה מהכיתה, וזו בדיוק השאלה הנכונה: "למה לעשות Tukey HSD אם אני יכול פשוט להריץ מבחן t (מיחידה 3!) בין כל זוג קבוצות, על כל הקומבינציות?" בוא נבין למה זה רעיון מסוכן.</p>
+  <p>כל מבחן בודד ברמת α=0.05 הוא כמו מטבע מוטה: 5% סיכוי ל"אזעקת שווא" (טעות סוג I — לדחות H0 נכונה, זוכר מיחידה 3?). מבחן אחד — סיכון קטן וידוע. אבל אם זורקים את המטבע הזה שוב ושוב, על כל זוג קבוצות... מתישהו הוא ייפול:</p>
+
+  <div class="box formula">
+    <div class="box-title">📐 FWER — Family-Wise Error Rate <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    $$FWER = P(V \ge 1) = 1-(1-\alpha)^m$$
+    <strong>פענוח:</strong> \(V\) — מספר הדחיות השגויות (אזעקות השווא) שקרו בפועל במשפחת המבחנים; \(P(V\ge 1)\) — ההסתברות ש<em>לפחות אחת</em> מהן קרתה; \(\alpha\) — רמת המובהקות של כל מבחן בודד; \(m\) — מספר ההשוואות במשפחה. ההיגיון, כפי שהוסבר בכיתה: הסיכוי שאין טעות במבחן אחד הוא \(1-\alpha\); הסיכוי שאין טעות <em>באף אחד</em> מ-m מבחנים (בהנחת אי-תלות) הוא \((1-\alpha)^m\); ולכן הסיכוי ל"טעות אחת ומעלה" הוא אחד פחות זה.<br>
+    הדוגמה המודגשת מהשיעור: ‏10 השוואות ברמת 0.05 ⇐ \(1-(0.95)^{10}\approx 0.40\) — <strong>40% סיכוי לפחות למובהקות-שווא אחת!</strong> ה"ביטוח" של 5% שחשבת שיש לך — נמס.
+  </div>
+
+  <p>וכמה השוואות באמת יש? עם \(k\) קבוצות מספר הזוגות הוא \(\binom{k}{2}=\frac{k(k-1)}{2}\) — כבר עם 4 קבוצות זה 6 השוואות, ועם 10 קבוצות 45. תראה במו עיניך כמה מהר זה מתדרדר:</p>
+
+  <div class="widget">
+    <div class="w-title">🎛️ מעבדת FWER — כמה מהר "דולפת" הטעות</div>
+    <p class="w-hint">האדום — מה קורה כשמריצים כל מבחן ברמת α בלי תיקון; הכחול המקווקו — אותו מספר מבחנים אחרי תיקון בונפרוני (כל מבחן ברמת α/m). גרור את מספר הקבוצות וראה את הנקודה שלך מטפסת על העקומה האדומה. נסה: 4 קבוצות (6 השוואות), ואז 10 קבוצות (45 השוואות).</p>
+    <div class="widget-controls">
+      <label>מספר קבוצות: <input type="range" id="w-fw-k" min="2" max="10" step="1" value="4"> <span class="val" id="w-fw-k-val">4</span></label>
+      <label>α לכל מבחן: <input type="range" id="w-fw-alpha" min="0.01" max="0.10" step="0.005" value="0.05"> <span class="val" id="w-fw-alpha-val">0.050</span></label>
+    </div>
+    <div id="w-fw-stage" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px;margin-top:10px"></div>
+    <div class="widget-readout" id="w-fw-readout"></div>
+  </div>
+
+  <p>התיקון הפשוט ביותר לבעיה הוא <strong>תיקון בונפרוני</strong>: אם מריצים m מבחנים, מריצים כל אחד ברמת \(\alpha_{new}=\alpha/m\) — מחלקים את "תקציב הטעות" שווה בשווה. פשוט, עובד תמיד, אבל כפי שתראה עוד מעט — לפעמים מחמיר מדי.</p>
+
+  <details class="fold">
+    <summary>🔎 דיוק למתקדמים: מתי הנוסחה מדויקת ומתי היא רק קירוב</summary>
+    <p>הנוסחה \(1-(1-\alpha)^m\) מניחה שהמבחנים <strong>בלתי תלויים</strong>. אבל השוואות זוגיות על אותם נתונים תלויות זו בזו (הקבוצה "פרונטלי" משתתפת בכמה זוגות!), ולכן עבורן זה קירוב, לא שוויון. החדשות הטובות: לתיקון בונפרוני לא אכפת — מתקיים תמיד, גם עם תלות, החסם \(FWER \le m\cdot\alpha_{new}\), ולכן בחירת \(\alpha_{new}=\alpha/m\) מבטיחה \(FWER\le\alpha\) בכל מקרה. זו הסיבה שבונפרוני נחשב "חסין לכל מזג אוויר" — וגם הסיבה שהוא לפעמים שמרני מדי.</p>
+  </details>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">משווים 3 קבוצות בכל הזוגות (3 השוואות), כל מבחן ברמת α=0.05 בלי תיקון. מה בקירוב ה-FWER?</div>
+    <button class="opt">5% — כל מבחן שומר על האלפא שלו</button>
+    <button class="opt" data-correct>14.3% — לפי ‎1 − 0.95³‎</button>
+    <button class="opt">15% — פשוט 3 כפול 5%</button>
+    <button class="opt">40% — כמו בדוגמה מהשיעור</button>
+    <div class="q-explain">💬 מציבים בנוסחה: ‏1 − (0.95)³ = 1 − 0.857 = 0.143. שים לב כמה המסיח "15%" מפתה — ‏m·α הוא בדיוק חסם בונפרוני, שקרוב לתשובה כש-m קטן אבל תמיד קצת מעל (ולעולם לא מדויק). ו-40% שייך ל-10 השוואות, לא ל-3. במבחן — פשוט להציב בנוסחה.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="tukey"><span class="sec-num">9.2</span> Tukey HSD: כל הזוגות, אלפא אחת — שאלה 18</h2>
+  <p>Tukey HSD ‏(Honestly Significant Difference — "הבדל מובהק <em>ביושר</em>", והשם כבר מספר הכל) בודק את <strong>כל</strong> זוגות הקבוצות, אבל בנוי כך שה-FWER של כל המשפחה יחד נשאר 0.05 — לא 5% פר מבחן אלא 5% על הכול. לכל זוג ההשערות הן \(H_0:\mu_i=\mu_j\) מול \(H_1:\mu_i\neq\mu_j\) — <span class="src-badge">📓 תוכן מקובץ סיכום</span> ניסוח שונה במקצת מזה של יחידה 8, אבל כפי שהמרצה ציין: בסוף זה אותו דבר.</p>
+
+  <div class="box formula">
+    <div class="box-title">📐 הסטטיסטי של Tukey <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    $$q = \frac{|\bar{y}_{i.}-\bar{y}_{j.}|}{\sqrt{MS_W/n}}$$
+    <strong>פענוח:</strong> \(\bar{y}_{i.},\bar{y}_{j.}\) — ממוצעי שתי הקבוצות שמשווים; \(MS_W\) — הרעש המנורמל, ישירות מטבלת ה-ANOVA של יחידה 8 (אומדן \(\sigma^2\) שמבוסס על <em>כל</em> הקבוצות, לא רק השתיים!); \(n\) — גודל קבוצה (בעיצוב מאוזן); המכנה כולו — טעות התקן של ממוצע קבוצה. המבנה מוכר לך ממבחן t, אבל ה-q <strong>לא מושווה להתפלגות t</strong> (מודגש בסיכום!) אלא ל-<strong>Studentized Range Distribution</strong> — התפלגות "הטווח המסטודנט", שמחמירה את הערך הקריטי לפי מספר הקבוצות, וכך שומרת על ה-FWER.
+  </div>
+
+  <details class="fold">
+    <summary>🔎 בונוס: מה הרעיון מאחורי "התפלגות הטווח"?</summary>
+    <p>כשאתה בוחן את הזוג עם ההפרש <em>הכי גדול</em> מבין \(\binom{k}{2}\) זוגות, אתה בעצם עושה cherry-picking — גם תחת H0, הפער בין הממוצע הכי גבוה לכי נמוך מבין k קבוצות גדול בהרבה מפער בין שתי קבוצות שנבחרו מראש. התפלגות הטווח המסטודנט היא בדיוק ההתפלגות של \((\bar{y}_{max}-\bar{y}_{min})/SE\) תחת H0 — היא "יודעת" שבחרת את הקיצוניים, ולכן הערך הקריטי שלה גדל עם k. ודיוק חשוב לגבי הכיוון השני (בסיכום הופיע הפוך — ראה דף התיקונים): יותר <em>תצפיות</em> ⇐ יותר דרגות חופש לרעש ⇐ ערך קריטי <em>קטן</em> יותר ⇐ מבחן פחות מחמיר ויותר עוצמה. מה שמחמיר את המבחן זה יותר <em>קבוצות</em>, לא יותר תצפיות.</p>
+  </details>
+
+  <p>כך זה נראה על הנתונים של יחידה 8 (שלוש שיטות ההוראה, ANOVA יצא F=17.57 — מובהק):</p>
+  <pre><code>from statsmodels.stats.multicomp import pairwise_tukeyhsd
+tukey = pairwise_tukeyhsd(df['score'], df['method'])   # FWER=0.05
+print(tukey)</code></pre>
+
+  <table class="tbl">
+    <tr><th>group1</th><th>group2</th><th style="text-align:center">meandiff</th><th style="text-align:center">p-adj</th><th style="text-align:center">lower</th><th style="text-align:center">upper</th><th style="text-align:center">reject</th></tr>
+    <tr><td>Frontal</td><td>Hybrid</td><td style="direction:ltr;text-align:center">5.52</td><td style="direction:ltr;text-align:center">0.034</td><td style="direction:ltr;text-align:center">0.34</td><td style="direction:ltr;text-align:center">10.70</td><td style="text-align:center">✔ True</td></tr>
+    <tr><td>Frontal</td><td>Online</td><td style="direction:ltr;text-align:center">12.83</td><td style="direction:ltr;text-align:center">0.000</td><td style="direction:ltr;text-align:center">7.65</td><td style="direction:ltr;text-align:center">18.01</td><td style="text-align:center">✔ True</td></tr>
+    <tr><td>Hybrid</td><td>Online</td><td style="direction:ltr;text-align:center">7.31</td><td style="direction:ltr;text-align:center">0.003</td><td style="direction:ltr;text-align:center">2.14</td><td style="direction:ltr;text-align:center">12.49</td><td style="text-align:center">✔ True</td></tr>
+  </table>
+  <p>איך קוראים את הפלט: <strong>meandiff</strong> — הפרש הממוצעים (group2 פחות group1); <strong>p-adj</strong> — ה-p אחרי ההתאמה לריבוי השוואות (זה שמשווים ל-0.05); <strong>lower/upper</strong> — רווח סמך להפרש, וכשהוא לא כולל את 0 ⇐ ההפרש מובהק; <strong>reject</strong> — השורה התחתונה. כאן כל שלושת הזוגות מובהקים: כל שיטה באמת שונה מכל שיטה. ודקות אחת ששווה לדעת: אלה רווחי סמך <strong>סימולטניים</strong> — הביטחון של 95% מתייחס לכל שלושת הרווחים <em>יחד</em>, לא לכל אחד בנפרד.</p>
+
+  <div class="box warning">
+    <div class="box-title">⚠️ לא מערימים תיקונים: Tukey כבר מתקן בעצמו</div>
+    כלל שמופיע במפורש בדף העזר שלך: <strong>Tukey ו-Games-Howell כבר מתקנים לריבוי השוואות — לא מוסיפים עליהם בונפרוני!</strong> מי שכן מקבל בונפרוני: Dunn (אחרי Kruskal-Wallis) ו-Contrast t-tests (השוואות מתוכננות). להוסיף בונפרוני על Tukey זה לשלם ביטוח כפול — תקבל מבחן מחמיר בטירוף שמפספס אפקטים אמיתיים.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 18 מהמבחן לדוגמא</span>
+    <div class="q-text">למה נעדיף מבחן Tukey על פני הזוגות של מבחן t?</div>
+    <button class="opt" data-correct>א. כדי שטעות מסוג 1 תהיה קטנה יותר</button>
+    <button class="opt">ב. כדי שטעות מסוג 2 תהיה קטנה יותר</button>
+    <button class="opt">ג. כדי שנעמוד בהנחות המודל</button>
+    <button class="opt">ד. אף תשובה אינה נכונה</button>
+    <div class="q-explain">💬 כל הפואנטה של Tukey היא שליטה בטעות סוג I הכוללת (FWER=0.05 על כל המשפחה, במקום 40% שהיו מצטברים ממבחני t חופשיים) — תשובה: א. שים לב ש-ב הפוכה בדיוק: המחיר של Tukey הוא דווקא <em>הגדלת</em> טעות סוג II (פחות עוצמה) לעומת מבחני t לא מתוקנים. ו-ג לא קשורה — ההנחות של Tukey זהות לאלה של ANOVA, הוא לא "פותר" אותן.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="planned"><span class="sec-num">9.3</span> השוואות מתוכננות מראש: מתי Tukey דווקא מזיק — שאלה 17</h2>
+  <p>נשמע שTukey מושלם — אז למה שלא נשתמש בו תמיד? <span class="src-badge">📓 תוכן מקובץ סיכום</span> זו הייתה כותרת מודגשת בשיעור: "מדוע לא כדאי להשתמש ב-Tukey כאשר יש השוואות מתוכננות מראש?" והתשובה, בבולד: <strong>אובדן עוצמה סטטיסטית</strong>.</p>
+  <p>נזכיר מיחידה 3, בניסוח של המרצה: <span class="src-badge">📓 תוכן מקובץ סיכום</span> עוצמה = \(1-\beta\) = "אם באמת קיים אפקט בנתונים, מה הסיכוי שנצליח לגלות אותו". ועכשיו שרשרת ההיגיון של השיעור: Tukey מתקן עבור <strong>כל</strong> \(\binom{k}{2}\) הזוגות ⇐ קריטריון מחמיר יותר לכל השוואה ⇐ צריך הבדל גדול יותר כדי לצאת מובהק ⇐ פחות אזעקות שווא (טוב!) אבל <strong>יותר פספוסים של אפקטים אמיתיים</strong> (רע!). אם מראש עניינו אותך רק 2 השוואות מתוך 6 — שילמת "ביטוח" על 4 השוואות שבכלל לא רצית, והמחיר הוא אולי לפספס ממצא אמיתי: p=0.03 של השוואה שתכננת יכול להפוך ל-p-adj=0.08 ולהיעלם.</p>
+
+  <div class="box formula">
+    <div class="box-title">📐 הפתרון: Contrast t-tests + בונפרוני על מה שתכננת בלבד</div>
+    $$\alpha^* = \frac{\alpha}{m_{planned}} \qquad \text{למשל: } \frac{0.05}{2}=0.025$$
+    <strong>פענוח:</strong> \(m_{planned}\) — מספר ההשוואות שהוגדרו <em>מראש, לפני שראית את הנתונים</em> (זה התנאי הקריטי!); \(\alpha^*\) — הרף לכל אחת מהן. עם 4 קבוצות ורק 2 השוואות מתוכננות: בונפרוני נותן רף 0.025 — הרבה פחות מחמיר מהרף האפקטיבי של Tukey שמתקן על כל 6 הזוגות ⇐ יותר עוצמה.
+  </div>
+
+  <div class="box intuition">
+    <div class="box-title">💡 כלל ההחלטה מהשיעור <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    <strong>רוצה לסרוק את כל הזוגות?</strong> ⇐ Tukey. (למה לא בונפרוני על כל הזוגות? כי אז האלפא פר-מבחן יוצאת קטנה אפילו יותר משל Tukey — מחמיר מדי.)<br>
+    <strong>יש מעט השוואות שתכננת מראש?</strong> ⇐ t-tests + בונפרוני רק עליהן. (למה לא Tukey? כי הוא מתקן על זוגות שלא ביקשת ומאבד עוצמה.)<br>
+    שים לב לסימטריה היפה: כל כלי מנצח במגרש שלו, ואף אחד לא מנצח בשניהם.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלה שנשאלה בכיתה</span> <span class="src-badge">📓 תוכן מקובץ סיכום</span>
+    <div class="q-text">יש המון זוגות אפשריים בין הקבוצות, אבל אותך מעניינות רק 10 השוואות שתכננת מראש. למה לא פשוט להריץ Tukey על הכול במקום מבחני t עם תיקון בונפרוני על העשר?</div>
+    <button class="opt">דווקא כדאי Tukey — הוא תמיד עדיף</button>
+    <button class="opt" data-correct>כי Tukey מתקן על כל הזוגות ⇐ רף מחמיר בהרבה ⇐ טעות סוג 2 גדלה ואפקטים אמיתיים יתפספסו; בונפרוני על 10 בלבד מחמיר פחות</button>
+    <button class="opt">כי אסור להריץ Tukey כשיש יותר מ-4 קבוצות</button>
+    <button class="opt">כי בונפרוני שולט על FWER ו-Tukey לא</button>
+    <div class="q-explain">💬 התשובה שניתנה בכיתה: ככל שמתקנים על יותר השוואות, האלפא האפקטיבית פר מבחן קטנה ⇐ קשה יותר לדחות ⇐ מצד אחד מבחן שמרני, מצד שני אם יש אפקט אמיתי — קשה יותר לזהות אותו (טעות סוג 2, β, גדלה). שני המסיחים האחרונים פשוט שגויים עובדתית: אין מגבלת קבוצות ל-Tukey, ושניהם שולטים על FWER — ההבדל הוא בעוצמה.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 17 מהמבחן לדוגמא</span>
+    <div class="q-text">מדוע לא כדאי להשתמש ב-Tukey כאשר יש השוואות מתוכננות מראש?</div>
+    <button class="opt" data-correct>א. כי זה יקטין לנו את העוצמה</button>
+    <button class="opt">ב. כי זה יגדיל את העוצמה</button>
+    <button class="opt">ג. כי זה יקטין את אלפא — טעות מסוג ראשון</button>
+    <button class="opt">ד. בכלל שלא נעמוד בהנחות המודל</button>
+    <div class="q-explain">💬 בדיוק הכותרת המודגשת מהשיעור: אובדן עוצמה — תשובה א. והמסיח הערמומי הוא ג: זה נכון עובדתית ש-Tukey מקטין את האלפא האפקטיבית פר-השוואה... אבל זו לא סיבה <em>שלא</em> להשתמש בו — הקטנת אלפא היא לא נזק בפני עצמו. הנזק שמפריע לנו הוא תוצאת הלוואי: ירידת העוצמה, כלומר פספוס אפקטים אמיתיים שתכננו לבדוק. במבחן קרא את השאלה כ"מה <em>הבעיה</em> עבורנו".</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="assumptions"><span class="sec-num">9.4</span> בדיקת ההנחות: Levene, Shapiro-Wilk ו-QQ Plot</h2>
+  <p>עכשיו לחוב השלישי. ביחידה 8 הצגנו את שלוש ההנחות: תצפיות בלתי-תלויות, שגיאות נורמליות \(\varepsilon_{ij}\sim N(0,\sigma^2)\), ואותה \(\sigma^2\) בכל הקבוצות. בלעדיהן — השרשרת נורמלית←חי-בריבוע←F קורסת וה-p-value פשוט לא נכון. את אי-התלות אי אפשר לבדוק סטטיסטית (היא נובעת מתכנון הניסוי — כך גם בטבלת דף העזר: "מתכנון המחקר, אין תיקון סטטיסטי"). את שתי האחרות בודקים, ולכל אחת מבחן משלה:</p>
+
+  <div class="box formula">
+    <div class="box-title">📐 מבחן Levene — שוויון שונויות</div>
+    $$H_0:\; \sigma_1^2 = \sigma_2^2 = \cdots = \sigma_k^2 \qquad H_1:\; \text{לא כל השונויות שוות}$$
+    <strong>פענוח:</strong> \(\sigma_i^2\) — השונות של קבוצה \(i\) באוכלוסייה. שים לב להיפוך התפקידים המוזר: כאן H0 היא דווקא "העולם הטוב" שמכשיר את ה-ANOVA, ולכן הפעם אנחנו "מקווים" ל-p <strong>גדול</strong> מ-0.05. בדוגמת שיטות ההוראה: <code>stats.levene(frontal, hybrid, online)</code> ⇐ ‏p=0.664 — אין עדות להפרה, אפשר להמשיך.
+  </div>
+  <div class="box warning">
+    <div class="box-title">⚠️ ‏p גדול ≠ "השונויות הוכחו שוות"</div>
+    גם כאן (כמו תמיד ביחידה 3): אי-דחייה היא לא הוכחת H0 — במיוחד במדגמים קטנים, שבהם לבדיקות האלה אין כמעט עוצמה. הניסוח הנכון: "<strong>אין עדות</strong> להפרת שוויון השונויות" — ולכן ממשיכים, בזהירות. ואם Levene כן מובהק? אל דאגה — יש לנו Welch שמחכה ב-9.5.
+  </div>
+
+  <div class="box formula">
+    <div class="box-title">📐 מבחן Shapiro-Wilk — נורמליות</div>
+    $$H_0:\; X \sim N(\mu,\sigma^2) \qquad H_1:\; \text{ההתפלגות אינה נורמלית}$$
+    <strong>פענוח:</strong> \(X\) — המשתנה הנבדק (קבוצה אחת של נתונים גולמיים, או כל השאריות יחד — עוד רגע נדייק איזה מהם). גם כאן מקווים ל-p גדול. בדוגמת השיעור, בדיקה לכל קבוצה בנפרד: ‏Frontal ‏p=0.666, ‏Hybrid ‏p=0.817, ‏Online ‏p=0.289 — כולן עוברות.
+  </div>
+
+  <p>ועכשיו לנקודה שהמרצה <strong>הדגיש שיכולה להיות שאלה תיאורטית במבחן</strong> <span class="src-badge">📓 תוכן מקובץ סיכום</span> — על מה בדיוק מריצים את Shapiro?</p>
+
+  <div class="quiz">
+    <span class="q-label">שאלה תיאורטית שהמרצה סימן</span> <span class="src-badge">📓 תוכן מקובץ סיכום</span>
+    <div class="q-text">מדוע אפשר לבצע מבחן Shapiro-Wilk על כל השאריות יחד, אך לא על כל הנתונים הגולמיים יחד?</div>
+    <button class="opt">כי שאריות תמיד מתפלגות נורמלית מהגדרתן</button>
+    <button class="opt">כי יש פחות שאריות מנתונים גולמיים והמבחן מהיר יותר</button>
+    <button class="opt" data-correct>כי לכל קבוצה תוחלת שונה — איחוד גולמי יוצר "שלוש גבעות" במקום פעמון; אחרי חיסור ממוצע הקבוצה כל השאריות מגיעות מאותה N(0, σ²) ומותר לאחדן</button>
+    <button class="opt">כי Shapiro-Wilk לא עובד על יותר מ-30 תצפיות</button>
+    <div class="q-explain">💬 דמיין שלוש קבוצות נורמליות לחלוטין סביב 60, 80 ו-100: כל אחת פעמון מושלם, אבל ביחד — התפלגות עם שלוש פסגות, ו-Shapiro ייכשל למרות שההנחה מתקיימת! הטריק: \(X\sim N(\mu,\sigma^2)\Rightarrow X-\mu\sim N(0,\sigma^2)\) — חיסור קבוע לא משנה את הצורה, רק ממרכז. אחרי חיסור ממוצע הקבוצה, כל השאריות חיות סביב 0 עם אותה שונות (בזכות שוויון השונויות!) — מדגם אחד גדול מהתפלגות אחת. והבונוס שהודגש בשיעור: מבחן אחד על הרבה דאטה אמין יותר מ-3 מבחנים קטנים.</div>
+  </div>
+
+  <div class="box warning">
+    <div class="box-title">⚠️ ומה אם Levene נכשל? שים לב לתלות בין הבדיקות <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    איחוד כל השאריות למבחן נורמליות אחד מותר רק <strong>בהינתן שוויון שונויות</strong> — אחרת השאריות של קבוצה "רחבה" ושל קבוצה "צרה" לא מגיעות מאותה התפלגות. אז אם Levene דחה: לא מאחדים, אבל עדיין אפשר (וכדאי) לבדוק נורמליות <em>לכל קבוצה בנפרד</em> — כי גם Welch, המחליף של ANOVA, מניח נורמליות בתוך כל קבוצה. (בסיכום נכתב "אין מה לבצע Shapiro" — ניסוח גורף מדי; ראה דף התיקונים.)
+  </div>
+
+  <h3 id="qq">העין המקצועית: QQ Plot</h3>
+  <p>‏Shapiro-Wilk סובל מבעיה במדגמים גדולים: הוא <strong>רגיש מדי</strong> — עם אלפי תצפיות הוא ידחה נורמליות בגלל סטיות זעירות וחסרות משמעות. לכן משלבים תמיד בדיקה גרפית: <strong>QQ Plot</strong>, שמצייר את הקוונטילים של הנתונים (ציר Y) מול הקוונטילים התיאורטיים של התפלגות נורמלית (ציר X). אם הנתונים נורמליים — הנקודות יושבות על קו ישר של 45°:</p>
+
+  <figure>
+    <img src="../assets/lect5/one_way_anova_hebrew_rtl_latex_fixed__cell024_out0.png" alt="QQ Plot של שאריות ה-ANOVA">
+    <figcaption>מהשיעור: QQ Plot של שאריות ה-ANOVA (נוצר עם <code>stats.probplot(model.resid, dist='norm', plot=plt)</code>). למה הגרף הזה מרגיע? הנקודות צמודות לקו האדום לכל אורכו — כלומר בכל רמת קוונטיל, השאריות בדיוק "בגובה" שנורמליות מנבאת. שים לב במיוחד לקצוות: שם נורמליות נשברת בדרך כלל, וכאן גם הם על הקו. יחד עם Shapiro (p גדול) — הנחת הנורמליות סבירה בהחלט.</figcaption>
+  </figure>
+
+  <div class="box intuition">
+    <div class="box-title">💡 כלל הקצוות מהשיעור: לאן הנקודות "בורחות" <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    <strong>הקצוות בורחים החוצה מהקו</strong> (שמאל מתחת, ימין מעל — צורת S) ⇐ <strong>זנבות כבדים</strong>: יותר ערכים קיצוניים משנורמליות מצפה (כמו t עם df קטן — זוכר מיחידה 1?).<br>
+    <strong>הקצוות מתקפלים פנימה</strong> (שמאל מעל, ימין מתחת — S הפוכה) ⇐ <strong>זנבות קלים</strong>: פחות קיצוניים מהצפוי (כמו התפלגות אחידה).<br>
+    ולפרוטוקול: המרצה אמר שלא ייכנס לעומק הזנבות — כלל האצבע מספיק. וגם: סטייה קלה בקצוות בלבד לרוב לא קריטית, ‏ANOVA די עמיד לסטיות קטנות מנורמליות. ה-QQ הוא בדיקה ויזואלית, לא מבחן השערות — אין לו p-value.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">הרצת Levene על 3 קבוצות וקיבלת p=0.664. מה המסקנה והצעד הבא?</div>
+    <button class="opt">השונויות הוכחו שוות — אפשר להמשיך בלי חשש</button>
+    <button class="opt">המבחן מובהק — עוברים ל-Welch ANOVA</button>
+    <button class="opt" data-correct>אין עדות להפרת שוויון השונויות — ממשיכים ל-ANOVA רגיל (בלי "הוכחה", רק היעדר עדות)</button>
+    <button class="opt">צריך לעבור ל-Kruskal-Wallis</button>
+    <div class="q-explain">💬 ‏p=0.664 גדול בהרבה מ-0.05 ⇐ לא דוחים את H0 של שוויון השונויות ⇐ הדרך ל-ANOVA פתוחה. אבל דיוק בניסוח (שאלת מלכודת קלאסית): לא "הוכחנו שוויון" — רק לא מצאנו עדות להפרה. Welch נכנס רק כש-Levene <em>מובהק</em>, ו-Kruskal-Wallis כשנשברת דווקא ה<em>נורמליות</em>.</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="fixes"><span class="sec-num">9.5</span> תוכנית ב' וגם ג': Welch ו-Kruskal-Wallis — שאלה 19</h2>
+  <p>אז בדקנו — ומשהו נשבר. מה עכשיו? לכל הפרה יש מחליף ייעודי, וזה בדיוק מבנה טבלת ההחלטה של דף העזר. (הערת שקיפות: את שני המחליפים האלה הסיכום של החבר לא מכסה — הם מגיעים מהמחברות של ההרצאה ומדף העזר, והם חיוניים לשאלה 19.)</p>
+
+  <h3 id="welch">נשבר שוויון השונויות ⇐ Welch ANOVA + Games-Howell</h3>
+  <p>מכיר את הרעיון הזה! ביחידה 3 פגשנו את מבחן Welch t לשתי קבוצות עם שונויות שונות — ‏Welch ANOVA הוא בדיוק אותו רעיון מוכלל ל-k קבוצות: במקום להניח \(\sigma^2\) אחת, כל קבוצה מקבלת <strong>משקל לפי השונות שלה</strong> — קבוצה "רועשת" נחשבת פחות, כי סומכים עליה פחות. גם דרגות החופש מתוקנות ויוצאות לא-שלמות (כמו ה-12.98 שראינו ביחידה 3!).</p>
+  <pre><code>import statsmodels.stats.api as sms
+sms.anova_oneway(df['score'], df['method'], use_var='unequal')  # unequal = Welch
+# pvalue = 4.9e-07</code></pre>
+  <p>ואם המבחן הגלובלי מובהק — ל-post-hoc לוקחים את <strong>Games-Howell</strong>: "ה-Tukey של עולם השונויות השונות". המכניקה שלו היא ממש חיבור של שני דברים שאתה כבר יודע: לכל זוג מריצים Welch t ‏(SE ודרגות חופש בדיוק בנוסחאות Welch-Satterthwaite מיחידה 3!) ואת הסטטיסטי משווים להתפלגות הטווח המסטודנט (מ-9.2). בפייתון: <code>pg.pairwise_gameshowell(data=df, dv='score', between='method')</code> — והפלט כולל גם עמודת <code>hedges</code>, גודל אפקט לכל זוג שנפגוש ב-9.6.</p>
+
+  <details class="fold">
+    <summary>🔎 בונוס לסקרנים: הנוסחה המלאה של Welch ANOVA</summary>
+    <p>$$F_W = \frac{\sum w_i(\bar{y}_{i.} - \bar{y}_w)^2/(k-1)}{1 + \frac{2(k-2)}{k^2-1}\sum \frac{(1-w_i/\sum w_j)^2}{n_i-1}} \qquad w_i=\frac{n_i}{s_i^2}$$</p>
+    <p><strong>פענוח:</strong> \(w_i\) — המשקל של קבוצה \(i\): גדל עם גודל המדגם וקטן עם השונות (קבוצה רועשת = משקל נמוך); \(\bar{y}_w\) — ממוצע כללי משוקלל לפי המשקלים; המונה — "שונות בין הקבוצות" בגרסה משוקללת; המכנה — תיקון שמכייל את ההתפלגות. התוצאה מתפלגת בקירוב \(F(\tilde{df}_1,\tilde{df}_2)\) עם דרגות חופש מתוקנות לא-שלמות. לא צריך לזכור את זה למבחן — צריך לזכור את הרעיון: <em>שקלול לפי אמינות</em>, ומתי משתמשים.</p>
+  </details>
+
+  <h3 id="kw">נשברה הנורמליות ⇐ Kruskal-Wallis + Dunn</h3>
+  <p>כשההתפלגות עצמה לא נורמלית (או שיש חריגים קיצוניים, או שהסולם בכלל <strong>אורדינלי</strong>), עוברים לתוכנית ג': לוותר על הערכים ולעבוד עם <strong>דירוגים</strong>. מאחדים את כל התצפיות, מדרגים מ-1 עד N, ושואלים: האם קבוצה מסוימת "תופסת" באופן שיטתי את הדירוגים הגבוהים?</p>
+  <div class="box intuition">
+    <div class="box-title">💡 רגע, מה זה סולם אורדינלי — ולמה הוא שולח אותנו דווקא לדירוגים?</div>
+    סולם אורדינלי (סולם <em>סדר</em>) = סולם שבו רק ה<strong>סדר</strong> בין הערכים בעל משמעות, לא המרחקים: בדירוג שביעות רצון 1–10, מי שענה 8 מרוצה יותר ממי שענה 6 — אבל אין ערובה שהפער בין 8 ל-6 "שווה" לפער בין 6 ל-4 בתחושה האמיתית. לכן ממוצע של מספרים כאלה הוא יצור חשוד, וכל המכונה של ANOVA (שבנויה על ממוצעים ושונויות) עומדת על קרקע רעועה. והנה היופי: דירוגים הם <em>בדיוק</em> המידע שסולם אורדינלי כן מכיל באמינות — אז כשעוברים ל-Kruskal-Wallis לא "ויתרנו" על כלום, פשוט הפסקנו להעמיד פנים שיש לנו יותר.
+  </div>
+
+  <div class="box formula">
+    <div class="box-title">📐 סטטיסטי Kruskal-Wallis — בשתי צורות</div>
+    $$H = \frac{12}{N(N+1)}\sum_{i=1}^{k}\frac{R_i^2}{n_i} - 3(N+1)
+      \qquad\Longleftrightarrow\qquad
+      H = \frac{12}{N(N+1)}\sum_{i=1}^{k} n_i\Big(\bar{R}_i - \frac{N+1}{2}\Big)^2$$
+    <strong>פענוח:</strong> \(N\) — סך התצפיות; \(n_i\) — גודל קבוצה \(i\); \(R_i\) — סכום הדירוגים שקיבלה קבוצה \(i\); \(\bar{R}_i=R_i/n_i\) — ממוצע הדירוגים שלה; \(\frac{N+1}{2}\) — ממוצע הדירוגים הכללי (ממוצע המספרים 1 עד N); הקבוע \(\frac{12}{N(N+1)}\) — נרמול טכני. הצורה השנייה חושפת את הסוד: זה בדיוק "SSB של דירוגים" — סכום משוקלל של ריבועי המרחקים של ממוצעי-הדירוגים מהמרכז. <strong>‏KW הוא ANOVA על דירוגים</strong> — ולכן לא צריך נורמליות. תחת H0 (כל הקבוצות מאותה התפלגות): \(H \sim \chi^2_{k-1}\) בקירוב — החי-בריבוע הוותיק מיחידה 1, עם אותן \(k-1\) דרגות חופש מיחידה 8!
+  </div>
+
+  <div class="box intuition">
+    <div class="box-title">💡 למה H מזנק כשיש הבדל אמיתי</div>
+    אם אין הבדל — הדירוגים מתערבבים אקראית וכל קבוצה מקבלת "מיקס" דומה, כל \(\bar{R}_i\) קרוב למרכז, ‏H קטן. אם קבוצה אחת תופסת את הנמוכים ואחרת את הגבוהים — ממוצעי הדירוגים מתרחקים מהמרכז, והריבוע מעניש: ממוצעי דרגות 10, 50, 90 סביב מרכז 50 נותנים ‎40²+0²+40²‎ — ‏H מתפוצץ. מוכר? זו בדיוק האינטואיציה של SSB מיחידה 8.
+  </div>
+
+  <p>על נתוני שיטות ההוראה: <code>stats.kruskal(frontal, hybrid, online)</code> ⇐ ‏H=27.00, ‏p=1.37e-06 — מובהק גם בדרך הלא-פרמטרית. ואחרי KW מובהק, ה-post-hoc הוא מבחן <strong>Dunn</strong> (השוואות זוגיות מבוססות דירוגים) — והוא, בניגוד ל-Tukey, <strong>כן מקבל תיקון בונפרוני</strong>: <code>sp.posthoc_dunn(data, val_col='value', group_col='group', p_adjust='bonferroni')</code>. בדוגמה מההרצאה (נתוני גמא מוטים בכוונה, 3 קבוצות): ‏KW נתן H=10.19, ‏p=0.0061, ו-Dunn+בונפרוני מצא: ‏A-C ‏p=0.0097 ✔, ‏B-C ‏p=0.033 ✔, ‏A-B ‏p=1.0 ✘ — רק קבוצה C באמת שונה מהשתיים האחרות. (כן, ‏p של 1.0 — בונפרוני מכפיל את ה-p במספר ההשוואות וחותך ב-1.)</p>
+
+  <h3 id="decision">המפה המלאה — וזה בדיוק דף העזר שלך</h3>
+  <table class="tbl">
+    <tr><th>מצב</th><th>מבחן גלובלי</th><th>Post-Hoc</th><th>בונפרוני?</th></tr>
+    <tr><td>שונויות שוות ונורמליות</td><td><strong>One-Way ANOVA</strong></td><td>Tukey HSD</td><td>לא</td></tr>
+    <tr><td>שונויות לא שוות (Levene מובהק)</td><td><strong>Welch ANOVA</strong></td><td>Games-Howell</td><td>לא</td></tr>
+    <tr><td>אין נורמליות (Shapiro מובהק / אורדינלי)</td><td><strong>Kruskal-Wallis</strong></td><td>Dunn</td><td><strong>כן</strong></td></tr>
+    <tr><td>השוואות מתוכננות מראש</td><td>ANOVA</td><td>Contrast t-tests</td><td><strong>כן</strong></td></tr>
+    <tr><td>השוואה בודדת (2 קבוצות)</td><td>t-test</td><td>אין</td><td>לא</td></tr>
+  </table>
+  <p style="color:var(--muted); font-size:.9rem">הטבלה הזאת נמצאת מילה-במילה בדף העזר — לא צריך לשנן אותה, צריך <strong>להבין</strong> אותה. בשביל זה בנינו לך נווט:</p>
+
+  <div class="widget">
+    <div class="w-title">🎛️ נווט ההחלטה — איזה מבחן, איזה Post-Hoc, ובונפרוני או לא</div>
+    <p class="w-hint">ענה על השאלות כאילו מולך פלט אמיתי, וקבל את המסלול המלא. אתגר: עבור על כל חמשת המסלולים (יש 5 תוצאות שונות — כמו 5 שורות הטבלה). ואז נסה לשחזר את התרחיש של שאלה 19: סולם 1–10, ‏Shapiro נכשל.</p>
+    <div class="widget-controls">
+      <button class="w-btn" id="w-dn-reset" style="background:#5b6478">↺ מסלול חדש</button>
+    </div>
+    <div id="w-dn-stage" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:10px;min-height:120px"></div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:10px">המסלול שלך:</div>
+    <div id="w-dn-log"></div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🎯 שאלה 19 מהמבחן לדוגמא</span>
+    <div class="q-text">חוקר רוצה להשוות את רמת שביעות הרצון בין 4 קבוצות טיפול. המשתנה נמדד בסולם של 1–10. מבחן Shapiro-Wilk הראה אי-נורמליות חמורה בכמה קבוצות. איזה מבחן מתאים ביותר?</div>
+    <button class="opt">א. One-Way ANOVA</button>
+    <button class="opt">ב. Welch ANOVA</button>
+    <button class="opt" data-correct>ג. Kruskal-Wallis</button>
+    <button class="opt">ד. Paired t-test</button>
+    <div class="q-explain">💬 יש כאן שני רמזים מצטברים: הנורמליות נשברה (Shapiro מובהק) <em>וגם</em> הסולם אורדינלי (1–10) — שניהם מצביעים על אותה שורה בטבלה: Kruskal-Wallis. למה לא ב? ‏Welch פותר שונויות לא שוות אבל עדיין <strong>מניח נורמליות</strong> — הוא לא התרופה למחלה הזאת. ולמה לא ד? ‏Paired t הוא למדידות חוזרות על <em>אותם</em> נבדקים, לא ל-4 קבוצות בלתי-תלויות. (ואחרי KW מובהק? ‏Dunn + בונפרוני.)</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="effect"><span class="sec-num">9.6</span> גודל אפקט: מובהק — אבל כמה גדול?</h2>
+  <p>החוב האחרון. <span class="src-badge">📓 תוכן מקובץ סיכום</span> ההדגשה מהשיעור: מובהקות יודעת להגיד רק ש<em>יש</em> הבדל — לא <em>כמה</em> הוא גדול; וגודל אפקט מתייחס גם לפיזור הנתונים, לא רק להפרש הממוצעים. את העיקרון הזה פגשת כבר ביחידה 3 עם Cohen's d — עכשיו נכליל אותו ל-k קבוצות. ותזכור את ההבטחה מיחידה 8: הפס הכחול במעבדת האות והרעש — "החלק של SSB מתוך SST" — הנה הוא מקבל שם:</p>
+
+  <div class="box formula">
+    <div class="box-title">📐 אטא בריבוע — חלק השונות המוסבר</div>
+    $$\eta^2 = \frac{SS_B}{SS_T}$$
+    <strong>פענוח:</strong> \(SS_B\) — סכום הריבועים בין הקבוצות (ה"אות" מיחידה 8); \(SS_T\) — סכום הריבועים הכולל; היחס — איזה חלק מכל הפיזור בנתונים מוסבר על-ידי ההשתייכות לקבוצה. טווח: 0 (הגורם לא מסביר כלום) עד 1 (מסביר הכול). בדוגמת שיטות ההוראה: \(\eta^2 = 2485.88/8641.57 = 0.288\) — שיטת ההוראה מסבירה כ-29% מהשונות בציונים. <span class="src-badge">📓 תוכן מקובץ סיכום</span> ובונוס יפהפה מהשיעור: ב-One-way ANOVA מתקיים \(\eta^2 = R^2\) — בדיוק אותו "אחוז שונות מוסברת" מהרגרסיה של יחידה 4! (הגיוני לגמרי, אחרי שגילינו ב-8.1 ש-ANOVA היא רגרסיה במסווה.)
+  </div>
+
+  <table class="tbl">
+    <tr><th>מדד</th><th>קטן</th><th>בינוני</th><th>גדול</th></tr>
+    <tr><td>‏η² / ω² (אפקט כולל של הגורם)</td><td style="direction:ltr;text-align:center">0.01</td><td style="direction:ltr;text-align:center">0.06</td><td style="direction:ltr;text-align:center">0.14</td></tr>
+    <tr><td>‏Cohen's d / Hedges' g (זוג קבוצות)</td><td style="direction:ltr;text-align:center">0.2</td><td style="direction:ltr;text-align:center">0.5</td><td style="direction:ltr;text-align:center">0.8</td></tr>
+  </table>
+
+  <div class="box warning">
+    <div class="box-title">⚠️ שני סרגלים שונים — אל תערבב אותם במבחן</div>
+    ‏0.288 הוא אפקט <strong>גדול</strong> בסרגל של η² (הסף: 0.14) — אבל היה נחשב "קטן-בינוני" אילו בטעות קראת אותו בסרגל של d (סף גדול: 0.8). הסרגלים שונים כי המדדים מודדים דברים שונים: ‏η²/ω² הם <em>חלק משונות</em> (יחס בין 0 ל-1) של הגורם כולו, ‏d/g הם <em>מרחק בסטיות תקן</em> בין שתי קבוצות ספציפיות. שני הסרגלים מופיעים בדף העזר — רק ודא שאתה שולף מהשורה הנכונה. <span class="src-badge">📓 תוכן מקובץ סיכום</span> וכפי שסוכם בשיעור: ‏Cohen's d מחושב רק לזוג; לאפקט כולל עם 3+ קבוצות — ‏η²/ω².
+  </div>
+
+  <div class="box formula">
+    <div class="box-title">📐 אומגה בריבוע — הגרסה הצנועה והמדויקת</div>
+    $$\omega^2 = \frac{SS_B - df_B \cdot MS_W}{SS_T + MS_W}$$
+    <strong>פענוח:</strong> \(df_B=k-1\) — דרגות החופש של ה-Between; \(MS_W\) — אומדן שונות הרעש; המונה מחסר מה-\(SS_B\) את \(df_B\cdot MS_W\) — בדיוק כמות ה"אות המדומה" ש<em>רעש לבדו</em> צפוי לייצר (זוכר מ-8.5 שתחת H0 ‏E(SSB)=(k−1)σ²? זה זה!). התוצאה: אומדן פחות מוטה שמכוון ל<strong>אוכלוסייה</strong>, לא רק למדגם. בדוגמה שלנו: \(\omega^2=0.269\) — קצת פחות מ-0.288, ותמיד כך: \(\omega^2 &lt; \eta^2\). <span class="src-badge">📓 תוכן מקובץ סיכום</span> ומהשיעור: במקרים נדירים (כש-F&lt;1) ‏ω² יכול לצאת מעט שלילי — ואז מקובל לעגל ל-0.
+  </div>
+
+  <div class="box intuition">
+    <div class="box-title">💡 מתי לדווח מה? <span class="src-badge">📓 תוכן מקובץ סיכום</span></div>
+    ההשוואה כפי שסוכמה בשיעור: ‏<strong>η²</strong> — פשוט לחישוב ואינטואיטיבי, אבל נוטה להפריז בגודל האפקט במדגמים קטנים; ‏<strong>ω²</strong> — יציב יותר במדגמים קטנים ומדויק יותר לאוכלוסייה, ולכן מומלץ בדוחות מדעיים ופרסומים. ולזוגות בודדים (למשל בפלט Games-Howell): ‏<strong>Hedges' g</strong> — גרסה מתוקנת של Cohen's d, ‏\(g = J\cdot d\) עם \(J=1-\frac{3}{4df-1}\). <strong>פענוח:</strong> \(d\) — ‏Cohen's d של הזוג (הפרש הממוצעים בסטיות תקן, מיחידה 3); \(df\) — דרגות החופש של מבחן ה-t של <em>הזוג המושווה</em>: ‏\(n_i+n_j-2\) (או ה-df המתוקן של Welch בהקשר Games-Howell) — לא ה-df של כל ה-ANOVA! \(J\) — מקדם התיקון, תמיד קצת מתחת ל-1 (עם שתי קבוצות של 30: ‏df=58 ⇐ ‏J≈0.987), ולכן g תמיד מכווץ מעט את d — במדגמים גדולים ההבדל נמס. אותו סיפור כמו ω² מול η²: לכל מדד "נאיבי" יש אח מתוקן.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">בדוק את עצמך</span>
+    <div class="q-text">בדוגמת שיטות ההוראה קיבלנו η² = 0.288. מה הפירוש הנכון?</div>
+    <button class="opt">ההסתברות לטעות בדחיית H0 היא 28.8%</button>
+    <button class="opt">ההבדל בין הקבוצות הוא 0.288 סטיות תקן</button>
+    <button class="opt" data-correct>כ-29% מהשונות בציונים מוסברת על-ידי שיטת ההוראה — אפקט גדול (מעל הסף 0.14)</button>
+    <button class="opt">האפקט קטן, כי 0.288 נמוך מהסף 0.5</button>
+    <div class="q-explain">💬 ‏η² הוא "אחוז שונות מוסברת" — כמו R² מיחידה 4. המסיח השני מתאר את d (מרחק בסטיות תקן — סרגל אחר!), והרביעי מערבב את הסרגלים בדיוק כמו שהזהרנו. והראשון? ‏p-value ו-η² הם שני עולמות: הראשון אומר "כמה בטוחים שיש אפקט", השני "כמה האפקט גדול".</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="summary"><span class="sec-num">9.7</span> סיכום היחידה + מה חשוב לבחינה</h2>
+  <table class="tbl">
+    <tr><th>מושג</th><th>שורה תחתונה</th></tr>
+    <tr><td>‏FWER</td><td>‏\(1-(1-\alpha)^m\) — הסיכוי ללפחות אזעקת-שווא אחת; ‏10 השוואות ⇐ ‏40%!</td></tr>
+    <tr><td>‏Tukey HSD (Q18)</td><td>כל הזוגות עם FWER=0.05 כולל; ‏q מול התפלגות הטווח, לא t; בלי בונפרוני נוסף</td></tr>
+    <tr><td>מתוכננות מראש (Q17)</td><td>‏Tukey משלם על כל הזוגות ⇐ אובדן עוצמה; במקום: ‏t-tests + בונפרוני α/m</td></tr>
+    <tr><td>בדיקת הנחות</td><td>‏Levene לשונויות, ‏Shapiro+QQ לנורמליות (על השאריות יחד — בזכות המרכוז); מקווים ל-p גדול</td></tr>
+    <tr><td>‏Levene נכשל</td><td>‏Welch ANOVA (שקלול לפי שונות, df לא שלמות) ⇐ ‏Games-Howell</td></tr>
+    <tr><td>‏Shapiro נכשל / אורדינלי (Q19)</td><td>‏Kruskal-Wallis ("ANOVA על דירוגים", ‏H~χ²ₖ₋₁) ⇐ ‏Dunn + בונפרוני</td></tr>
+    <tr><td>גודל אפקט</td><td>‏η²=SSB/SST (=R²); ‏ω² מתוקן וקטן ממנו; סרגל 0.01/0.06/0.14 — נפרד מסרגל d/g!</td></tr>
+  </table>
+
+  <div class="box exam">
+    <div class="box-title">🎯 מוקדי בחינה ביחידה הזאת</div>
+    <strong>שאלה 17:</strong> ‏Tukey עם השוואות מתוכננות = אובדן עוצמה (היזהר מהמסיח "יקטין את אלפא" — נכון עובדתית אבל זו לא הבעיה). <strong>שאלה 18:</strong> מעדיפים Tukey על מבחני t כדי לשלוט בטעות סוג I הכוללת (FWER). <strong>שאלה 19:</strong> אין נורמליות (+סולם אורדינלי) ⇐ ‏Kruskal-Wallis — ו-Welch הוא לא תשובה לנורמליות! <strong>מה בדף העזר:</strong> טבלת ההחלטה וטבלת ההנחות — שם, לא לשנן. <strong>מה לא שם:</strong> נוסחת FWER, נוסחאות η²/ω², והלוגיקה של "למה" — את אלה צריך בראש. ואם תקבל שאלה תיאורטית על Shapiro — שאריות יחד (מרכוז!), גולמיים רק בנפרד.
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">שאלון סיכום</span>
+    <div class="q-text">בדקת: Shapiro-Wilk תקין (p=0.4), אבל Levene מובהק (p=0.01). מה המסלול הנכון?</div>
+    <button class="opt">One-Way ANOVA ואז Tukey — ההנחות בסדר</button>
+    <button class="opt">Kruskal-Wallis ואז Dunn + בונפרוני</button>
+    <button class="opt" data-correct>Welch ANOVA ואז Games-Howell, בלי בונפרוני נוסף</button>
+    <button class="opt">One-Way ANOVA ואז Tukey + תיקון בונפרוני ליתר ביטחון</button>
+    <div class="q-explain">💬 הנורמליות שרדה, שוויון השונויות נפל — זו בדיוק השורה השנייה בטבלה: ‏Welch לשלב הגלובלי, ‏Games-Howell לזוגות, ובלי בונפרוני (GH מתקן בעצמו). ‏KW היה נכון אילו <em>הנורמליות</em> נשברת, והאופציה האחרונה חוטאת פעמיים: מתעלמת מ-Levene וגם מוסיפה תיקון מיותר על מתקן. אם ענית נכון — אתה שולט בדף העזר שלך. 🎉</div>
+  </div>
+
+  <p id="quiz-summary" style="color:var(--muted); font-weight:600"></p>
+
+  <div class="complete-wrap">
+    <button id="btn-complete" class="btn-complete">סיימתי את הנושא ✓</button>
+  </div>
+
+  <div class="pager">
+    <a href="topic08.html"><div class="dir">→ הקודם</div><div class="dest">יחידה 8: ANOVA חד-כיוונית</div></a>
+    <a href="#" style="opacity:.5; pointer-events:none"><div class="dir">הבא ←</div><div class="dest">יחידה 10: ANOVA דו-כיוונית (ייבנה בהמשך)</div></a>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>
