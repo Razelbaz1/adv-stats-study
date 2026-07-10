@@ -374,6 +374,132 @@
 </section>
 
 <section class="card">
+  <h2 id="new-format">🧩 שאלות בפורמט המבחן — הפורמטים החתומים של המנסח</h2>
+  <div class="box intuition">
+    <div class="box-title">💡 למה הסעיף הזה קיים</div>
+    המרצה סיפר שהוא בנה <strong>מאגר אחד גדול</strong> של שאלות, הביא חלק למבחן לדוגמא, והשאר שמורים למבחן עצמו — כלומר השאלות האמיתיות מגיעות מאותו מנסח ובאותם פורמטים. לכן השאלות כאן מחקות <em>בכוונה</em> את הפורמטים החתומים שזיהינו ב-20 השאלות: <strong>אופציות משולבות</strong> ("תשובות א ו-ב נכונות"), <strong>"אף תשובה אינה נכונה"</strong> כסעיף חי (לפעמים נכון, לפעמים מלכודת), <strong>"איזו טענה שגויה?"</strong>, וטבלת פלט עם <strong>תא חסר</strong>. הכלל הזהב: <strong>בדוק כל טענה בנפרד — אל תעצור אחרי שמצאת אחת נכונה.</strong>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 אופציות משולבות · בחירת מודל · קשה</span>
+    <div class="q-text">חוקר מתאים סדרת מודלים מקוננים (nested) של רגרסיה פולינומית לאותו סט אימון, ובכל שלב מוסיף משתנה מסביר אחד. נתונות ארבע טענות:<br>
+    <strong>א.</strong> ככל שמוסיפים משתנים, ‏R² הרגיל (הלא-מתוקנן) על סט האימון לעולם אינו יורד.<br>
+    <strong>ב.</strong> תמיד מתקיים ‏R²_adj ≤ R², ובניגוד ל-R² הרגיל, ה-R²_adj עלול גם לרדת כשמוסיפים משתנה שאינו תורם מספיק.<br>
+    <strong>ג.</strong> ‏R²_adj חסום מלמטה ב-0, בדיוק כמו R² הרגיל.<br>
+    <strong>ד.</strong> לערכי ‏AIC ו-BIC של מודל בודד יש פרשנות אבסולוטית ("AIC קרוב ל-1 מעיד על מודל טוב"), בדיוק כפי ש-R²_adj קרוב ל-1 מעיד על מודל טוב.<br>
+    אילו מהטענות נכונות?</div>
+    <button class="opt">רק טענה א נכונה</button>
+    <button class="opt" data-correct>טענות א ו-ב נכונות</button>
+    <button class="opt">טענות ב ו-ג נכונות</button>
+    <button class="opt">טענות א, ב ו-ד נכונות</button>
+    <button class="opt">טענות א, ג ו-ד נכונות</button>
+    <button class="opt">כל הטענות נכונות</button>
+    <div class="q-explain">💬 <strong>א נכונה</strong> — הוספת משתנה למודל מקונן לא מגדילה SSR על האימון, ולכן ‏R²=1−SSR/SST מונוטוני לא-יורד. <strong>ב נכונה</strong> — ‏\(R^2_{adj}=1-\frac{(1-R^2)(n-1)}{n-k-1}\); המכפיל ‏(n−1)/(n−k−1) ≥ 1 ⇐ תמיד ‏R²_adj ≤ R², וה-adj יורד כשהמשתנה החדש חלש (‏|t|&lt;1). המלכודת: מי שעוצר אחרי א יבחר "רק א" — אבל גם ב נכונה. <strong>ג שגויה</strong> — ‏R²_adj יכול לצאת <em>שלילי</em>. <strong>ד שגויה</strong> — ל-AIC/BIC אין פרשנות אבסולוטית, רק להשוואה בין מודלים (בוחרים את הנמוך). לכן א+ב.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 אופציות משולבות · ANOVA · בינונית</span>
+    <div class="q-text">ב-One-way ANOVA משווים ‏k=4 שיטות, ‏n=10 בכל קבוצה ‏(N=40). נתונות שתי טענות:<br>
+    <strong>א.</strong> דרגות החופש בין הקבוצות הן ‏dfB=3 ובתוך הקבוצות ‏dfW=36.<br>
+    <strong>ב.</strong> תחת השערת האפס, התוחלת של ‏MSB ושל MSW שוות, ולכן ‏F הצפוי ≈ 1.<br>
+    איזו תשובה נכונה?</div>
+    <button class="opt">רק טענה א נכונה</button>
+    <button class="opt">רק טענה ב נכונה</button>
+    <button class="opt" data-correct>טענות א ו-ב נכונות</button>
+    <button class="opt">אף אחת מהטענות אינה נכונה</button>
+    <div class="q-explain">💬 <strong>א נכונה</strong>: ‏dfB=k−1=3, ‏dfW=N−k=36 (בדיקה: ‏3+36=39=N−1). <strong>ב נכונה</strong>: תחת H0 שני הריבועים הממוצעים אומדים את אותה ‏σ², כלומר ‏E(MSB)=E(MSW)=σ² ⇐ ‏F≈1. המלכודת: לעצור אחרי שאימתת את דרגות החופש ולבחור "רק א" — אבל גם ב נכונה. שים לב שהשוויון תחת H0 הוא בין ה-<strong>MS</strong> (אחרי חלוקה ב-df), לא בין ה-SS (דווקא ‏SSW ≫ SSB).</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 אופציות משולבות · אמידה ורווח סמך · קשה</span>
+    <div class="q-text">נתונות ארבע טענות על אומדים ורווחי סמך:<br>
+    <strong>א.</strong> אומד השונות עם מכנה ‏n−1 חסר-הטיה, בעוד האומד עם מכנה n מוטה כלפי מטה.<br>
+    <strong>ב.</strong> אפשר ש-MSE של אומד מוטה יהיה קטן מ-MSE של אומד חסר-הטיה, כי ‏MSE = שונות + הטיה² ולעיתים ההקטנה בשונות עולה על תוספת ההטיה².<br>
+    <strong>ג.</strong> שונות האומד ‏X̄ גדלה ככל ש-n גדל.<br>
+    <strong>ד.</strong> רווח סמך 95% פירושו שבהינתן הרווח שחישבנו, ההסתברות שהתוחלת בתוכו היא 0.95.<br>
+    אילו מהטענות נכונות?</div>
+    <button class="opt">רק טענה א נכונה</button>
+    <button class="opt" data-correct>טענות א ו-ב נכונות</button>
+    <button class="opt">טענות ב ו-ג נכונות</button>
+    <button class="opt">טענות א, ב ו-ד נכונות</button>
+    <button class="opt">טענות א ו-ד נכונות</button>
+    <button class="opt">כל הטענות נכונות</button>
+    <div class="q-explain">💬 <strong>א נכונה</strong> — ‏E[S²ₙ₋₁]=σ², ואילו המכנה n נותן ‏((n−1)/n)σ² &lt; σ² (מוטה מטה). <strong>ב נכונה</strong> — מהפירוק ‏MSE=Var+Bias², אומד מוטה (מכנה n+1) יכול להשיג MSE נמוך יותר — בדיוק הדוגמה מהשיעור. <strong>ג שגויה</strong> — ‏Var(X̄)=σ²/n <em>קטנה</em> עם n. <strong>ד שגויה</strong> — זו הפרשנות המוטעית; הנכונה: ב-95% מהמדגמים הרווח יכיל את התוחלת (לרווח ספציפי היא בפנים או לא). לכן א+ב.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 "אף תשובה אינה נכונה" · בדיקת השערות · קשה</span>
+    <div class="q-text">במבחן השערות חד-צדדי קבענו ‏α=0.05. איזו מהטענות על טעות מסוג I, עוצמה ו-p-value נכונה?</div>
+    <button class="opt">עוצמת המבחן היא ההסתברות לא לדחות את H0 כאשר H0 נכונה, והיא שווה ל-1−α</button>
+    <button class="opt">אם קיבלנו ‏p-value=0.001, הרי שהאפקט שמצאנו בהכרח גדול וחשוב מבחינה מעשית</button>
+    <button class="opt">הקטנת α מ-0.05 ל-0.01 מקטינה את טעות מסוג I וגם מגדילה את עוצמת המבחן</button>
+    <button class="opt" data-correct>אף תשובה אינה נכונה</button>
+    <div class="q-explain">💬 שלוש הטענות שגויות: (א) עוצמה = ‏1−β = ‏P(דחייה | H1 נכונה), <em>לא</em> כש-H0 נכונה, וגם לא שווה ל-1−α. (ב) בלבול "מובהק=גדול" — ‏p זעיר לא מודד גודל אפקט (עם n גדול גם אפקט זניח נותן p זעיר). (ג) הקטנת α דוחפת את הערך הקריטי רחוק יותר ולכן <em>מקטינה</em> את העוצמה (מגדילה β) — יש trade-off. מכיוון שכולן שגויות, "אף תשובה אינה נכונה" היא הנכונה — בדיוק בסגנון שאלה 11 במבחן.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 "אף תשובה" כמלכודת · ANOVA · בינונית</span>
+    <div class="q-text">בטבלת One-Way ANOVA חסרים ערכים. נתון: ‏k=3 קבוצות, ‏N=18 תצפיות, ‏SS_T=200 ו-SS_W=90. מהו הריבוע הממוצע בתוך הקבוצות ‏MS_W?</div>
+    <button class="opt">‏MS_W = 5 — מחלקים את SS_W בסך כל התצפיות ‏(90/18)</button>
+    <button class="opt">‏MS_W = 30 — מחלקים את SS_W במספר הקבוצות ‏(90/3)</button>
+    <button class="opt" data-correct>‏MS_W = 6</button>
+    <button class="opt">אף תשובה אינה נכונה</button>
+    <div class="q-explain">💬 ‏MS_W = SS_W / df_W, כאשר ‏df_W = N−k = 18−3 = 15, ולכן ‏MS_W = 90/15 = <strong>6</strong> (אופציה ג). כאן "אף תשובה אינה נכונה" הוא <strong>מלכודת</strong> — אופציה ג נכונה, אז אסור לבחור בו. המסיחים לוכדים את טעויות ה-df: א מחלק ב-N=18, ב מחלק ב-k=3 (מספר הקבוצות) במקום ב-df — בדיוק הטעות שהמבחן שואל עליה לגבי MS_B! זכור: מחלקים בדרגות חופש, לא במספר הקבוצות.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 "איזו טענה שגויה?" · רגרסיה · קשה</span>
+    <div class="q-text">התאמנו מודל רגרסיה לינארית ב-OLS ובחנו את השאריות (residuals). איזו מהטענות <strong>שגויה</strong>?</div>
+    <button class="opt">אחת מהנחות המודל היא הומוסקדסטיות (שונות שגיאה קבועה); צורת "משפך" בגרף השאריות מול הערכים החזויים מסמנת הפרה</button>
+    <button class="opt">כאשר כל הנחות גאוס-מרקוב מתקיימות, אומדני ה-OLS הם BLUE — הליניאריים חסרי-ההטיה בעלי השונות המינימלית</button>
+    <button class="opt">אם ההנחה של אי-מתאם בין השגיאה למשתני ההסבר מופרת, אומדני ה-OLS יהיו מוטים</button>
+    <button class="opt" data-correct>מכיוון ש-OLS ממזער את סכום ריבועי השאריות, סכום השאריות תמיד גדול מאפס, ולכן ממוצע השאריות חיובי בכל מודל עם חותך</button>
+    <div class="q-explain">💬 שלוש הראשונות נכונות (הומוסקדסטיות ומשפך; ‏BLUE תחת גאוס-מרקוב; אנדוגניות ⇐ הטיה). השגויה היא <strong>הרביעית</strong>: כשיש חותך, משוואות הנורמליות של OLS מכריחות את סכום השאריות להיות בדיוק <strong>אפס</strong> (ולכן גם הממוצע 0) — לא חיובי. המלכודת: בלבול בין מזעור סכום ה<em>ריבועים</em> (חיובי) לבין סכום השאריות עצמן (אפס).</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 "איזו טענה שגויה?" · ANOVA · קשה</span>
+    <div class="q-text">מריצים ANOVA חד-כיווני להשוואת תוחלות של ‏k=4 קבוצות. איזו מהטענות <strong>שגויה</strong>?</div>
+    <button class="opt">סטטיסטי המבחן הוא ‏F = MSB/MSW, עם ‏MSB=SSB/(k−1) ו-MSW=SSW/(N−k); ערך F גדול מעיד על שונות בין-קבוצתית גדולה יחסית לשונות בתוך-הקבוצות</button>
+    <button class="opt">מתקיים פירוק השונות ‏SST = SSB + SSW, ובהתאם גם ‏(N−1) = (k−1) + (N−k)</button>
+    <button class="opt" data-correct>אם דוחים את H0 בבדיקת ה-F הכוללת, המסקנה היא שכל ארבע התוחלות שונות זו מזו</button>
+    <button class="opt">עריכת כל 6 מבחני ה-t הזוגיים ברמת α=0.05 כל אחד מנפחת את ה-FWER הרבה מעל 0.05, ולכן משתמשים בתיקון כמו Tukey או Bonferroni</button>
+    <div class="q-explain">💬 שלוש נכונות (הגדרת F; זהות הפירוק ‏SST=SSB+SSW ו-df; ‏6 מבחנים ⇐ ‏FWER≈1−0.95⁶≈0.26 ⇐ צריך תיקון). השגויה היא <strong>השלישית</strong>: דחיית ה-F הכוללת אומרת רק ש<em>לפחות אחת</em> מהתוחלות שונה — לא שכולן שונות. לזהות אילו זוגות שונים דורש Post-Hoc (Tukey). זו המלכודת הקלאסית: להסיק "כולן שונות" מהמבחן הגלובלי.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 טבלת פלט עם תא חסר · רגרסיה · בינונית</span>
+    <div class="q-text">בפלט רגרסיה מרובה חסר ערך בעמודת ‏t (המשתנה התלוי: מספר תלונות לקוחות). מהו הערך החסר עבור המשתנה "מחיר"?
+      <table class="tbl" style="margin-top:8px">
+        <tr><th>משתנה</th><th style="text-align:center">coef</th><th style="text-align:center">std err</th><th style="text-align:center">t</th><th style="text-align:center">P&gt;|t|</th></tr>
+        <tr><td>const</td><td style="direction:ltr;text-align:center">15.0</td><td style="direction:ltr;text-align:center">5.0</td><td style="direction:ltr;text-align:center">3.00</td><td style="direction:ltr;text-align:center">0.004</td></tr>
+        <tr><td>מחיר</td><td style="direction:ltr;text-align:center">7.2</td><td style="direction:ltr;text-align:center">2.4</td><td style="direction:ltr;text-align:center"><strong>?</strong></td><td style="direction:ltr;text-align:center">0.010</td></tr>
+        <tr><td>פרסום</td><td style="direction:ltr;text-align:center">‎-1.8</td><td style="direction:ltr;text-align:center">1.2</td><td style="direction:ltr;text-align:center">‎-1.50</td><td style="direction:ltr;text-align:center">0.140</td></tr>
+      </table>
+    </div>
+    <button class="opt">‏0.333 — היחס ההפוך ‏std err / coef ‏(2.4/7.2)</button>
+    <button class="opt" data-correct>‏3.00</button>
+    <button class="opt">‏4.80 — ‏coef פחות std err ‏(7.2 − 2.4)</button>
+    <button class="opt">‏0.010 — אותו ערך כמו בעמודת ‏P&gt;|t|</button>
+    <button class="opt">אף תשובה אינה נכונה</button>
+    <div class="q-explain">💬 סטטיסטי ה-t של מקדם הוא תמיד ‏t = coef / std err = 7.2 / 2.4 = <strong>3.00</strong>. אפשר לאמת מיד מהטבלה: ‏const ‏(15.0/5.0=3.00) ו-פרסום ‏(‎-1.8/1.2=-1.50‎) מדגימים את הזהות. המסיח 0.333 הופך את היחס; 4.80 מחסר במקום לחלק; 0.010 מבלבל בין t ל-p (ה-p נגזר מ-t אך אינו שווה לו). "אף תשובה" כאן מלכודת — 3.00 נכון.</div>
+  </div>
+
+  <div class="quiz">
+    <span class="q-label">🧩 הפרש מול יחס + אופציות משולבות · רגרסיה · קשה</span>
+    <div class="q-text">מודל חוזה שכר לפי ותק וקבוצת השכלה, כשהמשתנה התלוי עבר לוג טבעי: <strong>ln(שכר חזוי) = 9.0 + 0.03·ותק + 0.20·D</strong>, כאשר ‏D=1 לבעלי תואר שני ו-0 אחרת (קטגוריית בסיס: תואר ראשון). אילו טענות נכונות? (נתון: ‏\(e^{0.20}\approx 1.22\))</div>
+    <button class="opt">בהינתן ותק זהה, השכר החזוי של בעלי תואר שני גבוה פי כ-1.22 (כ-22% יותר) מבעלי תואר ראשון</button>
+    <button class="opt">בהינתן ותק זהה, השכר החזוי של בעלי תואר שני גבוה בכ-0.20 ש"ח מבעלי תואר ראשון</button>
+    <button class="opt">בהינתן ותק זהה, ההפרש ב-ln(שכר) בין תואר שני לתואר ראשון הוא 0.20</button>
+    <button class="opt">בהינתן ותק זהה, השכר החזוי של בעלי תואר שני גבוה פי 0.20 מבעלי תואר ראשון</button>
+    <button class="opt" data-correct>תשובות א ו-ג נכונות</button>
+    <button class="opt">תשובות ב ו-ג נכונות</button>
+    <button class="opt">תשובות א ו-ב נכונות</button>
+    <div class="q-explain">💬 המשתנה התלוי הוא ‏ln(שכר), לכן המקדם 0.20 הוא הפרש ב-<strong>לוג</strong> — ובעולם השכר זהו <strong>יחס כפלי</strong>, לא הפרש. <strong>ג נכונה</strong>: במישור הלוג המקדם הוא בדיוק ההפרש 0.20. <strong>א נכונה</strong>: בעולם השכר מעריכים — מוכפל ב-‏\(e^{0.20}\approx 1.22\) (כ-22% יותר). לכן <strong>א ו-ג</strong>. <strong>ב שגויה</strong> — "גבוה ב-0.20 ש\"ח" זו פרשנות חיבורית מוטעית (0.20 חל על הלוג, לא על השכר), ולכן כל צירוף עם ב פסול. <strong>ד שגויה</strong> — "פי 0.20" פירושו ירידה לחמישית, ההיפך. הכלל: בדוק כל טענה בנפרד ואל תעצור אחרי שמצאת אחת נכונה.</div>
+  </div>
+</section>
+
+<section class="card">
   <h2 id="done">סיימת לתרגל?</h2>
   <p id="quiz-summary" style="color:var(--muted); font-weight:600; font-size:1.05rem"></p>
   <p>אם ענית נכון על רוב השאלות — אתה מוכן. אם נתקעת על כמה, חזור ליחידה הרלוונטית (הקישור בכל הסבר) ותרגל שוב. אפשר לרענן את הדף כדי לענות מחדש.</p>
