@@ -1,0 +1,61 @@
+/* ===== גיליון הדפסה — סטטיסטיקה מתקדמת =====
+   מוחל רק בהדפסה (media="print"): עמודה אחת, בלי ניווט/כפתורים/ווידג'טים,
+   עם חשיפת כל התשובות הנכונות וההסברים בשאלונים. */
+
+@page { margin: 1.4cm; }
+
+* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+/* ---- הסתרת אלמנטים לא רלוונטיים לנייר ---- */
+#progress-track,
+header.topbar,
+nav.toc,
+.pager,
+.complete-wrap,
+#quiz-summary,
+.widget-controls,
+.widget .w-btn,
+.widget button,
+.plot-box,
+canvas,
+svg,
+[id$="-stage"],
+[id$="-readout"],
+[id$="-log"],
+[id$="-table"],
+[id$="-plot"] { display: none !important; }
+
+/* ---- פריסה: עמודה אחת, בלי סרגל צד ---- */
+.layout { display: block !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; gap: 0 !important; }
+main { min-width: 0 !important; width: 100% !important; }
+body { font-size: 10.5pt; line-height: 1.5; background: #fff; }
+
+/* ---- כרטיסי תוכן ---- */
+section.card { box-shadow: none !important; border: 1px solid #d9d9d9 !important; padding: 12px 16px !important; margin: 0 0 12px !important; break-inside: avoid; }
+h2 { break-after: avoid; font-size: 1.25rem; }
+h3 { break-after: avoid; }
+
+/* ---- ווידג'טים: משאירים רק כותרת + רמז, עם הערה ---- */
+.widget { border-style: solid !important; border-color: #cfd6ec !important; background: #fbfcff !important; break-inside: avoid; }
+.widget .w-title::after { content: "  ·  כלי אינטראקטיבי — זמין בגרסה המקוונת"; font-weight: 400; font-size: .8em; color: #8a8f9c; }
+
+/* ---- אל תשבור אמצע יחידת תוכן ---- */
+.quiz, .box, figure, table.tbl, details.fold, pre { break-inside: avoid; }
+
+/* ---- חשיפת תשובות והסברים ---- */
+.quiz .q-explain { display: block !important; margin-top: 8px; }
+.quiz .opt { border: 1px solid #ccc !important; background: #fff !important; padding: 4px 12px !important; margin: 3px 0 !important; opacity: 1 !important; }
+.quiz .opt[data-correct] { border: 2px solid #1fa971 !important; background: #e2f7ee !important; font-weight: 700 !important; }
+.quiz .opt[data-correct]::before { content: "✓ "; color: #1fa971; font-weight: 800; }
+
+/* ---- פתיחת קופסאות בונוס מתקפלות (details.fold) ---- */
+details.fold { display: block !important; }
+details.fold > summary { font-weight: 700; list-style: none; }
+details.fold > *:not(summary) { display: block !important; }
+
+/* ---- קישורים בלי צבע/קו בהדפסה ---- */
+a { color: inherit !important; text-decoration: none !important; }
+
+/* ---- תמונות ---- */
+figure { break-inside: avoid; }
+figure img { max-width: 100% !important; }
